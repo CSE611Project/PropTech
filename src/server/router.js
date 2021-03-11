@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const aws = require('aws-sdk');
-const amazonCognitoIdentity = require('amazon-cognito-identity-js');
 const cognito = new aws.CognitoIdentityServiceProvider({region:'us-east-2'});
 
 const config = require('./config.json');
