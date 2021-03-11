@@ -5,62 +5,52 @@ const cognito = new aws.CognitoIdentityServiceProvider({region:'us-east-2'});
 
 const config = require('./config.json');
 
-router.post('/signup', (request, response) => {
-    const params = {
+router.post('/signup', (req, res) => {
+    let params = {
         ClientId: config.cognito.clientId,
-        Password: request.body.password,
-        Username: request.body.email
+        Password: req.body.password,
+        Username: req.body.email
     }
-    registerUser(params);
-});
-
-router.post('/enable', (request, response) => {
-    enableUser(request.body.email);
-});
-
-const registerUser = async (params) => {
-    cognito.signUp(params, function(err, data) {
+    
+    cognito.signUp(params, (err, data) => {
         if(err) {
-            console.log(err, err.stack);
+            res.json(err);
         } else {
-            disableUser(params.Username);
-            console.log(data);
+            let params = {
+                UserPoolId: config.cognito.userPoolId,
+                Username: req.body.email
+            }
+    
+            cognito.adminDisableUser(params, (err, data) => {
+                if(err) {
+                    return err;
+                } else {
+                    return null;
+                }
+            }).then((err) => {
+                if(err != null) {
+                    res.json(err);
+                } else {
+                    res.json(data);
+                }
+            })
         }
     });
-}
+});
 
-const disableUser = async (username) => {
-    return await new Promise((resolve, reject) => {
-        const params = {
-            UserPoolId: config.cognito.userPoolId,
-            Username: username
+router.post('/enable', (req, res) => {
+    let params = {
+        UserPoolId: config.cognito.userPoolId,
+        Username: req.body.email
+    }
+
+    cognito.adminEnableUser(params, (err, data) => {
+        if(err) {
+            res.json(err);
+        } else {
+            res.json(data);
         }
-
-        cognito.adminDisableUser(params, (err, data) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(data);
-            }
-        })
     })
-}
-
-const enableUser = async (username) => {
-    return await new Promise((resolve, reject) => {
-        const params = {
-            UserPoolId: config.cognito.userPoolId,
-            Username: username
-        }
-
-        cognito.adminEnableUser(params, (err, data) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(data);
-            }
-        })
-    })
-}
+});
 
 module.exports = router;
