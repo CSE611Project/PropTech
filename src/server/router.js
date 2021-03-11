@@ -11,7 +11,7 @@ router.post('/signup', (req, res) => {
         Password: req.body.password,
         Username: req.body.email
     }
-    
+
     cognito.signUp(params, (err, data) => {
         if(err) {
             res.json(err);
@@ -21,15 +21,9 @@ router.post('/signup', (req, res) => {
                 Username: req.body.email
             }
     
-            cognito.adminDisableUser(params, (err, data) => {
+            cognito.adminDisableUser(params, (err2, data2) => {
                 if(err) {
-                    return err;
-                } else {
-                    return null;
-                }
-            }).then((err) => {
-                if(err != null) {
-                    res.json(err);
+                    res.json(err2);
                 } else {
                     res.json(data);
                 }
