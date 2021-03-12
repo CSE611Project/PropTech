@@ -1,0 +1,16 @@
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 10px;
+  overflow: hidden;
+  background-color: black;
+  text-align: right;
+}
+
+li {
+  display: inline;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: white;
+  text-align: inherit;
+}
