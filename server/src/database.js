@@ -19,8 +19,8 @@ function establishDatabaseConnection() {
 };
 
 // Insert username and account category to database
-function insertUserIdToDatabase(user_id, category) {
-    connection.query(`INSERT into user (user_id, category) VALUES (${user_id}, ${category})`,function(err){
+function insertUserIdToDatabase(user_id) {
+    connection.query(`INSERT into user (user_id) VALUES (${user_id})`,function(err){
         // check error type later
         if(err) {
             console.log('not able to add in to database');

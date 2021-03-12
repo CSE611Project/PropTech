@@ -1,3 +1,4 @@
+const db = require('./database');
 const express = require('express');
 const router = express.Router();
 const aws = require('aws-sdk');
@@ -42,6 +43,7 @@ router.post('/enable', (req, res) => {
         if(err) {
             res.json(err);
         } else {
+            db.insertUserIdToDatabase(req.body.email);
             res.json(data);
         }
     })
