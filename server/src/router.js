@@ -33,7 +33,7 @@ router.post('/signup', (req, res) => {
                     Username: req.body.email
                 };
 
-                cognitoidentityserviceprovider.adminAddUserToGroup(params, (err3, data3) => {
+                cognito.adminAddUserToGroup(params, (err3, data3) => {
                     if(err3) {
                         console.log(err3)
                     } else {
