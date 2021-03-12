@@ -10,7 +10,26 @@ router.post('/signup', (req, res) => {
     let params = {
         ClientId: config.cognito.clientId,
         Password: req.body.password,
-        Username: req.body.email
+        Username: req.body.email,
+        UserAttributes:[{
+            Name: "street_name", 
+            Value: req.body.street_name
+        },{
+            Name: "company_name",
+            Value: req.body.company_name
+        },{
+            Name: "suite_number",
+            Value: req.body.suite_number
+        },{
+            Name: "city",
+            Value: req.body.city
+        },{
+            Name: "state",
+            Value: req.body.state
+        },{
+            Name: "zipcode",
+            Value: req.body.zipcode
+        }]
     }
 
     cognito.signUp(params, (err, data) => {
