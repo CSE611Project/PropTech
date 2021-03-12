@@ -5,7 +5,7 @@ import Navigation from "./Navigation.js"
 import HomePage from "./HomePage.js"
 
 
-class AdminAfterSign extends React.Component{
+class PropManaAfterSign extends React.Component{
     render(){
         return(
             <div>
@@ -14,9 +14,12 @@ class AdminAfterSign extends React.Component{
                 <header className = "Admin_menu">
                     <h1>What can I do for you today ?</h1>
                     <ul className = "buttonUL">
-                    <button className ="Admin_option" onClick = {edit_user_account}>Edit Users Account</button>
-                    <button className ="Admin_option" onClick = {view_managers}>Building Managers Information</button>
-                    <button className ="Admin_option" onClick = {view_account_application}>Account Application Status</button>
+                    <button className ="Admin_option" onClick = {manage_tenant}>Manage Tenant Info</button>
+                    <button className ="Admin_option" onClick = {manage_property}>Manage Property Info</button>
+                    <button className ="Admin_option" onClick = {edit_profile}>Edit Profile Info</button>
+                    <button className ="Admin_option" onClick = {manage_utility}>Manage Utility Bill</button>
+                    <button className ="Admin_option" onClick = {manage_invoice}>Manage Invoice History</button>
+                    <button className ="Admin_option" onClick = {generate_invoice}>Generate Invoice</button>
                     <button className ="Admin_option" onClick = {log_out}>Log Out</button>
                     </ul>
                 </header>
@@ -26,7 +29,7 @@ class AdminAfterSign extends React.Component{
     }
 }
 
-function edit_user_account (){
+function manage_tenant() {
     const ele =
     <div>
       <Navigation />
@@ -34,7 +37,7 @@ function edit_user_account (){
     return (ReactDOM.render(ele, document.getElementById('root')));
 }
 
-function view_managers (){
+function manage_property() {
     const ele =
     <div>
       <Navigation />
@@ -42,7 +45,31 @@ function view_managers (){
     return (ReactDOM.render(ele, document.getElementById('root')));
 }
 
-function view_account_application(){
+function edit_profile() {
+    const ele =
+    <div>
+      <Navigation />
+    </div>
+    return (ReactDOM.render(ele, document.getElementById('root')));
+}
+
+function manage_utility() {
+    const ele =
+    <div>
+      <Navigation />
+    </div>
+    return (ReactDOM.render(ele, document.getElementById('root')));
+}
+
+function manage_invoice() {
+    const ele =
+    <div>
+      <Navigation />
+    </div>
+    return (ReactDOM.render(ele, document.getElementById('root')));
+}
+
+function generate_invoice() {
     const ele =
     <div>
       <Navigation />
@@ -69,7 +96,7 @@ function homepage() {
 }
 
 function back() {
-  return (ReactDOM.render(<AdminAfterSign />, document.getElementById('root')));
+  return (ReactDOM.render(<PropManaAfterSign />, document.getElementById('root')));
 }
 
-export default AdminAfterSign;
+export default PropManaAfterSign;
