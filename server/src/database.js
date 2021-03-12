@@ -18,9 +18,9 @@ function establishDatabaseConnection() {
     });
 };
 
-// Insert username and account category to database
+// Insert username to database
 function insertUserIdToDatabase(user_id) {
-    connection.query(`INSERT INTO user (user_id) VALUES (${user_id})`,function(err){
+    connection.query(`INSERT INTO user (user_id) VALUES (`+user_id+`)`,function(err){
         // check error type later
         if(err) {
             console.log('not able to add in to database');
