@@ -12,22 +12,22 @@ router.post('/signup', (req, res) => {
         Password: req.body.password,
         Username: req.body.email,
         UserAttributes:[{
-            Name: "street_name", 
+            Name: "custom:street_name", 
             Value: req.body.street_name
         },{
-            Name: "company_name",
+            Name: "custom:company_name",
             Value: req.body.company_name
         },{
-            Name: "suite_number",
+            Name: "custom:suite_number",
             Value: req.body.suite_number
         },{
-            Name: "city",
+            Name: "custom:city",
             Value: req.body.city
         },{
-            Name: "state",
+            Name: "custom:state",
             Value: req.body.state
         },{
-            Name: "zipcode",
+            Name: "custom:zipcode",
             Value: req.body.zipcode
         }]
     }
