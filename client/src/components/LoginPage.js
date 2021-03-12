@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from 'react-dom';
 import "./../App.css";
 import Navigation from "./Navigation.js";
+import AdminAfterSign from "./AdminAfterSign.js"
 
 class LoginPage extends React.Component {
   render() {
@@ -15,13 +16,17 @@ class LoginPage extends React.Component {
             <input type="text" />
             <label className="PasswordLabel">Password</label>
             <input type="password" />
-            <button className="button">Login</button>
+            <button className="button" onClick={aftersign}>Login</button>
             <button className="reset">Reset Password</button>
           </header>
         </div>
       </div>
     )
   }
+}
+
+function aftersign() {
+  return (ReactDOM.render(<AdminAfterSign />, document.getElementById('root')));
 }
 
 export default LoginPage;

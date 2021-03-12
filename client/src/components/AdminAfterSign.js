@@ -1,22 +1,15 @@
 import React from "react";
 import ReactDOM from 'react-dom';
 import "./../App.css";
+import Navigation from "./Navigation.js"
+import HomePage from "./HomePage.js"
 
 
 class AdminAfterSign extends React.Component{
-
     render(){
         return(
-        
             <div>
-              <nav>
-               <ul>
-                <li>
-                    <a href="/index">Home</a>
-                </li>
-               </ul>
-              </nav>
-
+              <Navigation />
               <div className = "AdminAfterSign">
                 <header className = "Admin_menu">
                     <h1>What can I do for you today ?</h1>
@@ -34,66 +27,45 @@ class AdminAfterSign extends React.Component{
 }
 
 function edit_user_account (){
-    const ele = 
+    const ele =
     <div>
-        <nav>
-            <ul>
-            <li>
-                <a href="/index">Home</a>
-            </li>
-            </ul>
-        </nav>        
+      <Navigation />
     </div>
     return (ReactDOM.render(ele, document.getElementById('root')));
 }
 
 function view_managers (){
-    const ele = 
+    const ele =
     <div>
-        <nav>
-            <ul>
-            <li>
-                <a href="/index">Home</a>
-            </li>
-            </ul>
-        </nav>        
+      <Navigation />
     </div>
     return (ReactDOM.render(ele, document.getElementById('root')));
 }
 
 function view_account_application(){
-    const ele = 
+    const ele =
     <div>
-        <nav>
-            <ul>
-            <li>
-                <a href="/index">Home</a>
-            </li>
-            </ul>
-        </nav>        
+      <Navigation />
     </div>
-    return (ReactDOM.render(ele, document.getElementById('root')));    
+    return (ReactDOM.render(ele, document.getElementById('root')));
 }
 
 function log_out(){
-    const ele = 
+    const ele =
     <div>
-        <nav>
-            <ul>
-            <li>
-                <a href="/index">Home</a>
-            </li>
-            </ul>
-        </nav>
+      <Navigation />
         <div className = "Admin_menu" id = "logout">
         <header className = "Admin_menu">
-            <h1>You have successfully logout</h1>  
+            <h1>You have successfully logout</h1>
+            <button className="button" onClick={homepage}>OK</button>
         </header>
-        </div>        
+        </div>
     </div>
-    return (ReactDOM.render(ele, document.getElementById('root')));     
+    return (ReactDOM.render(ele, document.getElementById('root')));
 }
 
-
+function homepage() {
+  return (ReactDOM.render(<HomePage />, document.getElementById('root')));
+}
 
 export default AdminAfterSign;

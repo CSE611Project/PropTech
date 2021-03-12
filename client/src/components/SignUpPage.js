@@ -6,58 +6,6 @@ import Navigation from "./Navigation.js";
 import UserPool from "./UserPool.js";
 import axios from "axios";
 
-{/*const SignUpPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const onSubmit = (event) => {
-    event.preventDefault();
-
-    UserPool.signUp(email, password, [], null, (err, data) => {
-      if (err) {
-        console.error(err);
-      }
-      console.log(data);
-    });
-  };
-
-  return(
-    <div>
-      <Navigation />
-      <div className="SignUpPage" id="signup">
-        <header className="SignUp-header">
-          <form onSubmit={onSubmit}>
-          <h1>Please enter the information below</h1>
-          <div id="registration">
-            <label className="CompanyName">Company Name</label>
-            <input type="text" />
-            <label htmlFor="email">Email</label>
-            <input value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            type="text" />
-            <label htmlFor="Password">Password</label>
-            <input value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            type="password" />
-            <label className="CompanyStreetName">Company Street Name</label>
-            <input type="text" />
-            <label className="SuiteNumber">Suite Number</label>
-            <input type="text" />
-            <label className="City">City</label>
-            <input type="text" />
-            <label className="State">State</label>
-            <input type="text" />
-            <label className="Zipcode">Zipcode</label>
-            <input type="text" />
-            <button type="submit">Register</button>
-          </div>
-          </form>
-        </header>
-      </div>
-    </div>
-  );
-};*/}
-
 class SignUpPage extends React.Component {
   constructor() {
     super()
@@ -68,7 +16,7 @@ class SignUpPage extends React.Component {
       street_name: '',
       suite_number: '',
       city: '',
-      state_: '',
+      state: '',
       zipcode: ''
     }
     this.changeCompanyName = this.changeCompanyName.bind(this)
@@ -120,7 +68,7 @@ class SignUpPage extends React.Component {
 
   changeState(event) {
     this.setState({
-      state_: event.target.value
+      state: event.target.value
     })
   }
 
@@ -140,11 +88,13 @@ class SignUpPage extends React.Component {
       street_name: this.state.street_name,
       suite_number: this.state.suite_number,
       city: this.state.city,
-      state_: this.state.state_,
+      state: this.state.state,
       zipcode: this.state.zipcode
     }
 
-    axios.post('http://localhost:3000/signup', registered)
+    axios.post('/signup', registered).then(
+      response => console.log(response.data)
+    )
 
     this.setState = {
       company_name: '',
@@ -153,10 +103,10 @@ class SignUpPage extends React.Component {
       street_name: '',
       suite_number: '',
       city: '',
-      state_: '',
+      state: '',
       zipcode: ''
     }
-
+    regprocess()
   }
 
   render() {
@@ -202,7 +152,7 @@ class SignUpPage extends React.Component {
               <label className="State">State</label>
               <input type="text" placeholder="State"
               onChange={this.changeState}
-              value={this.state.state_} />
+              value={this.state.state} />
 
               <label className="Zipcode">Zipcode</label>
               <input type="text" placeholder="Zipcode"
@@ -219,7 +169,7 @@ class SignUpPage extends React.Component {
   }
 }
 
-function regprocess () {
+function regprocess() {
   return (ReactDOM.render(<RegProcess />, document.getElementById('root')));
 }
 
