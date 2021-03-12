@@ -1,2 +1,2 @@
-# PropTech Web App
-Team Member: Xinyu Chen, Zhenduo Lin, Xianxin Lin, Min Dong, Raymond Zheng
+# CSE611_Project - PropTech
+Group Member: Xinyu Chen, Zhenduo Lin, Min Dong, Xianxin Lin, Raymond Zheng
