@@ -13,23 +13,21 @@ class SignUpPage extends React.Component {
           <header className="SignUp-header">
             <h1>Please enter the information below</h1>
             <div id="registration">
-              <label>Name</label>
+              <label className="CompanyName">Company Name</label>
               <input type="text" />
-              <label>Email</label>
+              <label className="Email">Email</label>
               <input type="text" />
-              <label>Password</label>
+              <label className="Password">Password</label>
               <input type="password" />
-              <label>Enter Your Password Again</label>
-              <input type="password" />
-              <label>Street Name</label>
+              <label className="CompanyStreetName">Company Street Name</label>
               <input type="text" />
-              <label>Suite Number</label>
+              <label className="SuiteNumber">Suite Number</label>
               <input type="text" />
-              <label>City</label>
+              <label className="City">City</label>
               <input type="text" />
-              <label>State</label>
+              <label className="State">State</label>
               <input type="text" />
-              <label>Zipcode</label>
+              <label className="Zipcode">Zipcode</label>
               <input type="text" />
               <button className="registerButton" onClick={regprocess}>Register</button>
             </div>
