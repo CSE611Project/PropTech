@@ -24,10 +24,22 @@ router.post('/signup', (req, res) => {
     
             cognito.adminDisableUser(params, (err2, data2) => {
                 if(err) {
-                    res.json(err2);
-                } else {
-                    res.json(data);
+                    console.log(err2);
                 }
+
+                let params = {
+                    GroupName: 'PropertyManager',
+                    UserPoolId: config.cognito.userPoolId,
+                    Username: req.body.email
+                };
+
+                cognitoidentityserviceprovider.adminAddUserToGroup(params, (err3, data3) => {
+                    if(err3) {
+                        console.log(err3)
+                    } else {
+                        res.json(data);
+                    }
+                });
             })
         }
     });
