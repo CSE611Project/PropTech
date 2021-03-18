@@ -29,48 +29,46 @@ router.post('/signup', (req, res) => {
         },{
             Name: "custom:zipcode",
             Value: req.body.zipcode
+        },{
+            Name: "custom:is_activated",
+            Value: "False"
         }]
     }
 
     cognito.signUp(params, (err, data) => {
         if(err) {
             res.json(err);
-        } else {
-            let params = {
-                UserPoolId: config.cognito.userPoolId,
-                Username: req.body.email
-            }
-    
-            cognito.adminDisableUser(params, (err2, data2) => {
-                if(err) {
-                    console.log(err2);
-                }
-
-                let params = {
-                    GroupName: 'PropertyManager',
-                    UserPoolId: config.cognito.userPoolId,
-                    Username: req.body.email
-                };
-
-                cognito.adminAddUserToGroup(params, (err3, data3) => {
-                    if(err3) {
-                        console.log(err3)
-                    } else {
-                        res.json(data);
-                    }
-                });
-            })
         }
+        
+        let params = {
+            GroupName: 'PropertyManager',
+            UserPoolId: config.cognito.userPoolId,
+            Username: req.body.email
+        };
+
+        cognito.adminAddUserToGroup(params, (err3, data3) => {
+            if(err3) {
+                console.log(err3)
+            } else {
+                res.json(data);
+            }
+        })
     });
 });
 
-router.post('/enable', (req, res) => {
+router.post('/activate', (req, res) => {
     let params = {
         UserPoolId: config.cognito.userPoolId,
-        Username: req.body.email
+        Username: req.body.email,
+        UserAttributes: [
+            {
+                Name: "custom:is_activated",
+                Value: "True"
+            },
+        ]
     }
 
-    cognito.adminEnableUser(params, (err, data) => {
+    cognito.adminUpdateUserAttributes(params, (err, data) => {
         if(err) {
             res.json(err);
         } else {
