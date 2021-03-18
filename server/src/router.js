@@ -9,8 +9,8 @@ const config = require('./config.json');
 router.post('/signup', (req, res) => {
     let params = {
         ClientId: config.cognito.clientId,
-        Password: req.body.password,
         Username: req.body.email,
+        Password: req.body.password,
         UserAttributes:[{
             Name: "custom:street_name", 
             Value: req.body.street_name
@@ -76,6 +76,42 @@ router.post('/activate', (req, res) => {
             res.json(data);
         }
     })
+});
+
+router.delete('/reject', (req, res) => {
+    let params = {
+        UserPoolId: config.cognito.userPoolId,
+        Username: req.body.email,
+    }
+
+    cognito.adminDeleteUser(params, (err, data) => {
+        if(err) {
+            res.json(err);
+        } else {
+            res.json(data);
+        }
+    })
+});
+
+router.post('/login', (req, res) => {
+    let params = {
+        AuthFlow: "USER_PASSWORD_AUTH",
+        ClientId: config.cognito.clientId,
+        AuthParameters: {
+            "USERNAME": req.body.email,
+            "PASSWORD": req.body.password
+        }
+    }
+
+    cognito.initiateAuth(params, (err, data) => {
+        if(err) {
+            res.json(err);
+        } else {
+            console.log(data);
+            res.json(data);
+        }
+    })
+
 });
 
 module.exports = router;
