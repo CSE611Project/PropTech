@@ -8,7 +8,6 @@ class HomePage extends React.Component {
   render() {
     return(
       <div>
-        <Navigation />
         <div className="App">
           <header className="App-header">
             <h1>PropTech</h1>
@@ -24,9 +23,11 @@ class HomePage extends React.Component {
 }
 
 function login() {
+  window.location = '/LoginPage'
   return (ReactDOM.render(<LoginPage />, document.getElementById('root')));
 }
 function signup() {
+  window.location = '/SignUpPage'
   return (ReactDOM.render(<SignUpPage />, document.getElementById('root')));
 }
 

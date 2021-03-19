@@ -8,7 +8,6 @@ class ResetProcess extends React.Component {
   render() {
     return (
       <div>
-        <Navigation />
         <div className="ResetProcess">
           <header className="Login-header">
             <h1>You have successfully reset your password!</h1>
@@ -21,6 +20,7 @@ class ResetProcess extends React.Component {
 }
 
 function back() {
+  window.location = "/LoginPage"
   return (ReactDOM.render(<LoginPage />, document.getElementById('root')));
 }
 

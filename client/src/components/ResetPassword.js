@@ -8,7 +8,6 @@ class ResetPassword extends React.Component {
   render() {
     return (
       <div>
-        <Navigation />
         <div className="ResetPassword">
           <header className="Login-header">
             <label>Enter your old password:</label>
@@ -26,6 +25,7 @@ class ResetPassword extends React.Component {
 }
 
 function reset() {
+  window.location = "/ResetProcess"
   return (ReactDOM.render(<ResetProcess />, document.getElementById('root')));
 }
 
