@@ -47,7 +47,10 @@ class LoginPage extends React.Component {
     const cognitoUser = new cognito.CognitoUser(userDetails);
     cognitoUser.authenticateUser(authenticationDetails, {
       onSuccess: function (result) {
-        console.log(result); // TODO save result
+        console.log(result);
+        axios.post('/auth', result.AuthenticationResult).then(
+          response => console.log(response.data)
+        )
         aftersign()
       },
       onFailure: function(err) {

@@ -114,8 +114,7 @@ router.delete('/reject', (req, res) => {
 });
 
 router.post('/auth', (req, res) => {
-    const token = req.header("Auth");
-    jwt.verify(token, pems[jwt.decode(token,{ complete: true }).header.kid], (err, accessData) => {
+    jwt.verify(req.body.AccessToken, pems[jwt.decode(req.body.AccessToken,{ complete: true }).header.kid], (err, accessData) => {
         if(err) {
             res.json(err);
         } else {
@@ -123,6 +122,7 @@ router.post('/auth', (req, res) => {
                 if(err) {
                     res.json(err2);
                 } else {
+                    res.cookie('accessCookie', {accessData, idData}, { httpOnly: true });
                     res.json({accessData, idData});
                 }
             });
