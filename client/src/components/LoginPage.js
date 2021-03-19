@@ -49,7 +49,15 @@ class LoginPage extends React.Component {
       onSuccess: function (result) {
         console.log(result);
         axios.post('/auth', result).then(
-          response => console.log(response.data)
+          response => {
+            console.log(response.data);
+            let userType = response.accessData["cognito:groups"][0];
+            if(userType == "PropertyManager") {
+              propmanaaftersign();
+            } else if(userType == "Admin") {
+              adminaftersign();
+            }
+          }
         )
       },
       onFailure: function(err) {
@@ -86,9 +94,14 @@ class LoginPage extends React.Component {
   }
 }
 
-function aftersign() {
+function adminaftersign() {
   window.location = '/AdminAfterSign'
   return (ReactDOM.render(<AdminAfterSign />, document.getElementById('root')));
+}
+
+function propmanaaftersign() {
+  window.location = '/PropManaAfterSign'
+  return (ReactDOM.render(<PropManaAfterSign />, document.getElementById('root')));
 }
 
 function reset() {
