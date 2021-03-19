@@ -1,20 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from 'react-dom';
 import "./Navigation.css"
 import HomePage from "./HomePage.js"
 import Abouts from "./About.js"
+import { BrowserRouter, Link } from "react-router-dom"
 
 class Navigation extends React.Component {
-  render () {
+  render() {
     return (
       <nav className="Navigation">
         <ul>
-          <li>
-            <button className="navButton" onClick={home}>Home</button>
-          </li>
-          <li>
-            <button href="About" className="navButton" onClick={about}>About</button>
-          </li>
+          <Link to={"/"}><li>
+            Home
+          </li></Link>
+          <Link to={"/About"}><li>
+            About
+          </li></Link>
         </ul>
       </nav>
     );

@@ -8,7 +8,6 @@ class RegProcess extends React.Component {
   render() {
     return (
       <div>
-        <Navigation />
         <div className="RegProcess">
           <header className="RegProcess-header">
             <h1>Thank you, you will recieve an email about your registration result shortly.</h1>
@@ -21,6 +20,7 @@ class RegProcess extends React.Component {
 }
 
 function back() {
+  window.location = '/'
   return (ReactDOM.render(<HomePage />, document.getElementById('root')));
 }
 

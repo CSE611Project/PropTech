@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from 'react-dom';
 import "./../App.css";
 import Navigation from "./Navigation.js";
-import AdminAfterSign from "./AdminAfterSign.js";
-import {cognito, userPool} from "./UserPool"
+import AdminAfterSign from "./AdminAfterSign.js"
+import ResetPassword from "./ResetPassword.js"
+import axios from "axios";
+import {cognito, userPool} from "./UserPool";
 
 class LoginPage extends React.Component {
   constructor() {
@@ -12,6 +14,7 @@ class LoginPage extends React.Component {
       email: '',
       password: ''
     }
+
     this.changeEmail = this.changeEmail.bind(this)
     this.changePassword = this.changePassword.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
@@ -30,8 +33,8 @@ class LoginPage extends React.Component {
   }
 
   onSubmit(event) {
-    event.preventDefault()
-
+    event.preventDefault();
+    console.log(this);
     const loginDetails = {
       Username: this.state.email,
       Password: this.state.password
@@ -45,36 +48,36 @@ class LoginPage extends React.Component {
     cognitoUser.authenticateUser(authenticationDetails, {
       onSuccess: function (result) {
         console.log(result); // TODO save result
+        aftersign()
       },
       onFailure: function(err) {
         console.log(err);
       }
     })
-    aftersign()
   }
 
   render() {
     return (
       <div>
-        <Navigation />
-        <div className="LoginPage">
-          <header className="Login-header">
-            <form onSubmit={this.onSubmit}>
-            <h1>Please enter the information below</h1>
-            <div id="login">
-            <label htmlFor="email">Email</label>
+        <div className="LoginPage" >
+          <form onSubmit={this.onSubmit}>
+            <header className="Login-header">
+              <h1 className="Title">PropTech</h1>
+
+              <label className="EmailLabel">Email</label>
               <input type="text" placeholder="Email"
               onChange={this.changeEmail}
-              value={this.state.email} />
-            <label htmlFor="Password">Password</label>
+              value={this.state.email} required />
+
+              <label className="PasswordLabel">Password</label>
               <input type="password" placeholder="Password"
               onChange={this.changePassword}
-              value={this.state.password} />
-            <button className="LoginButton" type="submit" value="submit">Login</button>
-            <button className="reset">Reset Password</button>
-            </div>
-            </form>
-          </header>
+              value={this.state.password} required />
+
+              <button className="button" type="submit" value="submit">Login</button>
+              <button className="reset" onClick={reset}>Reset Password</button>
+            </header>
+          </form>
         </div>
       </div>
     )
@@ -82,7 +85,14 @@ class LoginPage extends React.Component {
 }
 
 function aftersign() {
+  window.location = '/AdminAfterSign'
   return (ReactDOM.render(<AdminAfterSign />, document.getElementById('root')));
 }
+
+function reset() {
+  window.location = '/ResetPassword'
+  return (ReactDOM.render(<ResetPassword />, document.getElementById('root')));
+}
+
 
 export default LoginPage;
