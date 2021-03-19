@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import ReactDOM from 'react-dom';
 import "./../App.css";
 import Navigation from "./Navigation.js";
-import AdminAfterSign from "./AdminAfterSign.js"
-import ResetPassword from "./ResetPassword.js"
+import AdminAfterSign from "./AdminAfterSign.js";
+import PropManaAfterSign from "./PropManaAfterSign.js";
+import ResetPassword from "./ResetPassword.js";
 import axios from "axios";
 import {cognito, userPool} from "./UserPool";
 
