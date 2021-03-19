@@ -12,6 +12,10 @@ import PropManaAfterSign from "./components/PropManaAfterSign.js"
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import RegProcess from "./components/RegProcess";
 import ResetProcess from "./components/ResetProcess"
+import ApplicationStatus from "./components/ApplicationStatus"
+import ManaInfo from "./components/ManaInfo"
+import EditUserAccount from "./components/EditUserAccount"
+
 
 function App() {
 
@@ -29,6 +33,9 @@ function App() {
           <Route path="/PropManaAfterSign" component={PropManaAfterSign} />
           <Route path="/RegProcess" component={RegProcess} />
           <Route path="/ResetProcess" component={ResetProcess} />
+          <Route path="/ApplicationStatus" component={ApplicationStatus} />
+          <Route path="/ManaInfo" component={ManaInfo} />
+          <Route path="/EditUserAccount" component={EditUserAccount} />
         </Switch>
       </div>
     </BrowserRouter>
