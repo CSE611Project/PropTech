@@ -52,7 +52,7 @@ class LoginPage extends React.Component {
         axios.post('/auth', result).then(
           response => {
             console.log(response.data);
-            let userType = response.accessData["cognito:groups"][0];
+            let userType = response.data.accessData["cognito:groups"][0];
             if(userType == "PropertyManager") {
               propmanaaftersign();
             } else if(userType == "Admin") {
