@@ -90,7 +90,7 @@ router.post('/activate', (req, res) => {
                     console.log(err2)
                 } else {
                     db.insertUserIdToDatabase(req.body.email);
-                  //  emailer.sentEmail(req.body.email, `The PropTech Web App Account associated with ${req.body.email} email has been approved`);
+                    emailer.sentEmail(req.body.email, `The PropTech Web App Account associated with ${req.body.email} email has been approved`);
                     res.json(data);
                 }
             })
