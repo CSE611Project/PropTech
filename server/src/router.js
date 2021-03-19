@@ -122,7 +122,7 @@ router.post('/auth', (req, res) => {
                 if(err) {
                     res.json(err2);
                 } else {
-                    res.cookie('accessCookie', {accessData, idData}, { httpOnly: true });
+                    res.cookie('authCookie', {accessData, idData}, { httpOnly: true });
                     res.json({accessData, idData});
                 }
             });

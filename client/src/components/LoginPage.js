@@ -51,7 +51,6 @@ class LoginPage extends React.Component {
         axios.post('/auth', result.AuthenticationResult).then(
           response => console.log(response.data)
         )
-        aftersign()
       },
       onFailure: function(err) {
         console.log(err);
