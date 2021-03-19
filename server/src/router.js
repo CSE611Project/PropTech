@@ -1,6 +1,7 @@
 const config = require('./config.json');
 
 const db = require('./database');
+const emailer = require('./email');
 const express = require('express');
 const fetch = require('node-fetch');
 const router = express.Router();
@@ -59,20 +60,6 @@ router.post('/signup', (req, res) => {
         if(err) {
             res.json(err);
         }
-        
-        let params = {
-            GroupName: 'PropertyManager',
-            UserPoolId: config.cognito.userPoolId,
-            Username: req.body.email
-        };
-
-        cognito.adminAddUserToGroup(params, (err2, data2) => {
-            if(err2) {
-                console.log(err2)
-            } else {
-                res.json(data);
-            }
-        })
     });
 });
 
@@ -92,8 +79,21 @@ router.post('/activate', (req, res) => {
         if(err) {
             res.json(err);
         } else {
-            db.insertUserIdToDatabase(req.body.email);
-            res.json(data);
+            let params = {
+                GroupName: 'PropertyManager',
+                UserPoolId: config.cognito.userPoolId,
+                Username: req.body.email
+            };
+    
+            cognito.adminAddUserToGroup(params, (err2, data2) => {
+                if(err2) {
+                    console.log(err2)
+                } else {
+                    db.insertUserIdToDatabase(req.body.email);
+                    emailer.sentEmail(req.body.email, `The PropTech Web App Account associated with ${req.body.email} email has been approved`)
+                    res.json(data);
+                }
+            })
         }
     })
 });
@@ -108,6 +108,7 @@ router.delete('/reject', (req, res) => {
         if(err) {
             res.json(err);
         } else {
+            
             res.json(data);
         }
     })
