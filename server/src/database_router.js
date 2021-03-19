@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const database = require('./database');
+const email = require('./email');
 const bodyParser = require('body-parser');
 const cors=require('cors');
 
@@ -58,6 +59,14 @@ router.use(cors());
 //             res.send('deleted');
 //         }
 //     });
+// })
+
+// testing email sender
+// router.post('/testEmail',(req,res)=>{
+//     const {receiver, content} = req.body;
+//     console.log(`receiver: ${receiver},content: ${content}`);
+//     email.sentEmail(receiver, content);
+//     res.send("sent");
 // })
 module.exports = router;
 
