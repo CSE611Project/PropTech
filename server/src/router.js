@@ -119,14 +119,8 @@ router.post('/auth', (req, res) => {
         if(err) {
             res.json(err);
         } else {
-            jwt.verify(req.body.idToken, pems[jwt.decode(req.body.idToken,{ complete: true }).header.kid], (err2, idData) => {
-                if(err) {
-                    res.json(err2);
-                } else {
-                    res.cookie('authCookie', {accessData, idData}, { httpOnly: true });
-                    res.json({accessData, idData});
-                }
-            });
+            res.cookie('authCookie', req.body.accessToken, { httpOnly: true });
+            res.json({accessData});
         }
     });
     

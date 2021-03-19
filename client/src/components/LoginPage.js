@@ -49,7 +49,7 @@ class LoginPage extends React.Component {
     cognitoUser.authenticateUser(authenticationDetails, {
       onSuccess: function (result) {
         console.log(result);
-        axios.post('/auth', {accessToken: result.accessToken.jwtToken, idToken: result.idToken.jwtToken}).then(
+        axios.post('/auth', {accessToken: result.accessToken.jwtToken}).then(
           response => {
             console.log(response.data);
             let userType = response.data.accessData["cognito:groups"][0];
