@@ -114,11 +114,12 @@ router.delete('/reject', (req, res) => {
 });
 
 router.post('/auth', (req, res) => {
-    jwt.verify(req.body.accessToken.jwtToken, pems[jwt.decode(req.body.accessToken.jwtToken,{ complete: true }).header.kid], (err, accessData) => {
+    console.log(req.cookies);
+    jwt.verify(req.body.accessToken, pems[jwt.decode(req.body.accessToken,{ complete: true }).header.kid], (err, accessData) => {
         if(err) {
             res.json(err);
         } else {
-            jwt.verify(req.body.idToken.jwtToken, pems[jwt.decode(req.body.idToken.jwtToken,{ complete: true }).header.kid], (err2, idData) => {
+            jwt.verify(req.body.idToken, pems[jwt.decode(req.body.idToken,{ complete: true }).header.kid], (err2, idData) => {
                 if(err) {
                     res.json(err2);
                 } else {
