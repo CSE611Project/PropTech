@@ -17,7 +17,7 @@ app.use(session({
 
 app.use(express.json());
 app.use('', routesUrls);
-app.use('',databaseRouter);
+app.use('', databaseRouter);
 app.listen(3000, () => {
     console.log("server is running")
     database.establishDatabaseConnection();

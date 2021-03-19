@@ -1,16 +1,36 @@
+const config = require('./config.json');
+
 const db = require('./database');
 const express = require('express');
+const fetch = require('node-fetch');
 const router = express.Router();
 const aws = require('aws-sdk');
-const cognito = new aws.CognitoIdentityServiceProvider({region:'us-east-2'});
+const cognito = new aws.CognitoIdentityServiceProvider({region:config.aws_region});
+const jwt = require('jsonwebtoken');
+const jwktopem = require('jwk-to-pem');
 
-const config = require('./config.json');
+pems = {};
+
+const setupJWK = async () => {
+    const res = await fetch(`https://cognito-idp.${config.aws_region}.amazonaws.com/${config.cognito.userPoolId}/.well-known/jwks.json`);
+    const data = await res.json();
+    const { keys } = data;
+    for (let i = 0; i < keys.length; i++) {
+        const key_id = keys[i].kid;
+        const modulus = keys[i].n;
+        const exponent = keys[i].e;
+        const key_type = keys[i].kty;
+        const jwk = { kty: key_type, n: modulus, e: exponent };
+        const pem = jwktopem(jwk);
+        pems[key_id] = pem;
+    }
+}
 
 router.post('/signup', (req, res) => {
     let params = {
         ClientId: config.cognito.clientId,
-        Password: req.body.password,
         Username: req.body.email,
+        Password: req.body.password,
         UserAttributes:[{
             Name: "custom:street_name", 
             Value: req.body.street_name
@@ -29,48 +49,46 @@ router.post('/signup', (req, res) => {
         },{
             Name: "custom:zipcode",
             Value: req.body.zipcode
+        },{
+            Name: "custom:is_activated",
+            Value: "False"
         }]
     }
 
     cognito.signUp(params, (err, data) => {
         if(err) {
             res.json(err);
-        } else {
-            let params = {
-                UserPoolId: config.cognito.userPoolId,
-                Username: req.body.email
-            }
-    
-            cognito.adminDisableUser(params, (err2, data2) => {
-                if(err) {
-                    console.log(err2);
-                }
-
-                let params = {
-                    GroupName: 'PropertyManager',
-                    UserPoolId: config.cognito.userPoolId,
-                    Username: req.body.email
-                };
-
-                cognito.adminAddUserToGroup(params, (err3, data3) => {
-                    if(err3) {
-                        console.log(err3)
-                    } else {
-                        res.json(data);
-                    }
-                });
-            })
         }
+        
+        let params = {
+            GroupName: 'PropertyManager',
+            UserPoolId: config.cognito.userPoolId,
+            Username: req.body.email
+        };
+
+        cognito.adminAddUserToGroup(params, (err2, data2) => {
+            if(err2) {
+                console.log(err2)
+            } else {
+                res.json(data);
+            }
+        })
     });
 });
 
-router.post('/enable', (req, res) => {
+router.post('/activate', (req, res) => {
     let params = {
         UserPoolId: config.cognito.userPoolId,
-        Username: req.body.email
+        Username: req.body.email,
+        UserAttributes: [
+            {
+                Name: "custom:is_activated",
+                Value: "True"
+            }
+        ]
     }
 
-    cognito.adminEnableUser(params, (err, data) => {
+    cognito.adminUpdateUserAttributes(params, (err, data) => {
         if(err) {
             res.json(err);
         } else {
@@ -79,5 +97,58 @@ router.post('/enable', (req, res) => {
         }
     })
 });
+
+router.delete('/reject', (req, res) => {
+    let params = {
+        UserPoolId: config.cognito.userPoolId,
+        Username: req.body.email,
+    }
+
+    cognito.adminDeleteUser(params, (err, data) => {
+        if(err) {
+            res.json(err);
+        } else {
+            res.json(data);
+        }
+    })
+});
+
+router.post('/auth', (req, res) => {
+    const token = req.header("Auth");
+    jwt.verify(token, pems[jwt.decode(token,{ complete: true }).header.kid], (err, accessData) => {
+        if(err) {
+            res.json(err);
+        } else {
+            jwt.verify(req.body.IdToken, pems[jwt.decode(req.body.IdToken,{ complete: true }).header.kid], (err2, idData) => {
+                if(err) {
+                    res.json(err2);
+                } else {
+                    res.json({accessData, idData});
+                }
+            });
+        }
+    });
+    
+
+    // let params = {
+    //     AuthFlow: "USER_PASSWORD_AUTH",
+    //     ClientId: config.cognito.clientId,
+    //     AuthParameters: {
+    //         "USERNAME": req.body.email,
+    //         "PASSWORD": req.body.password
+    //     }
+    // }
+
+    // cognito.initiateAuth(params, (err, data) => {
+    //     if(err) {
+    //         res.json(err);
+    //     } else {
+    //         console.log(data);
+    //         res.json(data);
+    //     }
+    // })
+});
+
+setupJWK();
 
 module.exports = router;
