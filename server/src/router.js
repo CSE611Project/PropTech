@@ -1,10 +1,30 @@
+const config = require('./config.json');
+
 const db = require('./database');
 const express = require('express');
+const fetch = require('node-fetch');
 const router = express.Router();
 const aws = require('aws-sdk');
-const cognito = new aws.CognitoIdentityServiceProvider({region:'us-east-2'});
+const cognito = new aws.CognitoIdentityServiceProvider({region:config.aws_region});
+const jwt = require('jsonwebtoken');
+const jwktopem = require('jwk-to-pem');
 
-const config = require('./config.json');
+pems = {};
+
+const setupJWK = async () => {
+    const res = await fetch(`https://cognito-idp.${config.aws_region}.amazonaws.com/${config.cognito.userPoolId}/.well-known/jwks.json`);
+    const data = await res.json();
+    const { keys } = data;
+    for (let i = 0; i < keys.length; i++) {
+        const key_id = keys[i].kid;
+        const modulus = keys[i].n;
+        const exponent = keys[i].e;
+        const key_type = keys[i].kty;
+        const jwk = { kty: key_type, n: modulus, e: exponent };
+        const pem = jwktopem(jwk);
+        pems[key_id] = pem;
+    }
+}
 
 router.post('/signup', (req, res) => {
     let params = {
@@ -46,9 +66,9 @@ router.post('/signup', (req, res) => {
             Username: req.body.email
         };
 
-        cognito.adminAddUserToGroup(params, (err3, data3) => {
-            if(err3) {
-                console.log(err3)
+        cognito.adminAddUserToGroup(params, (err2, data2) => {
+            if(err2) {
+                console.log(err2)
             } else {
                 res.json(data);
             }
@@ -64,7 +84,7 @@ router.post('/activate', (req, res) => {
             {
                 Name: "custom:is_activated",
                 Value: "True"
-            },
+            }
         ]
     }
 
@@ -93,25 +113,42 @@ router.delete('/reject', (req, res) => {
     })
 });
 
-router.post('/login', (req, res) => {
-    let params = {
-        AuthFlow: "USER_PASSWORD_AUTH",
-        ClientId: config.cognito.clientId,
-        AuthParameters: {
-            "USERNAME": req.body.email,
-            "PASSWORD": req.body.password
-        }
-    }
-
-    cognito.initiateAuth(params, (err, data) => {
+router.post('/auth', (req, res) => {
+    const token = req.header("Auth");
+    jwt.verify(token, pems[jwt.decode(token,{ complete: true }).header.kid], (err, accessData) => {
         if(err) {
             res.json(err);
         } else {
-            console.log(data);
-            res.json(data);
+            jwt.verify(req.body.IdToken, pems[jwt.decode(req.body.IdToken,{ complete: true }).header.kid], (err2, idData) => {
+                if(err) {
+                    res.json(err2);
+                } else {
+                    res.json({accessData, idData});
+                }
+            });
         }
-    })
+    });
+    
 
+    // let params = {
+    //     AuthFlow: "USER_PASSWORD_AUTH",
+    //     ClientId: config.cognito.clientId,
+    //     AuthParameters: {
+    //         "USERNAME": req.body.email,
+    //         "PASSWORD": req.body.password
+    //     }
+    // }
+
+    // cognito.initiateAuth(params, (err, data) => {
+    //     if(err) {
+    //         res.json(err);
+    //     } else {
+    //         console.log(data);
+    //         res.json(data);
+    //     }
+    // })
 });
+
+setupJWK();
 
 module.exports = router;
