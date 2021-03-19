@@ -18,17 +18,34 @@ function establishDatabaseConnection() {
     });
 };
 
-// Insert username to database
+// Insert user_id to database
 function insertUserIdToDatabase(user_id) {
-    connection.query(`INSERT INTO user (user_id) VALUES ('`+user_id+`')`,function(err){
+    let sql = `INSERT INTO user (user_id) VALUES (?)`;
+    let inserts = [user_id];
+    connection.query(sql,inserts, function(err){
         // check error type later
         if(err) {
-            console.log('not able to add in to database');
+            console.log(`not able to add user_id: ${user_id} in to database`);
         } else {
-            console.log('added');
+            console.log(`user_id: ${user_id} added`);
+        }
+    });
+}
+
+// delete user_id from user table
+function deleteUserIdFromDatabase(user_id){
+    let sql = `DELETE FROM user WHERE ?? = ?`;
+    let inserts = ["user_id", user_id];
+    connection.query(sql, inserts, function(err){
+        // check error type later
+        if(err) {
+            console.log(`not able to delete user_id: ${user_id} from database`);
+        } else {
+            console.log('deleted');
         }
     });
 }
 exports.establishDatabaseConnection = establishDatabaseConnection;
 exports.connection = connection;
 exports.insertUserIdToDatabase = insertUserIdToDatabase;
+exports.deleteUserIdFromDatabase = deleteUserIdFromDatabase;
