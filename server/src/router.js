@@ -17,7 +17,7 @@ const setupJWK = async () => {
     const res = await fetch(`https://cognito-idp.${config.aws_region}.amazonaws.com/${config.cognito.userPoolId}/.well-known/jwks.json`);
     const data = await res.json();
     const { keys } = data;
-    for (let i = 0; i < keys.length; i++) {
+    for (var i = 0; i < keys.length; i++) {
         const key_id = keys[i].kid;
         const modulus = keys[i].n;
         const exponent = keys[i].e;
@@ -46,7 +46,7 @@ const verifyClient = async (req, res, callback) => {
 
 // req json needs email, password, street_name, company_name, suite_number, city, state, zipcode
 router.post('/signup', (req, res) => {
-    let params = {
+    var params = {
         ClientId: config.cognito.clientId,
         Username: req.body.email,
         Password: req.body.password,
@@ -85,7 +85,7 @@ router.post('/signup', (req, res) => {
 // req cookie needs admin group
 router.post('/activate', (req, res) => {
     verifyClient(req, res, (userType, adminUsername) => {
-        if(userType != 'admin') {
+        if(userType != 'Admin') {
             res.json({
                 "error": {
                   "message": "Improper permissions: not admin"
@@ -93,7 +93,8 @@ router.post('/activate', (req, res) => {
             })
             return;
         }
-        let params = {
+
+        var params = {
             UserPoolId: config.cognito.userPoolId,
             Username: req.body.email,
             UserAttributes: [
@@ -103,20 +104,20 @@ router.post('/activate', (req, res) => {
                 }
             ]
         }
-    
+
         cognito.adminUpdateUserAttributes(params, (err, data) => {
             if(err) {
                 res.json(err);
             } else {
-                let params = {
+                var params = {
                     GroupName: 'PropertyManager',
                     UserPoolId: config.cognito.userPoolId,
                     Username: req.body.email
                 };
-    
+
                 cognito.adminAddUserToGroup(params, (err2, data2) => {
                     if(err2) {
-                        console.log(err2)
+                        res.json(err2)
                     } else {
                         db.insertUserIdToDatabase(req.body.username);
                         emailer.sentEmail(req.body.email, `The PropTech Web App Account associated with ${req.body.email} email has been approved`);
@@ -132,16 +133,16 @@ router.post('/activate', (req, res) => {
 // req cookie needs admin group
 router.delete('/reject', (req, res) => {
     verifyClient(req, res, (userType, adminUsername) => {
-        if(userType != 'admin') {
+        if(userType != 'Admin') {
             res.json({
                 "error": {
-                  "message": "Improper permissions: not admin"
+                  "message": "Improper permissions: not Admin"
                 }
             })
             return;
         }
-        
-        let params = {
+
+        var params = {
             UserPoolId: config.cognito.userPoolId,
             Username: req.body.username,
         }
