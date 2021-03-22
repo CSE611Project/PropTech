@@ -9,6 +9,7 @@ const aws = require('aws-sdk');
 const cognito = new aws.CognitoIdentityServiceProvider({region:config.aws_region});
 const jwt = require('jsonwebtoken');
 const jwktopem = require('jwk-to-pem');
+const { RDS } = require('aws-sdk');
 
 pems = {};
 
@@ -27,13 +28,30 @@ const setupJWK = async () => {
     }
 }
 
+const verifyClient = async (req, res, callback) => {
+    jwt.verify(req.cookies.authCookie, pems[jwt.decode(req.cookies.authCookie,{ complete: true }).header.kid], (err, accessData) => {
+        if(err) {
+            res.json(err);
+        } else if(accessData.client_id == config.cognito.clientId) {
+            callback(accessData["cognito:groups"][0], accessData.username);
+        } else {
+            res.json({
+                "error": {
+                  "message": "Client Id does not match"
+                }
+            })
+        }
+    })
+}
+
+// req json needs email, password, street_name, company_name, suite_number, city, state, zipcode
 router.post('/signup', (req, res) => {
     let params = {
         ClientId: config.cognito.clientId,
         Username: req.body.email,
         Password: req.body.password,
         UserAttributes:[{
-            Name: "custom:street_name", 
+            Name: "custom:street_name",
             Value: req.body.street_name
         },{
             Name: "custom:company_name",
@@ -63,85 +81,99 @@ router.post('/signup', (req, res) => {
     });
 });
 
+// req json needs email, username
+// req cookie needs admin group
 router.post('/activate', (req, res) => {
-    let params = {
-        UserPoolId: config.cognito.userPoolId,
-        Username: req.body.email,
-        UserAttributes: [
-            {
-                Name: "custom:is_activated",
-                Value: "True"
-            }
-        ]
-    }
-
-    cognito.adminUpdateUserAttributes(params, (err, data) => {
-        if(err) {
-            res.json(err);
-        } else {
-            let params = {
-                GroupName: 'PropertyManager',
-                UserPoolId: config.cognito.userPoolId,
-                Username: req.body.email
-            };
-    
-            cognito.adminAddUserToGroup(params, (err2, data2) => {
-                if(err2) {
-                    console.log(err2)
-                } else {
-                    db.insertUserIdToDatabase(req.body.email);
-                    emailer.sentEmail(req.body.email, `The PropTech Web App Account associated with ${req.body.email} email has been approved`);
-                    res.json(data);
+    verifyClient(req, res, (userType, adminUsername) => {
+        if(userType != 'admin') {
+            res.json({
+                "error": {
+                  "message": "Improper permissions: not admin"
                 }
             })
+            return;
         }
+        let params = {
+            UserPoolId: config.cognito.userPoolId,
+            Username: req.body.email,
+            UserAttributes: [
+                {
+                    Name: "custom:is_activated",
+                    Value: "True"
+                }
+            ]
+        }
+    
+        cognito.adminUpdateUserAttributes(params, (err, data) => {
+            if(err) {
+                res.json(err);
+            } else {
+                let params = {
+                    GroupName: 'PropertyManager',
+                    UserPoolId: config.cognito.userPoolId,
+                    Username: req.body.email
+                };
+    
+                cognito.adminAddUserToGroup(params, (err2, data2) => {
+                    if(err2) {
+                        console.log(err2)
+                    } else {
+                        db.insertUserIdToDatabase(req.body.username);
+                        emailer.sentEmail(req.body.email, `The PropTech Web App Account associated with ${req.body.email} email has been approved`);
+                        res.json(data);
+                    }
+                })
+            }
+        })
     })
 });
 
+// req json needs username
+// req cookie needs admin group
 router.delete('/reject', (req, res) => {
-    let params = {
-        UserPoolId: config.cognito.userPoolId,
-        Username: req.body.email,
-    }
-
-    cognito.adminDeleteUser(params, (err, data) => {
-        if(err) {
-            res.json(err);
-        } else {
-            res.json(data);
+    verifyClient(req, res, (userType, adminUsername) => {
+        if(userType != 'admin') {
+            res.json({
+                "error": {
+                  "message": "Improper permissions: not admin"
+                }
+            })
+            return;
         }
+        
+        let params = {
+            UserPoolId: config.cognito.userPoolId,
+            Username: req.body.username,
+        }
+    
+        cognito.adminDeleteUser(params, (err, data) => {
+            if(err) {
+                res.json(err);
+            } else {    // TODO delete from database
+                res.json(data);
+            }
+        })
     })
 });
 
+// req json needs accessToken
 router.post('/auth', (req, res) => {
-    console.log(req.cookies);
     jwt.verify(req.body.accessToken, pems[jwt.decode(req.body.accessToken,{ complete: true }).header.kid], (err, accessData) => {
         if(err) {
             res.json(err);
         } else {
-            res.cookie('authCookie', req.body.accessToken, { httpOnly: true });
-            res.json({accessData});
+            if(accessData.client_id == config.cognito.clientId) {
+                res.cookie('authCookie', req.body.accessToken, { httpOnly: true });
+                res.json({accessData});
+            } else {
+                res.json({
+                    "error": {
+                      "message": "Client Id does not match"
+                    }
+                })
+            }
         }
     });
-    
-
-    // let params = {
-    //     AuthFlow: "USER_PASSWORD_AUTH",
-    //     ClientId: config.cognito.clientId,
-    //     AuthParameters: {
-    //         "USERNAME": req.body.email,
-    //         "PASSWORD": req.body.password
-    //     }
-    // }
-
-    // cognito.initiateAuth(params, (err, data) => {
-    //     if(err) {
-    //         res.json(err);
-    //     } else {
-    //         console.log(data);
-    //         res.json(data);
-    //     }
-    // })
 });
 
 setupJWK();
