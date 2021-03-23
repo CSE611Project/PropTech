@@ -3,41 +3,35 @@ const config = require('./config.json');
 const db = require('./database');
 const emailer = require('./email');
 const express = require('express');
-const fetch = require('node-fetch');
 const router = express.Router();
 const aws = require('aws-sdk');
+const verifier = require('cognito-express');
 const cognito = new aws.CognitoIdentityServiceProvider({region:config.aws_region});
-const jwt = require('jsonwebtoken');
-const jwktopem = require('jwk-to-pem');
-const { RDS } = require('aws-sdk');
 
-pems = {};
+const accessVerifier = new verifier({
+    region: "us-east-2",
+    cognitoUserPoolId: config.cognito.userPoolId,
+    tokenUse: "access",
+    tokenExpiration: 3600000
+});
 
-const setupJWK = async () => {
-    const res = await fetch(`https://cognito-idp.${config.aws_region}.amazonaws.com/${config.cognito.userPoolId}/.well-known/jwks.json`);
-    const data = await res.json();
-    const { keys } = data;
-    for (var i = 0; i < keys.length; i++) {
-        const key_id = keys[i].kid;
-        const modulus = keys[i].n;
-        const exponent = keys[i].e;
-        const key_type = keys[i].kty;
-        const jwk = { kty: key_type, n: modulus, e: exponent };
-        const pem = jwktopem(jwk);
-        pems[key_id] = pem;
-    }
-}
+const idVerifier = new verifier({
+    region: "us-east-2",
+    cognitoUserPoolId: config.cognito.userPoolId,
+    tokenUse: "id",
+    tokenExpiration: 3600000
+});
 
 const verifyClient = async (req, res, callback) => {
-    jwt.verify(req.cookies.authCookie, pems[jwt.decode(req.cookies.authCookie,{ complete: true }).header.kid], (err, accessData) => {
+    accessVerifier.validate(req.cookies.authCookie.accessToken, (err, accessData) => {
         if(err) {
-            res.json(err);
-        } else if(accessData.client_id == config.cognito.clientId) {
-            callback(accessData["cognito:groups"][0], accessData.username);
+            res.status(401).send(err);
         } else {
-            res.json({
-                "error": {
-                  "message": "Client Id does not match"
+            idVerifier.validate(req.cookies.authCookie.idToken, (err2, idData) => {
+                if(err2) {
+                    res.status(401).send(err2);
+                } else {
+                    callback(accessData, idData);
                 }
             })
         }
@@ -84,8 +78,8 @@ router.post('/signup', (req, res) => {
 // req json needs email, username
 // req cookie needs admin group
 router.post('/activate', (req, res) => {
-    verifyClient(req, res, (userType, adminUsername) => {
-        if(userType != 'Admin') {
+    verifyClient(req, res, (accessData, idData) => {
+        if(accessData["cognito:groups"][0] != 'Admin') {
             res.json({
                 "error": {
                   "message": "Improper permissions: not admin"
@@ -132,8 +126,8 @@ router.post('/activate', (req, res) => {
 // req json needs username
 // req cookie needs admin group
 router.delete('/reject', (req, res) => {
-    verifyClient(req, res, (userType, adminUsername) => {
-        if(userType != 'Admin') {
+    verifyClient(req, res, (accessData, idData) => {
+        if(accessData["cognito:groups"][0] != 'Admin') {
             res.json({
                 "error": {
                   "message": "Improper permissions: not Admin"
@@ -159,24 +153,20 @@ router.delete('/reject', (req, res) => {
 
 // req json needs accessToken
 router.post('/auth', (req, res) => {
-    jwt.verify(req.body.accessToken, pems[jwt.decode(req.body.accessToken,{ complete: true }).header.kid], (err, accessData) => {
+    accessVerifier.validate(req.cookies.authCookie.accessToken, (err, accessData) => {
         if(err) {
-            res.json(err);
+            res.status(401).send(err);
         } else {
-            if(accessData.client_id == config.cognito.clientId) {
-                res.cookie('authCookie', req.body.accessToken, { httpOnly: true });
-                res.json({accessData});
-            } else {
-                res.json({
-                    "error": {
-                      "message": "Client Id does not match"
-                    }
-                })
-            }
+            idVerifier.validate(req.cookies.authCookie.idToken, (err2, idData) => {
+                if(err2) {
+                    res.status(401).send(err2);
+                } else {
+                    res.cookie('authCookie', {accessToken: req.body.accessToken, idToken: req.body.idToken}, { httpOnly: true });
+                    res.json({accessData, idData});
+                }
+            })
         }
     });
 });
-
-setupJWK();
 
 module.exports = router;
