@@ -31,7 +31,7 @@ function reset() {
 }
 
 function resetPassword(username) {
-  cognitoUser = new cognito.CognitoUser({
+  var cognitoUser = new cognito.CognitoUser({
       Username: username,
       Pool: userPool
   });
@@ -47,7 +47,7 @@ function resetPassword(username) {
 }
 
 function confirmPassword(username, verificationCode, newPassword) {
-  cognitoUser = new cognito.CognitoUser({
+  var cognitoUser = new cognito.CognitoUser({
       Username: username,
       Pool: userPool
   });

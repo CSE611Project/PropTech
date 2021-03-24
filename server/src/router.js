@@ -153,11 +153,11 @@ router.delete('/reject', (req, res) => {
 
 // req json needs accessToken
 router.post('/auth', (req, res) => {
-    accessVerifier.validate(req.cookies.authCookie.accessToken, (err, accessData) => {
+    accessVerifier.validate(req.body.accessToken, (err, accessData) => {
         if(err) {
             res.status(401).send(err);
         } else {
-            idVerifier.validate(req.cookies.authCookie.idToken, (err2, idData) => {
+            idVerifier.validate(req.body.idToken, (err2, idData) => {
                 if(err2) {
                     res.status(401).send(err2);
                 } else {
