@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import "./../App.css";
 import Navigation from "./Navigation.js";
 import ResetProcess from "./ResetProcess.js";
+import {cognito, userPool} from "./UserPool";
 
 class ResetPassword extends React.Component {
   render() {
@@ -27,6 +28,40 @@ class ResetPassword extends React.Component {
 function reset() {
   window.location = "/ResetProcess"
   return (ReactDOM.render(<ResetProcess />, document.getElementById('root')));
+}
+
+function resetPassword(username) {
+  cognitoUser = new cognito.CognitoUser({
+      Username: username,
+      Pool: userPool
+  });
+
+  cognitoUser.forgotPassword({
+      onSuccess: function(result) {
+          console.log('call result: ' + result);
+      },
+      onFailure: function(err) {
+          alert(err);
+      }
+  });
+}
+
+function confirmPassword(username, verificationCode, newPassword) {
+  cognitoUser = new cognito.CognitoUser({
+      Username: username,
+      Pool: userPool
+  });
+
+  return new Promise((resolve, reject) => {
+      cognitoUser.confirmPassword(verificationCode, newPassword, {
+          onFailure(err) {
+              reject(err);
+          },
+          onSuccess() {
+              resolve();
+          },
+      });
+  });
 }
 
 export default ResetPassword;
