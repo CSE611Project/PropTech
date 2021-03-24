@@ -75,7 +75,7 @@ router.post('/signup', (req, res) => {
     });
 });
 
-// req json needs email, username
+// req json needs email, sub
 // req cookie needs admin group
 router.post('/activate', (req, res) => {
     verifyClient(req, res, (accessData, idData) => {
@@ -90,7 +90,7 @@ router.post('/activate', (req, res) => {
 
         var params = {
             UserPoolId: config.cognito.userPoolId,
-            Username: req.body.email,
+            Username: req.body.sub,
             UserAttributes: [
                 {
                     Name: "custom:is_activated",
@@ -106,14 +106,14 @@ router.post('/activate', (req, res) => {
                 var params = {
                     GroupName: 'PropertyManager',
                     UserPoolId: config.cognito.userPoolId,
-                    Username: req.body.email
+                    Username: req.body.sub
                 };
 
                 cognito.adminAddUserToGroup(params, (err2, data2) => {
                     if(err2) {
                         res.json(err2)
                     } else {
-                        db.insertUserIdToDatabase(req.body.username);
+                        db.insertUserIdToDatabase(req.body.sub);
                         emailer.sentEmail(req.body.email, `The PropTech Web App Account associated with ${req.body.email} email has been approved`);
                         res.json(data);
                     }
@@ -123,7 +123,7 @@ router.post('/activate', (req, res) => {
     })
 });
 
-// req json needs username
+// req json needs sub
 // req cookie needs admin group
 router.delete('/reject', (req, res) => {
     verifyClient(req, res, (accessData, idData) => {
@@ -138,13 +138,13 @@ router.delete('/reject', (req, res) => {
 
         var params = {
             UserPoolId: config.cognito.userPoolId,
-            Username: req.body.username,
+            Username: req.body.sub,
         }
     
         cognito.adminDeleteUser(params, (err, data) => {
             if(err) {
                 res.json(err);
-            } else {    // TODO delete from database
+            } else {    // TODO delete from database and separate delete request
                 res.json(data);
             }
         })
@@ -167,6 +167,50 @@ router.post('/auth', (req, res) => {
             })
         }
     });
+});
+
+// req json needs sub if admin group
+// req cookie needs admin or propertyManager group
+router.get('/property', (req, res) => {
+    verifyClient(req, res, (accessData, idData) => {
+        var sub;
+        if(accessData["cognito:groups"][0] == 'Admin') {
+            sub = req.body.sub;
+        } else if(accessData["cognito:groups"][0] == 'PropertyManager') {
+            sub = accessData.sub
+        } else {
+            res.json({
+                "error": {
+                  "message": "Improper permissions: not Admin"
+                }
+            })
+            return;
+        }
+
+        // res.json(db.); TODO get property data for sub
+    })
+});
+
+// req json needs sub if admin group
+// req cookie needs admin or propertyManager group
+router.put('/property', (req, res) => {
+    verifyClient(req, res, (accessData, idData) => {
+        var sub;
+        if(accessData["cognito:groups"][0] == 'Admin') {
+            sub = req.body.sub;
+        } else if(accessData["cognito:groups"][0] == 'PropertyManager') {
+            sub = accessData.sub
+        } else {
+            res.json({
+                "error": {
+                  "message": "Improper permissions: not Admin"
+                }
+            })
+            return;
+        }
+
+        // res.json(db.); TODO get property data for sub
+    })
 });
 
 module.exports = router;
