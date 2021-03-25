@@ -40,6 +40,7 @@ const verifyClient = async (req, res, callback) => {
 
 // req json needs email, password, street_name, company_name, suite_number, city, state, zipcode
 router.post('/signup', (req, res) => {
+    console.log(req.body);
     var params = {
         ClientId: config.cognito.clientId,
         Username: req.body.email,
@@ -74,6 +75,7 @@ router.post('/signup', (req, res) => {
         }
     });
 });
+}
 
 // req json needs email, sub
 // req cookie needs admin group
@@ -191,7 +193,7 @@ router.get('/property', (req, res) => {
     })
 });
 
-// req json needs sub if admin group
+// req json needs property info (and sub if admin group)
 // req cookie needs admin or propertyManager group
 router.put('/property', (req, res) => {
     verifyClient(req, res, (accessData, idData) => {
@@ -210,6 +212,28 @@ router.put('/property', (req, res) => {
         }
 
         // res.json(db.); TODO get property data for sub
+    })
+});
+
+// req json needs sub if admin group
+// req cookie needs admin or propertyManager group
+router.delete('/property', (req, res) => {
+    verifyClient(req, res, (accessData, idData) => {
+        var sub;
+        if(accessData["cognito:groups"][0] == 'Admin') {
+            sub = req.body.sub;
+        } else if(accessData["cognito:groups"][0] == 'PropertyManager') {
+            sub = accessData.sub
+        } else {
+            res.json({
+                "error": {
+                  "message": "Improper permissions: not Admin"
+                }
+            })
+            return;
+        }
+
+        // res.json(db.); TODO delete property data for sub
     })
 });
 
