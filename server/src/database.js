@@ -80,13 +80,51 @@ function updateTenantInfo(tenant_id, update_info){
 // function addNewTenant(property_id, tenant_info){
 //
 // }
-
+//
 // // delete tenant
 // function deleteTenant(property_id, tenant_id){
 //
 // }
+//
+// // select property
+// function selectProperty(sub){
+//     SELECT *
+//     FROM Property
+//     WHERE user_id = ${sub}
+// }
+//
+// // insert/update property info
+// function insertUpdateProperty(property){
+//     INSERT INTO table property
+//     VALUES (values)
+//     ON DUPLICATE KEY UPDATE
+//     col1 = val1,
+//         col2 = val2 ...
+//
+//
+// }
+
+// delete property by property_id and user_id
+function deletePropertyFromDatabase(property_id, user_id){
+    let sql = `DELETE FROM property WHERE ?? = ? AND ?? = ?`;
+    let inserts = ["property_id", property_id, "user_id", user_id];
+    connection.query(sql, inserts, function(err){
+        // check error type later
+        if(err) {
+            console.log(err);
+            console.log(`not able to delete property_id: ${property_id} user_id: ${user_id} from database`);
+            return false;
+        } else {
+            console.log(`property_id: ${property_id} user_id: ${user_id} deleted`);
+        }
+    });
+    return true;
+}
+
+
 exports.establishDatabaseConnection = establishDatabaseConnection;
 exports.connection = connection;
 exports.insertUserIdToDatabase = insertUserIdToDatabase;
 exports.deleteUserIdFromDatabase = deleteUserIdFromDatabase;
 exports.updateTenantInfo = updateTenantInfo;
+exports.deletePropertyFromDatabase = deletePropertyFromDatabase;
