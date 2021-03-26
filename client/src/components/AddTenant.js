@@ -10,115 +10,149 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-const AddTenant = () => {
-    const [open, setOpen] = useState(false);
-    const [name, setName] = useState(null);
-    const [email, setEmail] = useState(null);
-    const [address, setAddress] = useState(null);
-    const [rented_area, setRentedArea] = useState(null);
-    const [submeter, setSubmeter] = useState(null);
+class AddTenant extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            open: false,
+            name: '',
+            email: '',
+            address: '',
+            rented_area: '',
+            submeter: '',
+            property_id: this.props.property_id
+        }
+
+        this.handleClickOpen = this.handleClickOpen.bind(this)
+        this.handleClose = this.handleClose.bind(this)
+        this.changeName = this.changeName.bind(this)
+        this.changeEmail = this.changeEmail.bind(this)
+        this.changeAddress = this.changeAddress.bind(this)
+        this.changeRentedArea = this.changeRentedArea.bind(this)
+        this.changeSubmeter = this.changeSubmeter.bind(this)
+        this.onSubmit = this.onSubmit.bind(this)
+    }
     
-    const handleClickOpen = () => {
-        setOpen(true);
+    handleClickOpen() {
+        this.setState({
+            open: true
+        })
     }
-    const handleClose = () => {
-        setOpen(false);
-    }
-
-    const changeName = (event) => {
-        setName(event.target.value)
-    }
-
-    const changeEmail = (event) => {
-        setEmail(event.target.value)
+    handleClose() {
+        this.setState({
+            open: false
+        })
     }
 
-    const changeAddress = (event) => {
-        setAddress(event.target.value)
+    changeName(event) {
+        this.setState({
+            name: event.target.value
+        })
     }
 
-    const changeRentedArea = (event) => {
-        setRentedArea(event.target.value)
+    changeEmail(event) {
+        this.setState({
+            email: event.target.value
+        })
     }
 
-    const changeSubmeter = (event) => {
-        setSubmeter(event.target.value)
+    changeAddress(event) {
+        this.setState({
+            address: event.target.value
+        })
     }
 
-    const onSubmit = (event) => {
+    changeRentedArea(event) {
+        this.setState({
+            rented_area: event.target.value
+        })
+    }
+
+    changeSubmeter(event) {
+        this.setState({
+            submeter: event.target.value
+        })
+    }
+
+    onSubmit(event) {
         event.preventDefault();
-        setOpen(false);
-        console.log(name, email, address, rented_area, submeter);
-        <TenantInfo name={name} email={email} address={address} rented_area={rented_area} submeter={submeter} />
+        this.setState({
+            open: false
+        })
+        console.log(this.state.name, this.state.email, this.state.address, this.state.rented_area, this.state.submeter, this.state.property_id);
     }
 
-    return (
-        <div>
-            <Button onClick={handleClickOpen}>
-                Add Tenant
-            </Button>
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">Enter Tenant Info</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                    </DialogContentText>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="name"
-                        label="Name"
-                        type="text"
-                        onChange={changeName}
-                        fullWidth 
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="email"
-                        label="Email Address"
-                        type="email"
-                        onChange={changeEmail}
-                        fullWidth
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="address"
-                        label="Address"
-                        type="text"
-                        onChange={changeAddress}
-                        fullWidth
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="rented_area"
-                        label="Rented Area(sqft)"
-                        type="text"
-                        onChange={changeRentedArea}
-                        fullWidth
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="submeter"
-                        label="Submeter"
-                        type="text"
-                        onChange={changeSubmeter}
-                        fullWidth
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} color="primary">
-                        Cancel
-                    </Button>
-                    <Button onClick={onSubmit} color="primary">
-                        Add
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </div>
-    );
+
+    render() {
+        return (
+            <div>
+                <Button onClick={this.handleClickOpen}>
+                    Add Tenant
+                </Button>
+                <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
+                    <DialogTitle id="form-dialog-title">Enter Tenant Info</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                        </DialogContentText>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="name"
+                            label="Name"
+                            type="text"
+                            onChange={this.changeName}
+                            fullWidth 
+                        />
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="email"
+                            label="Email Address"
+                            type="email"
+                            onChange={this.changeEmail}
+                            fullWidth
+                        />
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="address"
+                            label="Address"
+                            type="text"
+                            onChange={this.changeAddress}
+                            fullWidth
+                        />
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="rented_area"
+                            label="Rented Area(sqft)"
+                            type="text"
+                            onChange={this.changeRentedArea}
+                            fullWidth
+                        />
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="submeter"
+                            label="Submeter"
+                            type="text"
+                            onChange={this.changeSubmeter}
+                            fullWidth
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.handleClose} color="primary">
+                            Cancel
+                        </Button>
+                        <Button onClick={this.onSubmit} color="primary">
+                            Add
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+        );
+    }
+    
 }
 
 export default AddTenant;
