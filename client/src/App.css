@@ -24,7 +24,21 @@
   margin: 40px;
 }
 
+.addButton {
+  font-size: 15px;
+  width: 100px;
+  height: 30px;
+  margin: 40px;
+}
 
+.edit_delete {
+  display: inline;
+}
+
+.edit_delete_ul {
+  background-color: #282c30;
+  display: inline-flex;
+}
 
 .LoginPage {
   text-align: center;
@@ -92,18 +106,21 @@ li {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   color: white;
+  
 }
 
 
 .buttonUL {
   list-style-type: none;
   margin: 0;
-  padding: 10px;
+  padding: 10px 24px;
   overflow: hidden;
   background-color: #282c30;
+  align-items: left;
+  text-align: left;
+  justify-content: left;
+  display: block;
 }
 
 .buttonSign {
@@ -113,11 +130,20 @@ li {
 }
 
 .Admin_option{
+  width: 150px;
+  height: 35px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  top :50%;
+  left : 0;
+  display: block;
+}
+
+.buttonSign {
   width: 100px;
   height: 50px;
   margin: 10px;
 }
-
 
 .RegProcess {
   text-align: center;
@@ -144,5 +170,5 @@ label {
   width: 70px;
   height: 30px;
   margin: 10px;
-  margin-left: 60px;
+  margin-left: 230px;
 }

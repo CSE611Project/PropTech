@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import "./../App.css";
 import RegProcess from "./RegProcess.js";
 import Navigation from "./Navigation.js";
-import UserPool from "./UserPool.js";
 import axios from "axios";
 
 class SignUpPage extends React.Component {
@@ -17,7 +16,8 @@ class SignUpPage extends React.Component {
       suite_number: '',
       city: '',
       state: '',
-      zipcode: ''
+      zipcode: '',
+      passwordError: ''
     }
     this.changeCompanyName = this.changeCompanyName.bind(this)
     this.changeEmail = this.changeEmail.bind(this)
@@ -78,6 +78,18 @@ class SignUpPage extends React.Component {
     })
   }
 
+  validate() {
+    let passwordError = "";
+
+    if (this.state.password.value != this.state.confirm_password.value) {
+      passwordError = "Password must be the same";
+      this.setState({ passwordError })
+      return false;
+    }
+
+    return true;
+  }
+
   onSubmit(event) {
     event.preventDefault()
 
@@ -112,7 +124,6 @@ class SignUpPage extends React.Component {
   render() {
     return (
       <div>
-        <Navigation />
         <div className="SignUpPage" id="signup">
           <header className="SignUp-header">
             <form onSubmit={this.onSubmit}>
@@ -122,42 +133,48 @@ class SignUpPage extends React.Component {
               <label className="CompanyName">Company Name</label>
               <input type="text" placeholder="Company Name"
               onChange={this.changeCompanyName}
-              value={this.state.company_name} />
+              value={this.state.company_name} required />
 
               <label htmlFor="email">Email</label>
-              <input type="text" placeholder="Email"
+              <input type="email" placeholder="Email"
               onChange={this.changeEmail}
-              value={this.state.email} />
+              value={this.state.email} required />
 
               <label htmlFor="Password">Password</label>
               <input type="password" placeholder="Password"
               onChange={this.changePassword}
-              value={this.state.password} />
+              value={this.state.password} required />
+
+{/*              <label htmlFor="confirmPassword">Confirm your password</label>
+              <input type="password" placeholder="Enter your password again"
+              onChange={this.changeConfirmPassword}
+              value={this.state.confirm_password} required />
+    <div style={{color: "red"}}>{this.state.passwordError}</div>*/}
 
               <label className="CompanyStreetName">Company Street Name</label>
               <input type="text" placeholder="Company Street Name"
               onChange={this.changeStreetName}
-              value={this.state.street_name} />
+              value={this.state.street_name} required />
 
               <label className="SuiteNumber">Suite Number</label>
               <input type="text" placeholder="Suite Number"
               onChange={this.changeSuiteNumber}
-              value={this.state.suite_number} />
+              value={this.state.suite_number} required />
 
               <label className="City">City</label>
               <input type="text" placeholder="City"
               onChange={this.changeCity}
-              value={this.state.city} />
+              value={this.state.city} required />
 
               <label className="State">State</label>
               <input type="text" placeholder="State"
               onChange={this.changeState}
-              value={this.state.state} />
+              value={this.state.state} required />
 
               <label className="Zipcode">Zipcode</label>
               <input type="text" placeholder="Zipcode"
               onChange={this.changeZipcode}
-              value={this.state.zipcode} />
+              value={this.state.zipcode} required />
 
               <button className="registerButton" type="submit" value="submit">Register</button>
             </div>
@@ -170,6 +187,7 @@ class SignUpPage extends React.Component {
 }
 
 function regprocess() {
+  window.location = '/RegProcess'
   return (ReactDOM.render(<RegProcess />, document.getElementById('root')));
 }
 

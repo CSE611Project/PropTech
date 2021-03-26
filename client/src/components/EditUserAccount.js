@@ -5,16 +5,15 @@ import Navigation from "./Navigation.js"
 import HomePage from "./HomePage.js"
 import ApplicationStatus from "./ApplicationStatus.js";
 import ManaInfo from "./ManaInfo.js"
-import EditUserAccount from "./EditUserAccount"
 
 
-class AdminAfterSign extends React.Component {
+class EditUserAccount extends React.Component {
   render() {
     return (
       <div>
         <div className="AdminAfterSign">
           <header className="Admin_menu">
-            <h1>Building Managers Personal Information</h1>
+            <h1>Edit Users Acount</h1>
             <ul className="buttonUL">
               <button className="Admin_option" onClick={edit_user_account}>Edit Users Account</button>
               <button className="Admin_option" onClick={view_managers}>Building Managers Information</button>
@@ -31,9 +30,9 @@ class AdminAfterSign extends React.Component {
 function edit_user_account() {
   const ele =
     <div>
-      <EditUserAccount />
+        <EditUserAccount />
     </div>
-  window.location = "/EditUserAccount"
+    window.location = "/EditUserAccount"
   return (ReactDOM.render(ele, document.getElementById('root')));
 }
 
@@ -42,7 +41,7 @@ function view_managers() {
     <div>
       <ManaInfo />
     </div>
-  window.location = "/ManaInfo";
+    window.location = "/ManaInfo";
   return (ReactDOM.render(ele, document.getElementById('root')));
 }
 
@@ -73,4 +72,4 @@ function homepage() {
   return (ReactDOM.render(<HomePage />, document.getElementById('root')));
 }
 
-export default AdminAfterSign;
+export default EditUserAccount;
