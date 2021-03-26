@@ -145,7 +145,7 @@ router.delete('/reject', (req, res) => {
         cognito.adminDeleteUser(params, (err, data) => {
             if(err) {
                 res.json(err);
-            } else {    // TODO delete from database and separate delete request
+            } else {
                 res.json(data);
             }
         })
@@ -188,13 +188,15 @@ router.get('/property', (req, res) => {
             return;
         }
 
-        // res.json(db.); TODO get property data for sub
+        db.selectAllProperties(sub, (results) => {
+            res.json(JSON.parse(JSON.stringify(results)));
+        })
     })
 });
 
 // req json needs property info (and sub if admin group)
 // req cookie needs admin or propertyManager group
-router.put('/property', (req, res) => {
+router.patch('/property', (req, res) => {
     verifyClient(req, res, (accessData, idData) => {
         var sub;
         if(accessData["cognito:groups"][0] == 'Admin') {
@@ -210,7 +212,33 @@ router.put('/property', (req, res) => {
             return;
         }
 
-        // res.json(db.); TODO get property data for sub
+        db.updatePropertyInfo(sub, req.body.property_id, req.body.property_info, (results) => {
+            res.json(results);
+        })
+    })
+});
+
+// req json needs property info (and sub if admin group)
+// req cookie needs admin or propertyManager group
+router.post('/property', (req, res) => {
+    verifyClient(req, res, (accessData, idData) => {
+        var sub;
+        if(accessData["cognito:groups"][0] == 'Admin') {
+            sub = req.body.sub;
+        } else if(accessData["cognito:groups"][0] == 'PropertyManager') {
+            sub = accessData.sub
+        } else {
+            res.json({
+                "error": {
+                  "message": "Improper permissions: not Admin"
+                }
+            })
+            return;
+        }
+
+        db.addNewProperty(sub, req.body.property_id, req.body.property_info, (results) => {
+            res.json(results);
+        })
     })
 });
 
@@ -232,7 +260,9 @@ router.delete('/property', (req, res) => {
             return;
         }
 
-        res.json(db.deletePropertyFromDatabase(req.body.property_id, sub));
+        db.deletePropertyFromDatabase(req.body.property_id, sub, (results) => {
+            res.json(results);
+        })
     })
 });
 

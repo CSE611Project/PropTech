@@ -182,11 +182,10 @@ function selectAllProperties(user_id, callback){
 // property_info is a JSON with name, address, property_type
 // return true if it success
 // return false if it failed
-function insertNewProperty(user_id, property_info, callback){
-    const newProperty = JSON.parse(property_info);
-    let name = newProperty.name;
-    let address = newProperty.address;
-    let property_type = newProperty.property_type;
+function addNewProperty(user_id, property_info, callback){
+    let name = property_info.name;
+    let address = property_info.address;
+    let property_type = property_info.property_type;
 
     let sql = `INSERT INTO property(user_id,name,address,property_type) VALUES(?,?,?,?)`;
     let inserts = [user_id,name,address,property_type];
@@ -236,7 +235,6 @@ function updatePropertyInfo(user_id, property_id, property_info, callback){
 
         }
     })
-
 }
 
 
@@ -274,5 +272,5 @@ exports.addNewTenant = addNewTenant;
 exports.deleteTenant = deleteTenant;
 exports.selectAllProperties = selectAllProperties;
 exports.getAllTenantInfo = getAllTenantInfo;
-exports.insertNewProperty = insertNewProperty;
+exports.addNewProperty = addNewProperty;
 exports.updatePropertyInfo = updatePropertyInfo;
