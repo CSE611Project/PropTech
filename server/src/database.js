@@ -73,7 +73,6 @@ function updateTenantInfo(tenant_id, update_info){
             console.log('updated');
         }
     })
-
 }
 
 // add new tenant for a property
@@ -115,20 +114,32 @@ function deleteTenant(property_id, tenant_id){
             console.log(`not able to delete property_id: ${property_id} tenant_id: ${tenant_id} from database`);
             return false;
         } else {
-            console.log(`property_id: ${property_id} tenant_id: ${tenant_id} deleted`);
-            return true;
+            if(result.affectedRows == 1){
+                return true;
+            }
+            else{
+                console.log(`property_id: ${property_id} tenant_id: ${tenant_id} deleted`);
+                return false;
+            }
         }
     });
 
 }
-//
-// // select property
-// function selectProperty(sub){
-//     SELECT *
-//     FROM Property
-//     WHERE user_id = ${sub}
-// }
-//
+
+// return a list of JSON contains all of the properties owned by user
+function selectAllProperties(user_id){
+    let sql = `SELECT * FROM property WHERE ?? = ?`;
+    let inserts = ["user_id",user_id];
+    connection.query(sql,inserts, function(err,propertyList){
+        if(err) {
+            console.log(`not able to select property of user_id: ${user_id} from database`);
+        } else {
+            console.log(`user_id: ${user_id} property list returned`);
+            return propertyList;
+        }
+    });
+}
+
 // // insert/update property info
 // function insertUpdateProperty(property){
 //     INSERT INTO table property
@@ -143,23 +154,26 @@ function deleteTenant(property_id, tenant_id){
 // delete property by property_id and user_id
 // return true if delete successfully
 // return false if delete fails
+// delete property by property_id and user_id
 function deletePropertyFromDatabase(property_id, user_id){
     let sql = `DELETE FROM property WHERE ?? = ? AND ?? = ?`;
     let inserts = ["property_id", property_id, "user_id", user_id];
-    connection.query(sql, inserts, function(err){
+    connection.query(sql, inserts, function(err, result){
         // check error type later
         if(err) {
             console.log(err);
             console.log(`not able to delete property_id: ${property_id} user_id: ${user_id} from database`);
             return false;
         } else {
-            console.log(`property_id: ${property_id} user_id: ${user_id} deleted`);
-            return true;
+            if(result.affectedRows == 1) {
+                return true;
+            } else {
+                console.log(`not able to delete property_id: ${property_id} user_id: ${user_id} from database`);
+                return false;
+            }
         }
     });
-
 }
-
 
 exports.establishDatabaseConnection = establishDatabaseConnection;
 exports.connection = connection;
@@ -169,3 +183,4 @@ exports.updateTenantInfo = updateTenantInfo;
 exports.deletePropertyFromDatabase = deletePropertyFromDatabase;
 exports.addNewTenant = addNewTenant;
 exports.deleteTenant = deleteTenant;
+exports.selectAllProperties = selectAllProperties;
