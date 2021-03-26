@@ -266,4 +266,109 @@ router.delete('/property', (req, res) => {
     })
 });
 
+
+//request to get tenant list
+router.patch('/PropManaAfterSign/TenantInfo', (req, res) => {
+    verifyClient(req, res, (accessData, idData) => {
+        console.log(req.body);
+        var sub;
+        if(accessData["cognito:groups"][0] == 'Admin') {
+            sub = req.body.sub;
+        } else if(accessData["cognito:groups"][0] == 'PropertyManager') {
+            sub = accessData.sub
+        } else {
+            res.json({
+                "error": {
+                  "message": "Improper permissions: not Admin"
+                }
+            })
+            return;
+        }
+
+        var property_id = req.body.property_id;
+        db.getAllTenantInfo( property_id, (results) => { res.json(JSON.parse(JSON.stringify(results)) ); });
+    
+    })
+});
+// request to delete tenant
+router.delete('/PropManaAfterSign/TenantInfo', (req, res) => {
+    verifyClient(req, res, (accessData, idData) => {
+        var sub;
+        console.log(req.body);
+        if(accessData["cognito:groups"][0] == 'Admin') {
+            sub = req.body.sub;
+        } else if(accessData["cognito:groups"][0] == 'PropertyManager') {
+            sub = accessData.sub
+        } else {
+            res.json({
+                "error": {
+                  "message": "Improper permissions: not Admin"
+                }
+            })
+            return;
+        }
+
+        var user_id = req.body.tenant_id;
+        var property_id = req.body.property_id;
+        db.deleteTenant( property_id, user_id, (result) => { res.json(result); });
+
+        
+    
+    })
+});
+//request to update tenant info
+router.patch('/PropManaAfterSign/TenantInfo', (req, res) => {
+    verifyClient(req, res, (accessData, idData) => {
+        var sub;
+        if(accessData["cognito:groups"][0] == 'Admin') {
+            sub = req.body.sub;
+        } else if(accessData["cognito:groups"][0] == 'PropertyManager') {
+            sub = accessData.sub
+        } else {
+            res.json({
+                "error": {
+                  "message": "Improper permissions: not Admin"
+                }
+            })
+            return;
+        }
+        var tenant_id = req.body.tenant_id;
+        
+        var update_info = req.body.update_info;
+
+        db.updateTenantInfo( tenant_id, update_info, (result) => { res.json(result); });
+        
+
+        
+    
+    })
+});
+
+//add new tenant to list
+router.post('/PropManaAfterSign/TenantInfo', (req, res) => {
+    verifyClient(req, res, (accessData, idData) => {
+        console.log(req.body);
+        var sub;
+        if(accessData["cognito:groups"][0] == 'Admin') {
+            sub = req.body.sub;
+        } else if(accessData["cognito:groups"][0] == 'PropertyManager') {
+            sub = accessData.sub
+        } else {
+            res.json({
+                "error": {
+                  "message": "Improper permissions: not Admin"
+                }
+            })
+            return;
+        }
+        var property_id = req.body.property_id;
+        var tenant_info = req.body.tenant_info;
+
+        
+        db.addNewTenant( property_id, tenant_info, (result) => { res.json(result); });
+        
+    
+    })
+});
+
 module.exports = router;
