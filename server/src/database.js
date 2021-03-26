@@ -19,44 +19,69 @@ function establishDatabaseConnection() {
 };
 
 // Insert user_id to database
-function insertUserIdToDatabase(user_id) {
+function insertUserIdToDatabase(user_id, callback) {
     let sql = `INSERT INTO user (user_id) VALUES (?)`;
     let inserts = [user_id];
-    connection.query(sql,inserts, function(err){
+    connection.query(sql,inserts, function(err, result){
         // check error type later
         if(err) {
             console.log(`not able to add user_id: ${user_id} in to database`);
+            callback(false);
         } else {
-            console.log(`user_id: ${user_id} added`);
+            if(result.affectedRows == 1){
+                console.log(`user_id: ${user_id} added`);
+                callback(true);
+            } else {
+                console.log(`user_id: ${user_id} add failed`);
+                callback(false);
+            }
         }
     });
 }
 
 // delete user_id from user table
 // should able to delete all data related to the user needs to be deleted
-function deleteUserIdFromDatabase(user_id){
+function deleteUserIdFromDatabase(user_id, callback){
     let sql = `DELETE FROM user WHERE ?? = ?`;
     let inserts = ["user_id", user_id];
-    connection.query(sql, inserts, function(err){
+    connection.query(sql, inserts, function(err, result){
         // check error type later
         if(err) {
             console.log(`not able to delete user_id: ${user_id} from database`);
+            callback(false);
         } else {
-            console.log('deleted');
+            if(result.affectedRows == 1){
+                console.log('deleted');
+                callback(true);
+            } else {
+                console.log('deleted');
+                callback(false);
+            }
+
         }
     });
 }
 
-// // return JSON contains all tenant info for a property
-// function getAllTenantInfo(property_id, user_id){
-//     let sql = `SELECT * FROM tenant WHERE ?? = ?`;
-//     let inserts = ["property_id", property_id];
-//
-//
-// }
+// return list of JSON contains all tenant info for a property
+function getAllTenantInfo(property_id, callback){
+    let sql = `SELECT * FROM tenant WHERE ?? = ?`;
+    let inserts = ["property_id", property_id];
+    connection.query(sql,inserts, function(err,tenantList){
+        if(err) {
+            console.log(`not able to select tenantList of property_id: ${property_id} from database`);
+            callback(false);
+        } else {
+            console.log(`property_id: ${property_id} tenant list returned`);
+            callback(tenantList);
+        }
+    });
+}
 
 // update tenant info
-function updateTenantInfo(tenant_id, update_info){
+// tenant_info is a JSON contains name, email, address, property_share
+// return true if update successful
+// return false if update failed
+function updateTenantInfo(tenant_id, update_info, callback){
     const ready_to_update = JSON.parse(update_info);
     let name = ready_to_update.name;
     let email = ready_to_update.email;
@@ -66,19 +91,27 @@ function updateTenantInfo(tenant_id, update_info){
     let sql = `UPDATE tenant set ?? = ?, ?? = ?, ?? = ?, ?? = ? WHERE ?? = ?`;
     let inserts = ["name", name, "email", email, "address", address, "property_share", property_share, "tenant_id", tenant_id];
 
-    connection.query(sql, inserts, function (err) {
+    connection.query(sql, inserts, function (err, result) {
         if(err) {
             console.log(`not able to update tenant_id: ${tenant_id} from database`);
+            callback(false);
         } else {
-            console.log('updated');
+            if(result.affectedRows == 1){
+                console.log(`updated!`);
+                callback(true);
+            } else {
+                console.log('update failed');
+                callback(false);
+            }
         }
     })
 }
 
 // add new tenant for a property
+// tenant_info is a JSON contains name, email, address, property_share
 // return true for added successfully
 // return false for added failed
-function addNewTenant(property_id, tenant_info){
+function addNewTenant(property_id, tenant_info, callback){
     const newTenant = JSON.parse(tenant_info);
     let name = newTenant.name;
     let email = newTenant.email;
@@ -88,13 +121,18 @@ function addNewTenant(property_id, tenant_info){
     let sql = `INSERT INTO tenant(property_id,name,email,address,property_share) VALUES(?,?,?,?,?)`;
     let inserts = [property_id,name,email,address,property_share];
 
-    connection.query(sql, inserts, function (err) {
+    connection.query(sql, inserts, function (err, result) {
         if(err) {
             console.log(`not able to add new tenant for property_id: ${property_id} into database`);
-            return false;
+            callback(false);
         } else {
-            console.log('added');
-            return true;
+            if(result.affectedRows == 1){
+                console.log('added');
+                callback(true);
+            } else {
+                console.log('add new tenant failed');
+                callback(false);
+            }
         }
     })
 
@@ -104,22 +142,23 @@ function addNewTenant(property_id, tenant_info){
 // delete tenant by property_id and tenant_id
 // return true if delete successfully
 // return false if delete failed
-function deleteTenant(property_id, tenant_id){
+function deleteTenant(property_id, tenant_id, callback){
     let sql = `DELETE FROM tenant WHERE ?? = ? AND ?? = ?`;
     let inserts = ["property_id", property_id, "tenant_id", tenant_id];
-    connection.query(sql, inserts, function(err){
+    connection.query(sql, inserts, function(err, result){
         // check error type later
         if(err) {
             console.log(err);
             console.log(`not able to delete property_id: ${property_id} tenant_id: ${tenant_id} from database`);
-            return false;
+            callback(false);
         } else {
             if(result.affectedRows == 1){
-                return true;
+                console.log(`property_id: ${property_id} tenant_id: ${tenant_id} deleted`);
+                callback(true);
             }
             else{
-                console.log(`property_id: ${property_id} tenant_id: ${tenant_id} deleted`);
-                return false;
+                console.log(`property_id: ${property_id} tenant_id: ${tenant_id} delete failed`);
+                callback(false);
             }
         }
     });
@@ -127,35 +166,88 @@ function deleteTenant(property_id, tenant_id){
 }
 
 // return a list of JSON contains all of the properties owned by user
-function selectAllProperties(user_id){
+function selectAllProperties(user_id, callback){
     let sql = `SELECT * FROM property WHERE ?? = ?`;
     let inserts = ["user_id",user_id];
     connection.query(sql,inserts, function(err,propertyList){
         if(err) {
             console.log(`not able to select property of user_id: ${user_id} from database`);
+            callback(false);
         } else {
             console.log(`user_id: ${user_id} property list returned`);
-            return propertyList;
+            callback(propertyList);
         }
     });
 }
 
-// // insert/update property info
-// function insertUpdateProperty(property){
-//     INSERT INTO table property
-//     VALUES (values)
-//     ON DUPLICATE KEY UPDATE
-//     col1 = val1,
-//         col2 = val2 ...
-//
-//
-// }
+// insert property info
+// property_info is a JSON with name, address, property_type
+// return true if it success
+// return false if it failed
+function insertNewProperty(user_id, property_info, callback){
+    const newProperty = JSON.parse(property_info);
+    let name = newProperty.name;
+    let address = newProperty.address;
+    let property_type = newProperty.property_type;
+
+    let sql = `INSERT INTO property(user_id,name,address,property_type) VALUES(?,?,?,?)`;
+    let inserts = [user_id,name,address,property_type];
+
+    connection.query(sql, inserts, function (err, result) {
+        if(err) {
+            console.log(`not able to add new property for user_id: ${user_id} into database`);
+            callback(false);
+        } else {
+            if(result.affectedRows == 1) {
+                console.log('added');
+                callback(true);
+            } else{
+                console.log('error');
+                callback(true);
+            }
+
+        }
+    })
+
+}
+
+// update property info
+// property_info is a JSON with name, address, property_type
+// return true if update successful
+// return false if update failed
+function updatePropertyInfo(user_id, property_id, property_info, callback){
+    const ready_to_update = JSON.parse(property_info);
+    let name = ready_to_update.name;
+    let address = ready_to_update.address;
+    let property_type = ready_to_update.property_type;
+
+    let sql = `UPDATE property set ?? = ?, ?? = ?, ?? = ? WHERE ?? = ? AND ?? = ?`;
+    let inserts = ["name", name, "address", address, "property_type", property_type, "user_id", user_id, "property_id", property_id];
+
+    connection.query(sql, inserts, function (err, result) {
+        if(err) {
+            console.log(`not able to update property info for user_id: ${user_id} property_id: ${property_id} into database`);
+            callback(false);
+        } else {
+            if(result.affectedRows == 1) {
+                console.log('updated!');
+                callback(true);
+            } else{
+                console.log(`error! not able to update property info for user_id: ${user_id} property_id: ${property_id} into database`);
+                callback(false);
+            }
+
+        }
+    })
+
+}
+
 
 // delete property by property_id and user_id
 // return true if delete successfully
 // return false if delete fails
 // delete property by property_id and user_id
-function deletePropertyFromDatabase(property_id, user_id){
+function deletePropertyFromDatabase(property_id, user_id, callback){
     let sql = `DELETE FROM property WHERE ?? = ? AND ?? = ?`;
     let inserts = ["property_id", property_id, "user_id", user_id];
     connection.query(sql, inserts, function(err, result){
@@ -163,13 +255,13 @@ function deletePropertyFromDatabase(property_id, user_id){
         if(err) {
             console.log(err);
             console.log(`not able to delete property_id: ${property_id} user_id: ${user_id} from database`);
-            return false;
+            callback(false);
         } else {
             if(result.affectedRows == 1) {
-                return true;
+                callback(true);
             } else {
                 console.log(`not able to delete property_id: ${property_id} user_id: ${user_id} from database`);
-                return false;
+                callback(false);
             }
         }
     });
@@ -184,3 +276,6 @@ exports.deletePropertyFromDatabase = deletePropertyFromDatabase;
 exports.addNewTenant = addNewTenant;
 exports.deleteTenant = deleteTenant;
 exports.selectAllProperties = selectAllProperties;
+exports.getAllTenantInfo = getAllTenantInfo;
+exports.insertNewProperty = insertNewProperty;
+exports.updatePropertyInfo = updatePropertyInfo;
