@@ -16,9 +16,8 @@ class EditTenant extends React.Component {
         super(props);
         this.state = {
             open: false,
-            sub: this.props.sub,
-            tenant_id: this.props.tenant_id,
             name: this.props.name,
+            tenant_id: this.props.tenant_id,
             email: this.props.email,
             address: this.props.address,
             rented_area: this.props.rented_area,
@@ -34,6 +33,17 @@ class EditTenant extends React.Component {
         this.changeRentedArea = this.changeRentedArea.bind(this)
         this.changeSubmeter = this.changeSubmeter.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
+    }
+    componentDidUpdate() {
+        if (this.props.tenant_id !== this.state.tenant_id) {
+            this.setState({name: this.props.name,
+                tenant_id: this.props.tenant_id,
+                email: this.props.email,
+                address: this.props.address,
+                rented_area: this.props.rented_area,
+                submeter: this.props.submeter,
+                property_id: this.props.property_id});
+        }
     }
     updateTenantInfo(tenant_id, tenant_info){
         axios.patch('/tenant', {tenant_id: tenant_id, tenant_info: tenant_info}).then(response => {

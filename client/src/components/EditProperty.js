@@ -32,6 +32,16 @@ class EditProperty extends React.Component {
         this.changeMeters = this.changeMeters.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
+    componentDidUpdate() {
+        if (this.props.property_id !== this.state.property_id) {
+            this.setState({name: this.props.name,
+                property_id:this.props.property_id,
+                address: this.props.address,
+                property_type: this.props.property_type,
+                meters:this.props.meters,
+                user_id: this.props.user_id});
+        }
+    }
 
     updatePropertyInfo(property_info){
         axios.patch('/property', {property_info: property_info}).then(response => {

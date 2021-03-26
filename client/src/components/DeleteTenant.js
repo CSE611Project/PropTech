@@ -28,7 +28,17 @@ class DeleteTenant extends React.Component {
         this.handleClose = this.handleClose.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
-
+    componentDidUpdate() {
+        if (this.props.tenant_id !== this.state.tenant_id) {
+            this.setState({name: this.props.name,
+                tenant_id: this.props.tenant_id,
+                email: this.props.email,
+                address: this.props.address,
+                rented_area: this.props.rented_area,
+                submeter: this.props.submeter,
+                property_id: this.props.property_id});
+        }
+    }
     deleteTenant(){
         axios.delete('/tenant', {data: {tenant_id: this.state.tenant_id , property_id: this.state.property_id }}).then(response => {
             this.props.info.generateTableData();

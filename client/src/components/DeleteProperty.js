@@ -27,7 +27,17 @@ class DeleteProperty extends React.Component {
         this.handleClickOpen = this.handleClickOpen.bind(this)
         this.handleClose = this.handleClose.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
-    }  
+    }
+    componentDidUpdate() {
+        if (this.props.property_id !== this.state.property_id) {
+            this.setState({name: this.props.name,
+                property_id: this.props.property_id,
+                address: this.props.address,
+                property_type: this.props.property_type,
+                meters:this.props.meters,
+                user_id: this.props.user_id});
+        }
+    }
 
     deleteProperty(){
         axios.delete('/property', {data: {property_id: this.state.property_id }}).then(response => {
