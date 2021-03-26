@@ -104,7 +104,6 @@ class PropertyInfo extends Component {
                     <table >
                                 <tbody>
                                 <tr>
-                                    <th>Property ID</th>
                                     <th>Property Name</th>
                                     <th>Property Address</th>
                                     <th>Property Type</th>
