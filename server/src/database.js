@@ -241,7 +241,6 @@ function updatePropertyInfo(user_id, property_id, property_info, callback){
 // delete property by property_id and user_id
 // return true if delete successfully
 // return false if delete fails
-// delete property by property_id and user_id
 function deletePropertyFromDatabase(property_id, user_id, callback){
     let sql = `DELETE FROM property WHERE ?? = ? AND ?? = ?`;
     let inserts = ["property_id", property_id, "user_id", user_id];
@@ -262,15 +261,146 @@ function deletePropertyFromDatabase(property_id, user_id, callback){
     });
 }
 
+// add new meter to a property
+// return true if adds successfully
+// return false if adds failed
+function addNewMeter(property_id, meter_id, callback){
+    let sql = `INSERT INTO meter(property_id,meter_id) VALUES(?,?)`;
+    let inserts = [property_id,meter_id];
+    connection.query(sql, inserts, function (err, result) {
+        if(err) {
+            console.log(`not able to add meter_id: ${meter_id} for property_id: ${property_id} into database`);
+            callback(false);
+        } else {
+            if(result.affectedRows == 1){
+                console.log('added');
+                callback(true);
+            } else {
+                console.log('add new meter failed');
+                callback(false);
+            }
+        }
+    })
+}
+
+// delete meter info
+// return true if adds successfully
+// return false if adds failed
+function deleteMeter(property_id, meter_id, callback){
+    let sql = `DELETE FROM meter WHERE ?? = ? AND ?? = ?`;
+    let inserts = ["property_id", property_id, "meter_id", meter_id];
+    connection.query(sql, inserts, function(err, result){
+        if(err) {
+            console.log(err);
+            console.log(`not able to delete property_id: ${property_id} meter_id: ${meter_id} from database`);
+            callback(false);
+        } else {
+            if(result.affectedRows == 1) {
+                callback(true);
+            } else {
+                console.log(`not able to delete property_id: ${property_id} user_id: ${meter_id} from database`);
+                callback(false);
+            }
+        }
+    });
+}
+
+// return a list of JSON contains meter list of a property
+function getAllMeters(property_id, callback){
+    let sql = `SELECT meter_id FROM meter WHERE ?? = ?`;
+    let inserts = ["property_id", property_id];
+    connection.query(sql,inserts, function(err,meterList){
+        if(err) {
+            console.log(`not able to select meterList of property_id: ${property_id} from database`);
+            callback(false);
+        } else {
+            console.log(`property_id: ${property_id} meter list returned`);
+            callback(meterList);
+        }
+    });
+}
+
+// add a checkmeter for a tenant
+// return true if adds successfully
+// return false if adds failed
+function addCheckmeter(tenant_id, checkmeter_id, callback){
+    let sql = `INSERT INTO checkmeter(property_id,checkmeter_id) VALUES(?,?)`;
+    let inserts = [tenant_id,checkmeter_id];
+    connection.query(sql, inserts, function (err, result) {
+        if(err) {
+            console.log(`not able to add checkmeter_id: ${checkmeter_id} for tenant_id: ${tenant_id} into database`);
+            callback(false);
+        } else {
+            if(result.affectedRows == 1){
+                console.log('added');
+                callback(true);
+            } else {
+                console.log('add new checkmeter failed');
+                callback(false);
+            }
+        }
+    })
+}
+
+// delete a checkmeter for a tenant
+// return true if deletes successfully
+// return false if deletes failed
+function deleteCheckmeter(tenant_id, checkmeter_id, callback){
+    let sql = `DELETE FROM meter WHERE ?? = ? AND ?? = ?`;
+    let inserts = ["tenant_id", tenant_id, "checkmeter_id", checkmeter_id];
+    connection.query(sql, inserts, function(err, result){
+        if(err) {
+            console.log(err);
+            console.log(`not able to delete tenant_id: ${tenant_id} checkmeter_id: ${checkmeter_id} from database`);
+            callback(false);
+        } else {
+            if(result.affectedRows == 1) {
+                callback(true);
+            } else {
+                console.log(`not able to delete tenant_id: ${tenant_id} user_id: ${checkmeter_id} from database`);
+                callback(false);
+            }
+        }
+    });
+}
+
+// return a list of JSON contains checkmeter list of a tenant
+function getALLCheckmeters(tenant_id, callback){
+    let sql = `SELECT checkmeter_id FROM meter WHERE ?? = ?`;
+    let inserts = ["tenant_id", tenant_id];
+    connection.query(sql,inserts, function(err,checkmeterList){
+        if(err) {
+            console.log(`not able to select checkmeterList of tenant_id: ${tenant_id} from database`);
+            callback(false);
+        } else {
+            console.log(`tenant_id: ${tenant_id} meter list returned`);
+            callback(checkmeterList);
+        }
+    });
+}
+
+
 exports.establishDatabaseConnection = establishDatabaseConnection;
 exports.connection = connection;
+
 exports.insertUserIdToDatabase = insertUserIdToDatabase;
 exports.deleteUserIdFromDatabase = deleteUserIdFromDatabase;
+
 exports.updateTenantInfo = updateTenantInfo;
-exports.deletePropertyFromDatabase = deletePropertyFromDatabase;
 exports.addNewTenant = addNewTenant;
 exports.deleteTenant = deleteTenant;
-exports.selectAllProperties = selectAllProperties;
 exports.getAllTenantInfo = getAllTenantInfo;
+
+exports.deletePropertyFromDatabase = deletePropertyFromDatabase;
+exports.selectAllProperties = selectAllProperties;
 exports.addNewProperty = addNewProperty;
 exports.updatePropertyInfo = updatePropertyInfo;
+
+exports.addNewMeter = addNewMeter;
+exports.deleteMeter = deleteMeter;
+exports.getAllMeters = getAllMeters;
+
+exports.addCheckmeter = addCheckmeter;
+exports.deleteCheckmeter = deleteCheckmeter;
+exports.getALLCheckmeters = getALLCheckmeters;
+
