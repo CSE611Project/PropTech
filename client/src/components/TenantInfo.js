@@ -68,7 +68,6 @@ class TenantInfo extends Component{
                 res.push(
 
                 <tr key={i} id={i}>
-                    <td key={tableData[i].tenant_id}>{tableData[i].tenant_id}</td>
                     <td key={tableData[i].name}>{tableData[i].name}</td>
                     <td key={tableData[i].email}>{tableData[i].email}</td>
                     <td key={tableData[i].address}>{tableData[i].address}</td>
