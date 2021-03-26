@@ -40,7 +40,6 @@ const verifyClient = async (req, res, callback) => {
 
 // req json needs email, password, street_name, company_name, suite_number, city, state, zipcode
 router.post('/signup', (req, res) => {
-    console.log(req.body);
     var params = {
         ClientId: config.cognito.clientId,
         Username: req.body.email,
@@ -114,7 +113,7 @@ router.post('/activate', (req, res) => {
                     if(err2) {
                         res.json(err2)
                     } else {
-                        db.insertUserIdToDatabase(req.body.sub);
+                        db.insertUserId(req.body.sub);
                         emailer.sentEmail(req.body.email, `The PropTech Web App Account associated with ${req.body.email} email has been approved`);
                         res.json(data);
                     }
@@ -188,9 +187,7 @@ router.get('/property/:sub?', (req, res) => {
             return;
         }
 
-        db.selectAllProperties(sub, (results) => {
-            res.json(JSON.parse(JSON.stringify(results)));
-        })
+        db.selectAllProperties(sub, (results) => {res.json(JSON.parse(JSON.stringify(results)));});
     })
 });
 
@@ -212,9 +209,7 @@ router.patch('/property', (req, res) => {
             return;
         }
 
-        db.updatePropertyInfo(sub, req.body.property_id, req.body.property_info, (results) => {
-            res.json(results);
-        })
+        db.updateProperty(sub, req.body.property_info, (results) => {res.json(results);});
     })
 });
 
@@ -236,9 +231,7 @@ router.post('/property', (req, res) => {
             return;
         }
 
-        db.addNewProperty(sub, req.body.property_id, req.body.property_info, (results) => {
-            res.json(results);
-        })
+        db.insertProperty(sub, req.body.property_info, (results) => {res.json(results);});
     })
 });
 
@@ -260,17 +253,14 @@ router.delete('/property', (req, res) => {
             return;
         }
 
-        db.deletePropertyFromDatabase(req.body.property_id, sub, (results) => {
-            res.json(results);
-        })
+        db.deleteProperty(sub, req.body.property_id, (results) => {res.json(results);});
     })
 });
 
 
 //request to get tenant list
-router.patch('/PropManaAfterSign/TenantInfo', (req, res) => {
+router.get('/tenant/:property_id?', (req, res) => {
     verifyClient(req, res, (accessData, idData) => {
-        console.log(req.body);
         var sub;
         if(accessData["cognito:groups"][0] == 'Admin') {
             sub = req.body.sub;
@@ -285,16 +275,13 @@ router.patch('/PropManaAfterSign/TenantInfo', (req, res) => {
             return;
         }
 
-        var property_id = req.body.property_id;
-        db.getAllTenantInfo( property_id, (results) => { res.json(JSON.parse(JSON.stringify(results)) ); });
-    
+        db.selectAllTenants(req.params.property_id, (results) => {res.json(JSON.parse(JSON.stringify(results)));});
     })
 });
 // request to delete tenant
-router.delete('/PropManaAfterSign/TenantInfo', (req, res) => {
+router.delete('/tenant', (req, res) => {
     verifyClient(req, res, (accessData, idData) => {
         var sub;
-        console.log(req.body);
         if(accessData["cognito:groups"][0] == 'Admin') {
             sub = req.body.sub;
         } else if(accessData["cognito:groups"][0] == 'PropertyManager') {
@@ -308,16 +295,12 @@ router.delete('/PropManaAfterSign/TenantInfo', (req, res) => {
             return;
         }
 
-        var user_id = req.body.tenant_id;
-        var property_id = req.body.property_id;
-        db.deleteTenant( property_id, user_id, (result) => { res.json(result); });
-
-        
-    
+        db.deleteTenant(req.body.property_id, req.body.tenant_id, (result) => {res.json(result);});
     })
 });
+
 //request to update tenant info
-router.patch('/PropManaAfterSign/TenantInfo', (req, res) => {
+router.patch('/tenant', (req, res) => {
     verifyClient(req, res, (accessData, idData) => {
         var sub;
         if(accessData["cognito:groups"][0] == 'Admin') {
@@ -332,22 +315,14 @@ router.patch('/PropManaAfterSign/TenantInfo', (req, res) => {
             })
             return;
         }
-        var tenant_id = req.body.tenant_id;
-        
-        var update_info = req.body.update_info;
 
-        db.updateTenantInfo( tenant_id, update_info, (result) => { res.json(result); });
-        
-
-        
-    
+        db.updateTenant(req.body.tenant_id, req.body.tenant_info, (result) => {res.json(result);});
     })
 });
 
 //add new tenant to list
-router.post('/PropManaAfterSign/TenantInfo', (req, res) => {
+router.post('/tenant', (req, res) => {
     verifyClient(req, res, (accessData, idData) => {
-        console.log(req.body);
         var sub;
         if(accessData["cognito:groups"][0] == 'Admin') {
             sub = req.body.sub;
@@ -361,13 +336,8 @@ router.post('/PropManaAfterSign/TenantInfo', (req, res) => {
             })
             return;
         }
-        var property_id = req.body.property_id;
-        var tenant_info = req.body.tenant_info;
 
-        
-        db.addNewTenant( property_id, tenant_info, (result) => { res.json(result); });
-        
-    
+        db.insertTenant(req.body.property_id, req.body.tenant_info, (result) => {res.json(result);});
     })
 });
 

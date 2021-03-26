@@ -34,13 +34,9 @@ class AddTenant extends React.Component {
         this.onSubmit = this.onSubmit.bind(this)
     }
     addTenant(property_id, tenant_info){
-        axios.post('/PropManaAfterSign/TenantInfo', {property_id: this.state.property_id, tenant_info: tenant_info}).then(
-            response => {
-                
-            }
-          )
-
-
+        axios.post('/tenant', {property_id: this.state.property_id, tenant_info: tenant_info}).then(response => {
+            this.props.info.generateTableData();
+        })
     }
     handleClickOpen() {
         this.setState({
@@ -52,7 +48,6 @@ class AddTenant extends React.Component {
             open: false
         })
     }
-
 
     changeName(event) {
         this.setState({
@@ -97,12 +92,8 @@ class AddTenant extends React.Component {
 
         }
         var property_id = this.state.property_id;
-        console.log(property_id);
-        console.log(tenant_info);
         this.addTenant(property_id, tenant_info);
-        console.log(this.state.name, this.state.email, this.state.address, this.state.rented_area, this.state.submeter, this.state.property_id);
     }
-
 
     render() {
         return (
@@ -173,7 +164,6 @@ class AddTenant extends React.Component {
             </div>
         );
     }
-    
 }
 
 export default AddTenant;

@@ -23,23 +23,16 @@ class DeleteTenant extends React.Component {
             rented_area: this.props.rented_area,
             submeter: this.props.submeter,
             property_id: this.props.property_id
-        }
-        
+        }  
         this.handleClickOpen = this.handleClickOpen.bind(this)
         this.handleClose = this.handleClose.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
 
-
     deleteTenant(){
-        console.log(this.state.tenant_id);
-        axios.delete('/PropManaAfterSign/TenantInfo', {user_id: this.state.tenant_id , property_id: this.property_id }).then(
-            response => {
-                
-            }
-          )
-
-
+        axios.delete('/tenant', {data: {tenant_id: this.state.tenant_id , property_id: this.state.property_id }}).then(response => {
+            this.props.info.generateTableData();
+        })
     }
 
     handleClickOpen() {
@@ -59,8 +52,6 @@ class DeleteTenant extends React.Component {
             open: false
         })
         this.deleteTenant();
-
-        console.log(this.state.name, this.state.email, this.state.address, this.state.rented_area, this.state.submeter, this.state.property_id)
     }
     render() {
         return (

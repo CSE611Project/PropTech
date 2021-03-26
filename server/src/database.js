@@ -19,7 +19,7 @@ function establishDatabaseConnection() {
 };
 
 // Insert user_id to database
-function insertUserIdToDatabase(user_id, callback) {
+function insertUserId(user_id, callback) {
     let sql = `INSERT INTO user (user_id) VALUES (?)`;
     let inserts = [user_id];
     connection.query(sql,inserts, function(err, result){
@@ -41,7 +41,7 @@ function insertUserIdToDatabase(user_id, callback) {
 
 // delete user_id from user table
 // should able to delete all data related to the user needs to be deleted
-function deleteUserIdFromDatabase(user_id, callback){
+function deleteUserId(user_id, callback){
     let sql = `DELETE FROM user WHERE ?? = ?`;
     let inserts = ["user_id", user_id];
     connection.query(sql, inserts, function(err, result){
@@ -63,7 +63,7 @@ function deleteUserIdFromDatabase(user_id, callback){
 }
 
 // return list of JSON contains all tenant info for a property
-function getAllTenantInfo(property_id, callback){
+function selectAllTenants(property_id, callback){
     let sql = `SELECT * FROM tenant WHERE ?? = ?`;
     let inserts = ["property_id", property_id];
     connection.query(sql,inserts, function(err,tenantList){
@@ -81,7 +81,7 @@ function getAllTenantInfo(property_id, callback){
 // update_info is a JSON contains name, email, address, property_share
 // return true if update successful
 // return false if update failed
-function updateTenantInfo(tenant_id, update_info, callback){
+function updateTenant(tenant_id, update_info, callback){
     let name = update_info.name;
     let email = update_info.email;
     let address = update_info.address;
@@ -110,7 +110,7 @@ function updateTenantInfo(tenant_id, update_info, callback){
 // tenant_info is a JSON contains name, email, address, property_share
 // return true for added successfully
 // return false for added failed
-function addNewTenant(property_id, tenant_info, callback){
+function insertTenant(property_id, tenant_info, callback){
     let name = tenant_info.name;
     let email = tenant_info.email;
     let address = tenant_info.address;
@@ -182,7 +182,7 @@ function selectAllProperties(user_id, callback){
 // property_info is a JSON with name, address, property_type
 // return true if it success
 // return false if it failed
-function addNewProperty(user_id, property_info, callback){
+function insertProperty(user_id, property_info, callback){
     let name = property_info.name;
     let address = property_info.address;
     let property_type = property_info.property_type;
@@ -192,6 +192,7 @@ function addNewProperty(user_id, property_info, callback){
 
     connection.query(sql, inserts, function (err, result) {
         if(err) {
+            console.log(err);
             console.log(`not able to add new property for user_id: ${user_id} into database`);
             callback(false);
         } else {
@@ -212,10 +213,11 @@ function addNewProperty(user_id, property_info, callback){
 // property_info is a JSON with name, address, property_type
 // return true if update successful
 // return false if update failed
-function updatePropertyInfo(user_id, property_id, property_info, callback){
+function updateProperty(user_id, property_info, callback){
     let name = property_info.name;
     let address = property_info.address;
     let property_type = property_info.property_type;
+    let property_id = property_info.property_id;
 
     let sql = `UPDATE property set ?? = ?, ?? = ?, ?? = ? WHERE ?? = ? AND ?? = ?`;
     let inserts = ["name", name, "address", address, "property_type", property_type, "user_id", user_id, "property_id", property_id];
@@ -232,7 +234,6 @@ function updatePropertyInfo(user_id, property_id, property_info, callback){
                 console.log(`error! not able to update property info for user_id: ${user_id} property_id: ${property_id} into database`);
                 callback(false);
             }
-
         }
     })
 }
@@ -241,7 +242,7 @@ function updatePropertyInfo(user_id, property_id, property_info, callback){
 // delete property by property_id and user_id
 // return true if delete successfully
 // return false if delete fails
-function deletePropertyFromDatabase(property_id, user_id, callback){
+function deleteProperty(user_id, property_id, callback){
     let sql = `DELETE FROM property WHERE ?? = ? AND ?? = ?`;
     let inserts = ["property_id", property_id, "user_id", user_id];
     connection.query(sql, inserts, function(err, result){
@@ -264,7 +265,7 @@ function deletePropertyFromDatabase(property_id, user_id, callback){
 // add new meter to a property
 // return true if adds successfully
 // return false if adds failed
-function addNewMeter(property_id, meter_id, callback){
+function insertMeter(property_id, meter_id, callback){
     let sql = `INSERT INTO meter(property_id,meter_id) VALUES(?,?)`;
     let inserts = [property_id,meter_id];
     connection.query(sql, inserts, function (err, result) {
@@ -306,7 +307,7 @@ function deleteMeter(property_id, meter_id, callback){
 }
 
 // return a list of JSON contains meter list of a property
-function getAllMeters(property_id, callback){
+function selectAllMeters(property_id, callback){
     let sql = `SELECT meter_id FROM meter WHERE ?? = ?`;
     let inserts = ["property_id", property_id];
     connection.query(sql,inserts, function(err,meterList){
@@ -323,7 +324,7 @@ function getAllMeters(property_id, callback){
 // add a checkmeter for a tenant
 // return true if adds successfully
 // return false if adds failed
-function addCheckmeter(tenant_id, checkmeter_id, callback){
+function insertCheckmeter(tenant_id, checkmeter_id, callback){
     let sql = `INSERT INTO checkmeter(property_id,checkmeter_id) VALUES(?,?)`;
     let inserts = [tenant_id,checkmeter_id];
     connection.query(sql, inserts, function (err, result) {
@@ -365,7 +366,7 @@ function deleteCheckmeter(tenant_id, checkmeter_id, callback){
 }
 
 // return a list of JSON contains checkmeter list of a tenant
-function getALLCheckmeters(tenant_id, callback){
+function selectAllCheckmeters(tenant_id, callback){
     let sql = `SELECT checkmeter_id FROM meter WHERE ?? = ?`;
     let inserts = ["tenant_id", tenant_id];
     connection.query(sql,inserts, function(err,checkmeterList){
@@ -383,24 +384,25 @@ function getALLCheckmeters(tenant_id, callback){
 exports.establishDatabaseConnection = establishDatabaseConnection;
 exports.connection = connection;
 
-exports.insertUserIdToDatabase = insertUserIdToDatabase;
-exports.deleteUserIdFromDatabase = deleteUserIdFromDatabase;
+exports.insertUserId = insertUserId;
+exports.deleteUserId = deleteUserId;
 
-exports.updateTenantInfo = updateTenantInfo;
-exports.addNewTenant = addNewTenant;
+exports.selectAllTenants = selectAllTenants;
+exports.insertTenant = insertTenant;
+exports.updateTenant = updateTenant;
 exports.deleteTenant = deleteTenant;
-exports.getAllTenantInfo = getAllTenantInfo;
 
-exports.deletePropertyFromDatabase = deletePropertyFromDatabase;
 exports.selectAllProperties = selectAllProperties;
-exports.addNewProperty = addNewProperty;
-exports.updatePropertyInfo = updatePropertyInfo;
+exports.insertProperty = insertProperty;
+exports.updateProperty = updateProperty;
+exports.deleteProperty = deleteProperty;
 
-exports.addNewMeter = addNewMeter;
+exports.selectAllMeters = selectAllMeters;
+exports.insertMeter = insertMeter;
 exports.deleteMeter = deleteMeter;
-exports.getAllMeters = getAllMeters;
 
-exports.addCheckmeter = addCheckmeter;
+exports.selectAllCheckmeters = selectAllCheckmeters;
+exports.insertCheckmeter = insertCheckmeter;
 exports.deleteCheckmeter = deleteCheckmeter;
-exports.getALLCheckmeters = getALLCheckmeters;
+
 

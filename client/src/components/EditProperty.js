@@ -9,14 +9,16 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import axios from "axios";
 
 class EditProperty extends React.Component {
     constructor(props){
         super(props);
         this.state = {
             open: false,
-            property_name: this.props.property_name,
-            property_address: this.props.property_address,
+            name: this.props.name,
+            property_id:this.props.property_id,
+            address: this.props.address,
             property_type: this.props.property_type,
             meters:this.props.meters,
             user_id: this.props.user_id
@@ -24,19 +26,23 @@ class EditProperty extends React.Component {
 
         this.handleClickOpen = this.handleClickOpen.bind(this)
         this.handleClose = this.handleClose.bind(this)
-        this.changePropertyName = this.changePropertyName.bind(this)
-        this.changePropertyAddress = this.changePropertyAddress.bind(this)
+        this.changeName = this.changeName.bind(this)
+        this.changeAddress = this.changeAddress.bind(this)
         this.changePropertyType = this.changePropertyType.bind(this)
         this.changeMeters = this.changeMeters.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
+    }
 
+    updatePropertyInfo(property_info){
+        axios.patch('/property', {property_info: property_info}).then(response => {
+            this.props.info.generateTableData();
+        })
     }
 
     handleClickOpen(){
         this.setState({
             open:true
         })
-        console.log(this.state.property_name, this.state.property_address, this.state.property_type, this.state.meters);
     }
 
     handleClose() {
@@ -44,15 +50,15 @@ class EditProperty extends React.Component {
             open: false
         })
     }
-    changePropertyName(event){
+    changeName(event){
         this.setState({
-            property_name: event.target.value
+            name: event.target.value
         })
     }
 
-    changePropertyAddress(event){
+    changeAddress(event){
         this.setState({
-            property_address: event.target.value
+            address: event.target.value
         })
     }
 
@@ -73,7 +79,13 @@ class EditProperty extends React.Component {
         this.setState({
             open: false
         })
-        console.log(this.state.property_name, this.state.property_address, this.state.property_type, this.state.meters);
+        var property_info = {
+            property_id: this.state.property_id,
+            name: this.state.name,
+            address: this.state.address,
+            property_type: this.state.property_type
+        }
+        this.updatePropertyInfo(property_info);
     }
 
 
@@ -94,7 +106,7 @@ render(){
                         id="property_name"
                         label="Property Name"
                         type="text"
-                        onChange={this.changePropertyName}
+                        onChange={this.changeName}
                         fullWidth 
                     />
                     <TextField
@@ -103,7 +115,7 @@ render(){
                         id="property_address"
                         label="Property Address"
                         type="text"
-                        onChange={this.changePropertyAddress}
+                        onChange={this.changeAddress}
                         fullWidth
                     />
                     <TextField
@@ -132,7 +144,7 @@ render(){
                     <Button onClick={this.handleClose} color="secondary">
                         Cancel
                     </Button>
-                    <Button onClick={this.handleClose} color="primary">
+                    <Button onClick={this.onSubmit} color="primary">
                         Update
                     </Button>
                     <Button onClick={this.handleClose} color="black">

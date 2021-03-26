@@ -10,6 +10,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import axios from "axios";
+
 class EditTenant extends React.Component {
     constructor(props) {
         super(props);
@@ -34,19 +35,18 @@ class EditTenant extends React.Component {
         this.changeSubmeter = this.changeSubmeter.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
-    updateTenantInfo(tenant_id, update_info){
-        axios.patch('/PropManaAfterSign/TenantInfo', {tenant_id: tenant_id, update_info: update_info}).then(
-            response => {
-                
-            }
-          )
+    updateTenantInfo(tenant_id, tenant_info){
+        axios.patch('/tenant', {tenant_id: tenant_id, tenant_info: tenant_info}).then(response => {
+            this.props.info.generateTableData();
+        })
     }
+
     handleClickOpen() {
         this.setState({
             open: true
         })
-        console.log(this.state.name, this.state.email, this.state.address, this.state.rented_area, this.state.submeter, this.state.property_id);
     }
+
     handleClose() {
         this.setState({
             open: false
@@ -88,7 +88,7 @@ class EditTenant extends React.Component {
         this.setState({
             open: false
         })
-        var update_info = {
+        var tenant_info = {
             name: this.state.name,
             email: this.state.email,
             address: this.state.address,
@@ -97,9 +97,7 @@ class EditTenant extends React.Component {
             property_id: this.state.property_id
         }
         var tenant_id = this.state.tenant_id;
-        console.log("tenant_id: ", tenant_id);
-        this.updateTenantInfo(tenant_id, update_info);
-        //console.log(this.state.name, this.state.email, this.state.address, this.state.rented_area, this.state.submeter, this.state.property_id);
+        this.updateTenantInfo(tenant_id, tenant_info);
     }
 
 
