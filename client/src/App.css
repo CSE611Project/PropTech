@@ -24,7 +24,21 @@
   margin: 40px;
 }
 
+.addButton {
+  font-size: 15px;
+  width: 100px;
+  height: 30px;
+  margin: 40px;
+}
 
+.edit_delete {
+  display: inline;
+}
+
+.edit_delete_ul {
+  background-color: #282c30;
+  display: inline-flex;
+}
 
 .LoginPage {
   text-align: center;

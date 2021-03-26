@@ -5,6 +5,7 @@ import Navigation from "./Navigation.js"
 import HomePage from "./HomePage.js"
 import ApplicationStatus from "./ApplicationStatus.js";
 import EditUserAccount from "./EditUserAccount"
+import ListUserAPI from "./ListUserAPI"
 
 class ManaInfo extends React.Component {
     render() {
@@ -13,6 +14,7 @@ class ManaInfo extends React.Component {
                 <div className="AdminAfterSign">
                     <header className="Admin_menu">
                         <h1>Building Managers Personal Information</h1>
+                        <ListUserAPI />
                         <ul className="buttonUL">
                             <button className="Admin_option" onClick={edit_user_account}>Edit Users Account</button>
                             <button className="Admin_option" onClick={view_managers}>Building Managers Information</button>

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import "./../App.css";
 import Navigation from "./Navigation.js"
 import HomePage from "./HomePage.js"
+import TenantInfo from "./TenantInfo.js"
 
 
 class PropManaAfterSign extends React.Component {
@@ -31,8 +32,9 @@ class PropManaAfterSign extends React.Component {
 function manage_tenant() {
   const ele =
     <div>
-
+      <TenantInfo />
     </div>
+    window.location = "/PropManaAfterSign/TenantInfo"
   return (ReactDOM.render(ele, document.getElementById('root')));
 }
 

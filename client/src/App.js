@@ -15,6 +15,7 @@ import ResetProcess from "./components/ResetProcess"
 import ApplicationStatus from "./components/ApplicationStatus"
 import ManaInfo from "./components/ManaInfo"
 import EditUserAccount from "./components/EditUserAccount"
+import TenantInfo from "./components/TenantInfo"
 
 
 function App() {
@@ -29,13 +30,14 @@ function App() {
           <Route path="/SignUpPage" component={SignUpPage} />
           <Route path="/About" component={Abouts} />
           <Route path="/ResetPassword" component={ResetPassword} />
-          <Route path="/AdminAfterSign" component={AdminAfterSign} />
-          <Route path="/PropManaAfterSign" component={PropManaAfterSign} />
+          <Route exact path="/AdminAfterSign" component={AdminAfterSign} />
+          <Route exact path="/PropManaAfterSign" component={PropManaAfterSign} />
           <Route path="/RegProcess" component={RegProcess} />
           <Route path="/ResetProcess" component={ResetProcess} />
           <Route path="/ApplicationStatus" component={ApplicationStatus} />
           <Route path="/ManaInfo" component={ManaInfo} />
           <Route path="/EditUserAccount" component={EditUserAccount} />
+          <Route path="/PropManaAfterSign/TenantInfo" component={TenantInfo} />
         </Switch>
       </div>
     </BrowserRouter>
