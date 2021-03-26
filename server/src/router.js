@@ -75,7 +75,6 @@ router.post('/signup', (req, res) => {
         }
     });
 });
-}
 
 // req json needs email, sub
 // req cookie needs admin group
@@ -215,7 +214,7 @@ router.put('/property', (req, res) => {
     })
 });
 
-// req json needs sub if admin group
+// req json needs property_id (and sub if admin group)
 // req cookie needs admin or propertyManager group
 router.delete('/property', (req, res) => {
     verifyClient(req, res, (accessData, idData) => {
@@ -233,7 +232,7 @@ router.delete('/property', (req, res) => {
             return;
         }
 
-        // res.json(db.); TODO delete property data for sub
+        res.json(db.deletePropertyFromDatabase(req.body.property_id, sub));
     })
 });
 
