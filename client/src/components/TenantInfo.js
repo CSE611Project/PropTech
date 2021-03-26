@@ -10,63 +10,37 @@ import DeleteTenant from "./DeleteTenant"
 import { Component } from "react";
 import { TableBody } from "@material-ui/core";
 import axios from "axios";
-//import { router } from "./server/src/router.js";
+
 class TenantInfo extends Component{
 
     constructor(props){
         super(props);
         this.state = {
-            sub: this.props.sub,
-            property_id: "123",
+            sub: props.sub,
+            property_id: "6",
             tenant_list: [
-                {
-                tenant_id: "1",
-                name: "xianx",
-                email:"1233",
-                address: "gggg",
-                rented_area: "1231",
-                submeter:"120"
-                },
-                {
-                tenant_id: "2",
-                name: "link",
-                email:"1233",
-                address: "gggg",
-                rented_area: "1231",
-                submeter:"120"
-                }
             ]
 
         }
     }
     getTenantList(){
-        axios.get('/PropManaAfterSign/TenantInfo', {sub : this.state.sub, property_id : this.state.property_id }).then(
+        axios.put('/PropManaAfterSign/TenantInfo', {property_id: this.state.property_id}).then(
             response => {
-
-            }
-          )
-    }
-
-    delte(){
-        axios.get('/PropManaAfterSign/TenantInfo', this.state.sub).then(
-            response => {
+                
+                this.setState({ tenant_list: response.data})
                 
             }
           )
+
     }
 
-    delete_tenant = (i) => {
-        console.log(i);
-        //console.log(this.state.tenant_list[i].name);
-    }
-    handleDelete = tenant_id => {
-        console.log(tenant_id)
-    }
+
     updateTenantTable(sub,  propery_id, tenant_list){        
                 // res.json(db.); TODO get tenant list under this property
                 var tenant_list;
                 for(var i = 0; i < tenant_list.length; i++){
                     this.state.tenant_list.push({
+                        tenant_id: tenant_list[i].tenant_id,
                         name: tenant_list[i].name,
                         email: tenant_list[i].email,
                         address: tenant_list[i].address,
@@ -78,19 +52,18 @@ class TenantInfo extends Component{
 
             }
     
-
     
 
-
-    
+ 
 
     //get tenant_list from database  implement get_tenant_list function here
-
-    
 
     generateTableData(){
         //call updateTable everytime when we need to generate a list of tenants
         //this.updateTenantTable(this.state.sub, this.state.property_id);
+        console.log("my property_id: ", this.state.property_id);
+        this.getTenantList();
+        console.log("tenant list after get all: ", this.state.tenant_list);
         let res=[];
         let tableData = this.state.tenant_list;
         for(var i =0; i < tableData.length; i++){
@@ -106,14 +79,17 @@ class TenantInfo extends Component{
                 <td className= "edit_delete">
                     <ul className="edit_delete_ul">
                         <EditTenant 
+                            tenant_id={tableData[i].tenant_id}
                             name={tableData[i].name}
                             email={tableData[i].email}
                             address={tableData[i].address}
                             rented_area={tableData[i].rented_area}
                             submeter={tableData[i].submeter}
                             property_id={this.state.property_id}
+                            updateTenantInfo ={this.updateTenantInfo}
                         />
                         <DeleteTenant 
+                            tenant_id={tableData[i].tenant_id}
                             name={tableData[i].name}
                             email={tableData[i].email}
                             address={tableData[i].address}
@@ -160,7 +136,10 @@ class TenantInfo extends Component{
                                 {this.generateTableData()}
                                 </tbody>
                             </table>
-                            <AddTenant property_id={this.state.property_id}/>   
+                            <AddTenant 
+                            property_id={this.state.property_id}
+                            addTenant={this.addTenant}
+                            />   
                         </div>
                     </header>
                 </div>

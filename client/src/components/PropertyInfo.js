@@ -40,17 +40,17 @@ class PropertyInfo extends Component {
       }
 
       getPropertyList(){
-          axios.get('./PropertyInfo',{sub : this.state.sub, user_id : this.state.user_id }).then(
+          axios.get('/property').then(
               response => {
-
+                console.log(response);
               }
           )
       }
 
-      delte(){
-          axios.get('./PropertyInfo', this.state.sub).then(
+      delete(property_id){
+          axios.delete('/property', property_id).then(
               response => {
-
+                console.log(response);
               }
           )
       }

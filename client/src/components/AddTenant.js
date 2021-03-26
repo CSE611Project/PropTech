@@ -9,6 +9,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import axios from "axios";
 
 class AddTenant extends React.Component {
     constructor(props) {
@@ -32,7 +33,15 @@ class AddTenant extends React.Component {
         this.changeSubmeter = this.changeSubmeter.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
-    
+    addTenant(property_id, tenant_info){
+        axios.post('/PropManaAfterSign/TenantInfo', {property_id: this.state.property_id, tenant_info: tenant_info}).then(
+            response => {
+                
+            }
+          )
+
+
+    }
     handleClickOpen() {
         this.setState({
             open: true
@@ -43,6 +52,7 @@ class AddTenant extends React.Component {
             open: false
         })
     }
+
 
     changeName(event) {
         this.setState({
@@ -79,6 +89,17 @@ class AddTenant extends React.Component {
         this.setState({
             open: false
         })
+        var tenant_info = {
+            name: this.state.name,
+            email: this.state.email,
+            address: this.state.address,
+            property_share: this.state.rented_area     
+
+        }
+        var property_id = this.state.property_id;
+        console.log(property_id);
+        console.log(tenant_info);
+        this.addTenant(property_id, tenant_info);
         console.log(this.state.name, this.state.email, this.state.address, this.state.rented_area, this.state.submeter, this.state.property_id);
     }
 

@@ -9,12 +9,14 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-
+import axios from "axios";
 class EditTenant extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             open: false,
+            sub: this.props.sub,
+            tenant_id: this.props.tenant_id,
             name: this.props.name,
             email: this.props.email,
             address: this.props.address,
@@ -32,7 +34,13 @@ class EditTenant extends React.Component {
         this.changeSubmeter = this.changeSubmeter.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
-    
+    updateTenantInfo(tenant_id, update_info){
+        axios.patch('/PropManaAfterSign/TenantInfo', {tenant_id: tenant_id, update_info: update_info}).then(
+            response => {
+                
+            }
+          )
+    }
     handleClickOpen() {
         this.setState({
             open: true
@@ -80,7 +88,18 @@ class EditTenant extends React.Component {
         this.setState({
             open: false
         })
-        console.log(this.state.name, this.state.email, this.state.address, this.state.rented_area, this.state.submeter, this.state.property_id);
+        var update_info = {
+            name: this.state.name,
+            email: this.state.email,
+            address: this.state.address,
+            property_share: this.state.rented_area,
+            submeter: this.state.submeter,
+            property_id: this.state.property_id
+        }
+        var tenant_id = this.state.tenant_id;
+        console.log("tenant_id: ", tenant_id);
+        this.updateTenantInfo(tenant_id, update_info);
+        //console.log(this.state.name, this.state.email, this.state.address, this.state.rented_area, this.state.submeter, this.state.property_id);
     }
 
 

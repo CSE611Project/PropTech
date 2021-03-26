@@ -9,6 +9,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import axios from "axios";
 
 class DeleteTenant extends React.Component {
     constructor(props) {
@@ -16,6 +17,7 @@ class DeleteTenant extends React.Component {
         this.state = {
             open: false,
             name: this.props.name,
+            tenant_id: this.props.tenant_id,
             email: this.props.email,
             address: this.props.address,
             rented_area: this.props.rented_area,
@@ -26,6 +28,18 @@ class DeleteTenant extends React.Component {
         this.handleClickOpen = this.handleClickOpen.bind(this)
         this.handleClose = this.handleClose.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
+    }
+
+
+    deleteTenant(){
+        console.log(this.state.tenant_id);
+        axios.delete('/PropManaAfterSign/TenantInfo', {user_id: this.state.tenant_id , property_id: this.property_id }).then(
+            response => {
+                
+            }
+          )
+
+
     }
 
     handleClickOpen() {
@@ -44,6 +58,8 @@ class DeleteTenant extends React.Component {
         this.setState({
             open: false
         })
+        this.deleteTenant();
+
         console.log(this.state.name, this.state.email, this.state.address, this.state.rented_area, this.state.submeter, this.state.property_id)
     }
     render() {
