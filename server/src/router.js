@@ -172,11 +172,11 @@ router.post('/auth', (req, res) => {
 
 // req json needs sub if admin group
 // req cookie needs admin or propertyManager group
-router.get('/property', (req, res) => {
+router.get('/property/:sub?', (req, res) => {
     verifyClient(req, res, (accessData, idData) => {
         var sub;
         if(accessData["cognito:groups"][0] == 'Admin') {
-            sub = req.body.sub;
+            sub = req.params.sub;
         } else if(accessData["cognito:groups"][0] == 'PropertyManager') {
             sub = accessData.sub
         } else {
