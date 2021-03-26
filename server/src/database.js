@@ -78,15 +78,14 @@ function getAllTenantInfo(property_id, callback){
 }
 
 // update tenant info
-// tenant_info is a JSON contains name, email, address, property_share
+// update_info is a JSON contains name, email, address, property_share
 // return true if update successful
 // return false if update failed
 function updateTenantInfo(tenant_id, update_info, callback){
-    const ready_to_update = JSON.parse(update_info);
-    let name = ready_to_update.name;
-    let email = ready_to_update.email;
-    let address = ready_to_update.address;
-    let property_share = ready_to_update.property_share;
+    let name = update_info.name;
+    let email = update_info.email;
+    let address = update_info.address;
+    let property_share = update_info.property_share;
 
     let sql = `UPDATE tenant set ?? = ?, ?? = ?, ?? = ?, ?? = ? WHERE ?? = ?`;
     let inserts = ["name", name, "email", email, "address", address, "property_share", property_share, "tenant_id", tenant_id];
@@ -112,11 +111,10 @@ function updateTenantInfo(tenant_id, update_info, callback){
 // return true for added successfully
 // return false for added failed
 function addNewTenant(property_id, tenant_info, callback){
-    const newTenant = JSON.parse(tenant_info);
-    let name = newTenant.name;
-    let email = newTenant.email;
-    let address = newTenant.address;
-    let property_share = newTenant.property_share;
+    let name = tenant_info.name;
+    let email = tenant_info.email;
+    let address = tenant_info.address;
+    let property_share = tenant_info.property_share;
 
     let sql = `INSERT INTO tenant(property_id,name,email,address,property_share) VALUES(?,?,?,?,?)`;
     let inserts = [property_id,name,email,address,property_share];
@@ -216,10 +214,9 @@ function insertNewProperty(user_id, property_info, callback){
 // return true if update successful
 // return false if update failed
 function updatePropertyInfo(user_id, property_id, property_info, callback){
-    const ready_to_update = JSON.parse(property_info);
-    let name = ready_to_update.name;
-    let address = ready_to_update.address;
-    let property_type = ready_to_update.property_type;
+    let name = property_info.name;
+    let address = property_info.address;
+    let property_type = property_info.property_type;
 
     let sql = `UPDATE property set ?? = ?, ?? = ?, ?? = ? WHERE ?? = ? AND ?? = ?`;
     let inserts = ["name", name, "address", address, "property_type", property_type, "user_id", user_id, "property_id", property_id];
