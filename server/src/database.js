@@ -365,16 +365,16 @@ function selectAllMeters(property_id, callback) {
   });
 }
 
-// add a checkmeter for a tenant
+// add a Submeter for a tenant
 // return true if adds successfully
 // return false if adds failed
-function insertCheckmeter(tenant_id, checkmeter_id, callback) {
-  let sql = `INSERT INTO checkmeter(property_id,checkmeter_id) VALUES(?,?)`;
-  let inserts = [tenant_id, checkmeter_id];
+function insertSubmeter(tenant_id, Submeter_id, callback) {
+  let sql = `INSERT INTO Submeter(property_id,Submeter_id) VALUES(?,?)`;
+  let inserts = [tenant_id, Submeter_id];
   connection.query(sql, inserts, function (err, result) {
     if (err) {
       console.log(
-        `not able to add checkmeter_id: ${checkmeter_id} for tenant_id: ${tenant_id} into database`
+        `not able to add Submeter_id: ${Submeter_id} for tenant_id: ${tenant_id} into database`
       );
       callback(false);
     } else {
@@ -382,24 +382,24 @@ function insertCheckmeter(tenant_id, checkmeter_id, callback) {
         console.log("added");
         callback(true);
       } else {
-        console.log("add new checkmeter failed");
+        console.log("add new Submeter failed");
         callback(false);
       }
     }
   });
 }
 
-// delete a checkmeter for a tenant
+// delete a Submeter for a tenant
 // return true if deletes successfully
 // return false if deletes failed
-function deleteCheckmeter(tenant_id, checkmeter_id, callback) {
+function deleteSubmeter(tenant_id, Submeter_id, callback) {
   let sql = `DELETE FROM meter WHERE ?? = ? AND ?? = ?`;
-  let inserts = ["tenant_id", tenant_id, "checkmeter_id", checkmeter_id];
+  let inserts = ["tenant_id", tenant_id, "Submeter_id", Submeter_id];
   connection.query(sql, inserts, function (err, result) {
     if (err) {
       console.log(err);
       console.log(
-        `not able to delete tenant_id: ${tenant_id} checkmeter_id: ${checkmeter_id} from database`
+        `not able to delete tenant_id: ${tenant_id} Submeter_id: ${Submeter_id} from database`
       );
       callback(false);
     } else {
@@ -407,7 +407,7 @@ function deleteCheckmeter(tenant_id, checkmeter_id, callback) {
         callback(true);
       } else {
         console.log(
-          `not able to delete tenant_id: ${tenant_id} user_id: ${checkmeter_id} from database`
+          `not able to delete tenant_id: ${tenant_id} user_id: ${Submeter_id} from database`
         );
         callback(false);
       }
@@ -415,19 +415,19 @@ function deleteCheckmeter(tenant_id, checkmeter_id, callback) {
   });
 }
 
-// return a list of JSON contains checkmeter list of a tenant
-function selectAllCheckmeters(tenant_id, callback) {
-  let sql = `SELECT checkmeter_id FROM meter WHERE ?? = ?`;
+// return a list of JSON contains Submeter list of a tenant
+function selectAllSubmeters(tenant_id, callback) {
+  let sql = `SELECT Submeter_id FROM meter WHERE ?? = ?`;
   let inserts = ["tenant_id", tenant_id];
-  connection.query(sql, inserts, function (err, checkmeterList) {
+  connection.query(sql, inserts, function (err, SubmeterList) {
     if (err) {
       console.log(
-        `not able to select checkmeterList of tenant_id: ${tenant_id} from database`
+        `not able to select SubmeterList of tenant_id: ${tenant_id} from database`
       );
       callback(false);
     } else {
       console.log(`tenant_id: ${tenant_id} meter list returned`);
-      callback(checkmeterList);
+      callback(SubmeterList);
     }
   });
 }
@@ -452,6 +452,6 @@ exports.selectAllMeters = selectAllMeters;
 exports.insertMeter = insertMeter;
 exports.deleteMeter = deleteMeter;
 
-exports.selectAllCheckmeters = selectAllCheckmeters;
-exports.insertCheckmeter = insertCheckmeter;
-exports.deleteCheckmeter = deleteCheckmeter;
+exports.selectAllSubmeters = selectAllSubmeters;
+exports.insertSubmeter = insertSubmeter;
+exports.deleteSubmeter = deleteSubmeter;
