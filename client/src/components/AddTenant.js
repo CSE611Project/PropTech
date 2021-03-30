@@ -33,6 +33,15 @@ class AddTenant extends React.Component {
         this.changeSubmeter = this.changeSubmeter.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
+
+    componentDidUpdate() {
+        if (this.props.property_id !== this.state.property_id) {
+            this.setState({
+                property_id: this.props.property_id
+            });
+        }
+    }
+
     addTenant(property_id, tenant_info){
         axios.post('/tenant', {property_id: this.state.property_id, tenant_info: tenant_info}).then(response => {
             this.props.info.generateTableData();

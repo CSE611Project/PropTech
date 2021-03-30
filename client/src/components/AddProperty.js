@@ -19,8 +19,7 @@ class AddProperty extends React.Component {
             name: '',
             address: '',
             property_type: '',
-            meters:'',
-            user_id: this.props.user_id
+            meters:''
         }
 
         this.handleClickOpen = this.handleClickOpen.bind(this)

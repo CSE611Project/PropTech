@@ -17,13 +17,24 @@ class TenantInfo extends Component{
     constructor(props){
         super(props);
         this.state = {
-            sub: props.sub,
-            property_id: "10",
+            sub: this.props.sub,
+            property_id: this.props.property_id,
             tenant_list: [
             ]
         }
-        this.res = [];
         this.generateTableData();
+    }
+
+    componentDidUpdate() {
+        if (this.props.sub !== this.state.sub || this.props.property_id !== this.state.property_id) {
+            this.setState({
+                sub: this.props.sub,
+                property_id: this.props.property_id,
+                tenant_list: [
+                ]
+            });
+            this.generateTableData();
+        }
     }
 
     getTenantList(){

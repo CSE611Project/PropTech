@@ -24,6 +24,17 @@ class PropertyInfo extends Component {
         this.generateTableData();
     }
 
+    componentDidUpdate() {
+        if (this.props.sub !== this.state.sub) {
+            this.setState({
+                sub: this.props.sub,
+                property_list:[
+                ]
+            });
+            this.generateTableData();
+        }
+    }
+
     getPropertyList(){
         return new Promise((resolve, reject) => {
             axios.get(`/property`).then((response) => {
