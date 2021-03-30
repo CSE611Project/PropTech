@@ -4,6 +4,7 @@ import "./../App.css";
 import Navigation from "./Navigation.js"
 import HomePage from "./HomePage.js"
 import TenantInfo from "./TenantInfo.js"
+import PropertyInfo from "./PropertyInfo.js"
 
 
 class PropManaAfterSign extends React.Component {
@@ -34,15 +35,16 @@ function manage_tenant() {
     <div>
       <TenantInfo />
     </div>
-    window.location = "/PropManaAfterSign/TenantInfo"
+  window.location = "/PropManaAfterSign/TenantInfo"
   return (ReactDOM.render(ele, document.getElementById('root')));
 }
 
 function manage_property() {
   const ele =
-    <div>
-
-    </div>
+  <div>
+    <PropertyInfo />
+  </div>
+  window.location = "/PropManaAfterSign/PropertyInfo"
   return (ReactDOM.render(ele, document.getElementById('root')));
 }
 

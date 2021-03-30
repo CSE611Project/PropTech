@@ -16,6 +16,7 @@ import ApplicationStatus from "./components/ApplicationStatus"
 import ManaInfo from "./components/ManaInfo"
 import EditUserAccount from "./components/EditUserAccount"
 import TenantInfo from "./components/TenantInfo"
+import PropertyInfo from "./components/PropertyInfo"
 
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
           <Route path="/ManaInfo" component={ManaInfo} />
           <Route path="/EditUserAccount" component={EditUserAccount} />
           <Route path="/PropManaAfterSign/TenantInfo" component={TenantInfo} />
+          <Route path="/PropManaAfterSign/PropertyInfo" component={PropertyInfo} />
         </Switch>
       </div>
     </BrowserRouter>

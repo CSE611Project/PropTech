@@ -11,7 +11,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import axios from "axios";
 
-class DeleteTenant extends React.Component {
+class DeleteSubmeters extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -21,6 +21,7 @@ class DeleteTenant extends React.Component {
             email: this.props.email,
             address: this.props.address,
             rented_area: this.props.rented_area,
+            submeter_list: this.props.submeter_list,
             submeter: this.props.submeter,
             property_id: this.props.property_id
         }  
@@ -35,14 +36,15 @@ class DeleteTenant extends React.Component {
                 email: this.props.email,
                 address: this.props.address,
                 rented_area: this.props.rented_area,
+                submeter_list: this.props.submeter_list,
                 submeter: this.props.submeter,
                 property_id: this.props.property_id});
         }
     }
-    deleteTenant(){
-        axios.delete('/tenant', {data: {tenant_id: this.state.tenant_id , property_id: this.state.property_id }}).then(response => {
+    deleteSubmeter(){
+        {/*axios.delete('/tenant', {data: {tenant_id: this.state.tenant_id , property_id: this.state.property_id }}).then(response => {
             this.props.info.generateTableData();
-        })
+        })*/}
     }
 
     handleClickOpen() {
@@ -61,12 +63,12 @@ class DeleteTenant extends React.Component {
         this.setState({
             open: false
         })
-        this.deleteTenant();
+        this.deleteSubmeter();
     }
     render() {
         return (
             <div>
-                <Button onClick={this.handleClickOpen}>
+                <Button onClick={this.handleClickOpen} color="primary">
                     Delete
                 </Button>
                 <Dialog
@@ -78,7 +80,7 @@ class DeleteTenant extends React.Component {
                     <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
-                            Are you sure you want to delete the chosen tenant?
+                            Are you sure you want to delete this submeter?
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
@@ -95,4 +97,4 @@ class DeleteTenant extends React.Component {
     }
 }
 
-export default DeleteTenant;
+export default DeleteSubmeters;

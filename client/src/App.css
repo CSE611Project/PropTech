@@ -110,6 +110,16 @@ li {
   
 }
 
+.display_item{
+  position: absolute;
+  top: 150px;
+  right: 10px;
+  width: auto;
+  border-spacing: 50px 0;
+  margin-top: auto;
+  margin-bottom: 0px;
+}
+
 
 .buttonUL {
   list-style-type: none;

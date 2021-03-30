@@ -4,133 +4,119 @@ import "./../App.css";
 import Navigation from "./Navigation.js"
 import HomePage from "./HomePage.js"
 import PropManaAfterSign from "./PropManaAfterSign.js"
+import PropertyInfo from "./PropertyInfo.js"
 import EditTenant from "./EditTenant"
 import AddTenant from "./AddTenant"
 import DeleteTenant from "./DeleteTenant"
+import Submeters from "./Submeters"
 import { Component } from "react";
 import { TableBody } from "@material-ui/core";
 import axios from "axios";
-//import { router } from "./server/src/router.js";
-class TenantInfo extends Component{
 
-    constructor(props){
+class TenantInfo extends Component {
+
+    constructor(props) {
         super(props);
         this.state = {
             sub: this.props.sub,
-            property_id: "123",
+            property_id: 3,
             tenant_list: [
-                {
-                tenant_id: "1",
-                name: "xianx",
-                email:"1233",
-                address: "gggg",
-                rented_area: "1231",
-                submeter:"120"
-                },
-                {
-                tenant_id: "2",
-                name: "link",
-                email:"1233",
-                address: "gggg",
-                rented_area: "1231",
-                submeter:"120"
-                }
             ]
+        }
+        this.generateTableData();
+    }
 
+    componentDidUpdate() {
+        if (this.props.sub !== this.state.sub || this.props.property_id !== this.state.property_id) {
+            this.setState({
+                sub: this.props.sub,
+                property_id: this.props.property_id,
+                tenant_list: [
+                ]
+            });
+            this.generateTableData();
         }
     }
-    getTenantList(){
-        axios.get('/PropManaAfterSign/TenantInfo', {sub : this.state.sub, property_id : this.state.property_id }).then(
-            response => {
 
-            }
-          )
+    getTenantList() {
+        return new Promise((resolve, reject) => {
+            axios.get(`/tenant/${this.state.property_id}`).then((response) => {
+                this.setState({ tenant_list: response.data })
+                resolve();
+            })
+        })
     }
 
-    delte(){
-        axios.get('/PropManaAfterSign/TenantInfo', this.state.sub).then(
-            response => {
-                
-            }
-          )
-    }
 
-    delete_tenant = (i) => {
-        console.log(i);
-        //console.log(this.state.tenant_list[i].name);
-    }
-    handleDelete = tenant_id => {
-        console.log(tenant_id)
-    }
-    updateTenantTable(sub,  propery_id, tenant_list){        
-                // res.json(db.); TODO get tenant list under this property
-                var tenant_list;
-                for(var i = 0; i < tenant_list.length; i++){
-                    this.state.tenant_list.push({
-                        name: tenant_list[i].name,
-                        email: tenant_list[i].email,
-                        address: tenant_list[i].address,
-                        rented_area: tenant_list[i].rented_area,
-                        submeter: tenant_list[i].submeter
+    // updateTenantTable(sub,  propery_id, tenant_list){
+    //             var tenant_list;
+    //             for(var i = 0; i < tenant_list.length; i++){
+    //                 this.state.tenant_list.push({
+    //                     tenant_id: tenant_list[i].tenant_id,
+    //                     name: tenant_list[i].name,
+    //                     email: tenant_list[i].email,
+    //                     address: tenant_list[i].address,
+    //                     rented_area: tenant_list[i].rented_area,
+    //                     submeter: tenant_list[i].submeter
 
-                    })
-                }
+    //                 })
+    //             }
 
-            }
-    
-
-    
+    //         }
 
 
-    
+
+
 
     //get tenant_list from database  implement get_tenant_list function here
 
-    
-
-    generateTableData(){
+    generateTableData() {
         //call updateTable everytime when we need to generate a list of tenants
         //this.updateTenantTable(this.state.sub, this.state.property_id);
-        let res=[];
-        let tableData = this.state.tenant_list;
-        for(var i =0; i < tableData.length; i++){
-            res.push(
-              
-             <tr key={i} id={i}>
-                <td key={tableData[i].tenant_id}></td>
-                <td key={tableData[i].name}>{tableData[i].name}</td>
-                <td key={tableData[i].email}>{tableData[i].email}</td>
-                <td key={tableData[i].address}>{tableData[i].address}</td>
-                <td key={tableData[i].rented_area}>{tableData[i].rented_area}</td>
-                <td key={tableData[i].submeter}>{tableData[i].submeter}</td>
-                <td className= "edit_delete">
-                    <ul className="edit_delete_ul">
-                        <EditTenant 
+        this.getTenantList().then(() => {
+            var res = [];
+            let tableData = this.state.tenant_list;
+            for (var i = 0; i < tableData.length; i++) {
+                res.push(
+
+                    <tr key={i} id={i}>
+                        <td key={tableData[i].name}>{tableData[i].name}</td>
+                        <td key={tableData[i].email}>{tableData[i].email}</td>
+                        <td key={tableData[i].address}>{tableData[i].address}</td>
+                        <td key={tableData[i].rented_area}>{tableData[i].rented_area}</td>
+                        <td key={tableData[i].submeter}>{tableData[i].submeter}</td>
+                        <td><Submeters /></td>
+                        <td><EditTenant
+                            tenant_id={tableData[i].tenant_id}
                             name={tableData[i].name}
                             email={tableData[i].email}
                             address={tableData[i].address}
                             rented_area={tableData[i].rented_area}
                             submeter={tableData[i].submeter}
                             property_id={this.state.property_id}
+                            info={this}
                         />
-                        <DeleteTenant 
+                        </td>
+                        <td><DeleteTenant
+                            tenant_id={tableData[i].tenant_id}
                             name={tableData[i].name}
                             email={tableData[i].email}
                             address={tableData[i].address}
                             rented_area={tableData[i].rented_area}
                             submeter={tableData[i].submeter}
                             property_id={this.state.property_id}
+                            info={this}
                         />
-                    </ul>
-                </td>
-            </tr>
-            )
-
-
-        }
-        return res;
+                        </td>
+                    </tr>
+                )
+            }
+            this.res = res;
+            this.forceUpdate();
+        })
     }
-    render(){
+
+    render() {
         return (
             <div>
                 <div className="AdminAfterSign">
@@ -146,35 +132,45 @@ class TenantInfo extends Component{
                             <button className="Admin_option" onClick={log_out}>Log Out</button>
                         </ul>
                         <div className="tenant_list" ref="tenant_list">
-                            <table >
+                            <table className="display_item">
                                 <tbody>
-                                <tr>
-                                    <th>Tenant ID</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Address</th>
-                                    <th>Rented Area(sqft)</th>
-                                    <th>Submeter</th>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Address</th>
+                                        <th>Rented Area(sqft)</th>
+                                        <th>Submeter</th>
 
-                                </tr>
-                                {this.generateTableData()}
+                                    </tr>
+                                    {this.res}
+                                    <tr>
+                                        <td>Caroline</td>
+                                        <td>Email@gmail.com</td>
+                                        <td>Address</td>
+                                        <td>Rented Area(sqft)</td>
+                                        <td>Submeter</td>
+                                        <td><Submeters /></td>
+                                        <td><EditTenant
+                                        />
+                                        </td>
+                                        <td><DeleteTenant
+                                        />
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
-                            <AddTenant property_id={this.state.property_id}/>   
+                            <AddTenant
+                                className="display_item"
+                                property_id={this.state.property_id}
+                                info={this}
+                            />
                         </div>
                     </header>
                 </div>
             </div>
         );
     }
-
-
-
-
-
 }
-
-
 
 function manage_tenant() {
     const ele =
@@ -188,8 +184,9 @@ function manage_tenant() {
 function manage_property() {
     const ele =
         <div>
-
+            <PropertyInfo />
         </div>
+    window.location = "/PropManaAfterSign/PropertyInfo"
     return (ReactDOM.render(ele, document.getElementById('root')));
 }
 
@@ -249,7 +246,7 @@ function back() {
 function confirm_win() {
     window.confirm("Sure?");
 }
-function addNewTenant(sub, property_id, new_tenant){
+function addNewTenant(sub, property_id, new_tenant) {
 
     //call add_new_tenant function here to add to database
 

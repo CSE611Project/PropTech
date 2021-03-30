@@ -9,6 +9,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import axios from "axios";
 
 class EditTenant extends React.Component {
     constructor(props) {
@@ -16,6 +17,7 @@ class EditTenant extends React.Component {
         this.state = {
             open: false,
             name: this.props.name,
+            tenant_id: this.props.tenant_id,
             email: this.props.email,
             address: this.props.address,
             rented_area: this.props.rented_area,
@@ -32,13 +34,29 @@ class EditTenant extends React.Component {
         this.changeSubmeter = this.changeSubmeter.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
-    
+    componentDidUpdate() {
+        if (this.props.tenant_id !== this.state.tenant_id) {
+            this.setState({name: this.props.name,
+                tenant_id: this.props.tenant_id,
+                email: this.props.email,
+                address: this.props.address,
+                rented_area: this.props.rented_area,
+                submeter: this.props.submeter,
+                property_id: this.props.property_id});
+        }
+    }
+    updateTenantInfo(tenant_id, tenant_info){
+        axios.patch('/tenant', {tenant_id: tenant_id, tenant_info: tenant_info}).then(response => {
+            this.props.info.generateTableData();
+        })
+    }
+
     handleClickOpen() {
         this.setState({
             open: true
         })
-        console.log(this.state.name, this.state.email, this.state.address, this.state.rented_area, this.state.submeter, this.state.property_id);
     }
+
     handleClose() {
         this.setState({
             open: false
@@ -80,7 +98,16 @@ class EditTenant extends React.Component {
         this.setState({
             open: false
         })
-        console.log(this.state.name, this.state.email, this.state.address, this.state.rented_area, this.state.submeter, this.state.property_id);
+        var tenant_info = {
+            name: this.state.name,
+            email: this.state.email,
+            address: this.state.address,
+            property_share: this.state.rented_area,
+            submeter: this.state.submeter,
+            property_id: this.state.property_id
+        }
+        var tenant_id = this.state.tenant_id;
+        this.updateTenantInfo(tenant_id, tenant_info);
     }
 
 
@@ -101,6 +128,7 @@ class EditTenant extends React.Component {
                             id="name"
                             label="Name"
                             type="text"
+                            value={this.state.name}
                             onChange={this.changeName}
                             fullWidth 
                         />
@@ -110,6 +138,7 @@ class EditTenant extends React.Component {
                             id="email"
                             label="Email Address"
                             type="email"
+                            value={this.state.email}
                             onChange={this.changeEmail}
                             fullWidth
                         />
@@ -119,6 +148,7 @@ class EditTenant extends React.Component {
                             id="address"
                             label="Address"
                             type="text"
+                            value={this.state.address}
                             onChange={this.changeAddress}
                             fullWidth
                         />
@@ -128,6 +158,7 @@ class EditTenant extends React.Component {
                             id="rented_area"
                             label="Rented Area(sqft)"
                             type="text"
+                            value={this.state.rented_area}
                             onChange={this.changeRentedArea}
                             fullWidth
                         />
@@ -137,6 +168,7 @@ class EditTenant extends React.Component {
                             id="submeter"
                             label="Submeter"
                             type="text"
+                            value={this.state.submeter}
                             onChange={this.changeSubmeter}
                             fullWidth
                         />

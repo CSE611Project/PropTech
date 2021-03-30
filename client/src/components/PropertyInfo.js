@@ -17,104 +17,84 @@ class PropertyInfo extends Component {
     constructor(props){
         super(props);
         this.state = {
-          sub: this.props.sub,
-          user_id: "123",
-          property_list:[
-            {
-              property_id: "1",
-              property_name: "xianx",
-              property_address: "gggg",
-              property_type: "1231",
-              meters:"120"
-            },
-            {
-              property_id: "2",
-              property_name: "link",
-              property_address: "gggg",
-              property_type: "1231",
-              meters:"120"
-  
-            }
-          ]
+            sub: this.props.sub,
+            property_list:[
+            ]
         }
-      }
+        this.generateTableData();
+    }
 
-      getPropertyList(){
-          axios.get('./PropertyInfo',{sub : this.state.sub, user_id : this.state.user_id }).then(
-              response => {
+    componentDidUpdate() {
+        if (this.props.sub !== this.state.sub) {
+            this.setState({
+                sub: this.props.sub,
+                property_list:[
+                ]
+            });
+            this.generateTableData();
+        }
+    }
 
-              }
-          )
-      }
-
-      delte(){
-          axios.get('./PropertyInfo', this.state.sub).then(
-              response => {
-
-              }
-          )
-      }
-
-      delete_property = (i) => {
-          console.log(i);
-
-      }
-
-      handleDelete = property_id =>{
-          console.log(property_id)
-      }
-
-      updatePropertyTable(sub, user_id, property_list){
-
-        var property_list;
-        for(var i=0; i<property_list.length;i++){
-            this.state.property_list.push({
-
-                property_name:property_list[i].property_name,
-                property_address:property_list[i].property_address,
-                property_type:property_list[i].property_type,
-                meters: property_list[i].meters
+    getPropertyList(){
+        return new Promise((resolve, reject) => {
+            axios.get(`/property`).then((response) => {
+                this.setState({property_list: response.data})
+                resolve();
             })
-        }
-      }
+        })
+    }
 
-      generateTableData(){
-          let res=[];
-          let tableData = this.state.property_list;
-          for(var i =0; i<tableData.length; i++){
-              res.push(
+    // updatePropertyTable(sub, user_id, property_list){
+
+    //     var property_list;
+    //     for(var i=0; i<property_list.length;i++){
+    //         this.state.property_list.push({
+
+    //             property_name:property_list[i].property_name,
+    //             property_address:property_list[i].property_address,
+    //             property_type:property_list[i].property_type,
+    //             meters: property_list[i].meters
+    //         })
+    //     }
+    // }
+
+    generateTableData(){
+        this.getPropertyList().then(() => {
+            this.res=[];
+            let tableData = this.state.property_list;
+            for(var i =0; i<tableData.length; i++){
+                this.res.push(
 
                 <tr key={i} id={i}>
-                    <td key={tableData[i].property_id}></td>
-                    <td key={tableData[i].property_name}>{tableData[i].property_name}</td>
-                    <td key={tableData[i].property_address}>{tableData[i].property_address}</td>
+                    <td key={tableData[i].name}>{tableData[i].name}</td>
+                    <td key={tableData[i].address}>{tableData[i].address}</td>
                     <td key={tableData[i].property_type}>{tableData[i].property_type}</td>
                     <td key={tableData[i].meters}>{tableData[i].meters}</td>
-                    <td className = "edit_delete">
-                        <ul className = "edit_delete_ul">
-                            <EditProperty
-                                property_name = {tableData[i].property_name}
-                                property_address = {tableData[i].property_address}
+                    <td><EditProperty
+                                property_id={tableData[i].property_id}
+                                name = {tableData[i].name}
+                                address = {tableData[i].address}
                                 property_type = {tableData[i].property_type}
                                 meters = {tableData[i].meters}
                                 user_id = {this.state.user_id}
+                                info={this}
                             />
-                            <DeleteProperty
-                                property_name = {tableData[i].property_name}
-                                property_address = {tableData[i].property_address}
+                    </td>
+                    <td><DeleteProperty
+                                property_id={tableData[i].property_id}
+                                name = {tableData[i].name}
+                                address = {tableData[i].address}
                                 property_type = {tableData[i].property_type}
                                 meters = {tableData[i].meters}
                                 user_id = {this.state.user_id}
-                            />                            
-                        </ul>
+                                info={this}
+                            />
                     </td>
                 </tr>
-
-              )
-          }
-          return res;
-      }
-
+            )}
+            this.forceUpdate();
+        })
+    }
 
     render(){
     return (
@@ -132,47 +112,46 @@ class PropertyInfo extends Component {
                         <button className="Admin_option" onClick={log_out}>Log Out</button>
                         </ul>
                     <div className="tenant_list" ref="tenant_list">
-                    <table >
+                    <table className="display_item">
                                 <tbody>
                                 <tr>
-                                    <th>Property ID</th>
                                     <th>Property Name</th>
                                     <th>Property Address</th>
                                     <th>Property Type</th>
                                     <th>Meters</th>
                                 </tr>
-                                {this.generateTableData()}
+                                {this.res}
                                 </tbody>
                             </table>
-                            <AddProperty user_id={this.state.user_id}/>   
+                            <AddProperty className="display_item" user_id={this.state.user_id}
+                            info={this}
+                            />
                         </div>
                     </header>
                 </div>
             </div>
         );
     }
-
-
 }
 
 function manage_tenant() {
     const ele =
-        <div>
-            <TenantInfo />
-        </div>
-    window.location = "./TenantInfo"
+      <div>
+        <TenantInfo />
+      </div>
+    window.location = "/PropManaAfterSign/TenantInfo"
     return (ReactDOM.render(ele, document.getElementById('root')));
-}
-
-function manage_property() {
+  }
+  
+  function manage_property() {
     const ele =
-        <div>
-            <PropertyInfo />
-        </div>
-    window.location = "./PropertyInfo"
+    <div>
+      <PropertyInfo />
+    </div>
+    window.location = "/PropManaAfterSign/PropertyInfo"
     return (ReactDOM.render(ele, document.getElementById('root')));
-}
-
+  }
+  
 function edit_profile() {
     const ele =
         <div>

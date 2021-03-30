@@ -9,7 +9,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-
+import axios from "axios";
 
 class DeleteProperty extends React.Component {
 
@@ -17,8 +17,9 @@ class DeleteProperty extends React.Component {
         super(props);
         this.state = {
             open: false,
-            property_name: this.props.property_name,
-            property_address: this.props.property_address,
+            name: this.props.name,
+            property_id: this.props.property_id,
+            address: this.props.address,
             property_type: this.props.property_type,
             meters:this.props.meters,
             user_id: this.props.user_id
@@ -26,8 +27,24 @@ class DeleteProperty extends React.Component {
         this.handleClickOpen = this.handleClickOpen.bind(this)
         this.handleClose = this.handleClose.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
-    }  
-    
+    }
+    componentDidUpdate() {
+        if (this.props.property_id !== this.state.property_id) {
+            this.setState({name: this.props.name,
+                property_id: this.props.property_id,
+                address: this.props.address,
+                property_type: this.props.property_type,
+                meters:this.props.meters,
+                user_id: this.props.user_id});
+        }
+    }
+
+    deleteProperty(){
+        axios.delete('/property', {data: {property_id: this.state.property_id }}).then(response => {
+            this.props.info.generateTableData();
+        })
+    }
+
     handleClickOpen() {
         this.setState({
             open: true
@@ -41,14 +58,11 @@ class DeleteProperty extends React.Component {
     };
 
     onSubmit(event){
-        event.preventDefault();
         this.setState({
             open: false
         })
-        console.log(this.state.property_name, this.state.property_address, this.state.property_type, this.state.meters);
+        this.deleteProperty();
     }
-
-
 
     render(){
 
