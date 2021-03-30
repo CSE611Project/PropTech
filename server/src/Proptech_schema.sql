@@ -9,8 +9,7 @@ CREATE TABLE user (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE utility_account (
-
-  account_id VARCHAR(45) NOT NULL,
+  account_id INT NOT NULL,
   user_id VARCHAR(45) NOT NULL,
   PRIMARY KEY (account_id),
   UNIQUE KEY (account_id),
@@ -53,8 +52,7 @@ CREATE TABLE meter (
 
 CREATE TABLE bill (
   bill_id INT NOT NULL AUTO_INCREMENT,
-  utility_account_id INT,
-  account_id VARCHAR(45) NOT NULL,
+  account_id INT NOT NULL,
   meter_id INT NOT NULL,
   kwh_usage INT NOT NULL,
   from_date DATE NOT NULL,
@@ -68,7 +66,7 @@ CREATE TABLE bill (
 	REFERENCES utility_account(account_id) ON DELETE CASCADE,
   CONSTRAINT meter_id
 	FOREIGN KEY (meter_id)
-    REFERENCES meter(meter_id)
+    REFERENCES meter(meter_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE tenant (
