@@ -54,7 +54,7 @@ class PropManaAfterSign extends Component {
               Log Out
             </button>
           </ul>
-          <div className="display_item">{this.state.page}</div>
+          <div className="display">{this.state.page}</div>
         </div>
       </div>
     );

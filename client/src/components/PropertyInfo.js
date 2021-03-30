@@ -45,7 +45,6 @@ class PropertyInfo extends Component {
   }
 
   viewTenants = (property_id) => {
-    console.log(property_id);
     this.state.display.changeDisplay({ page: <TenantInfo display={this.state.display} property_id={property_id} />, page_name: "Tenant Information" });
   };
 
@@ -56,7 +55,7 @@ class PropertyInfo extends Component {
         this.res.push(
           <tr key={i} id={i}>
             <td>
-              <Button data-value={this.state.property_list[i].property_id} onClick={(e) => this.viewTenants(e.target.dataset.value)} style={{ textTransform: "none" }} color="inherit">
+              <Button value={this.state.property_list[i].property_id} onClick={(e) => this.viewTenants(e.currentTarget.value)} style={{ textTransform: "none" }} color="inherit">
                 {this.state.property_list[i].name}
               </Button>
             </td>
@@ -106,7 +105,7 @@ class PropertyInfo extends Component {
             {this.res}
           </tbody>
         </table>
-        <AddProperty className="display_item" user_id={this.state.user_id} info={this} />
+        <AddProperty className="display_item display" user_id={this.state.user_id} info={this} />
       </div>
     );
   }

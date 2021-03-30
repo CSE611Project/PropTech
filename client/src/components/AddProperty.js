@@ -31,11 +31,9 @@ class AddProperty extends React.Component {
     this.onSubmit = this.onSubmit.bind(this);
   }
   addProperty(property_info) {
-    axios
-      .post("/property", { property_info: property_info })
-      .then((response) => {
-        this.props.info.generateTableData();
-      });
+    axios.post("/property", { property_info: property_info }).then((response) => {
+      this.props.info.generateTableData();
+    });
   }
   handleClickOpen() {
     this.setState({
@@ -91,50 +89,14 @@ class AddProperty extends React.Component {
     return (
       <div>
         <Button onClick={this.handleClickOpen}>Add Property</Button>
-        <Dialog
-          open={this.state.open}
-          onClose={this.handleClose}
-          aria-labelledby="form-dialog-title"
-        >
+        <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Enter Property Info</DialogTitle>
           <DialogContent>
             <DialogContentText></DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Name"
-              type="text"
-              onChange={this.changeName}
-              fullWidth
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              id="address"
-              label="Address"
-              type="text"
-              onChange={this.changeAddress}
-              fullWidth
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              id="property_type"
-              label="Property Type"
-              type="text"
-              onChange={this.changePropertyType}
-              fullWidth
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              id="meters"
-              label="Meter List"
-              type="text"
-              onChange={this.changeMeters}
-              fullWidth
-            />
+            <TextField autoFocus margin="dense" id="name" label="Name" type="text" onChange={this.changeName} fullWidth />
+            <TextField autoFocus margin="dense" id="address" label="Address" type="text" onChange={this.changeAddress} fullWidth />
+            <TextField autoFocus margin="dense" id="property_type" label="Property Type" type="text" onChange={this.changePropertyType} fullWidth />
+            <TextField autoFocus margin="dense" id="meters" label="Meter List" type="text" onChange={this.changeMeters} fullWidth />
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">
