@@ -1,7 +1,7 @@
 import React from "react";
-import ReactDOM from 'react-dom';
+import ReactDOM from "react-dom";
 import "./../App.css";
-import App from "./../App.js"
+import App from "./../App.js";
 
 class Abouts extends React.Component {
   render() {

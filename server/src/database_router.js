@@ -1,9 +1,9 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const database = require('./database');
-const email = require('./email');
-const bodyParser = require('body-parser');
-const cors=require('cors');
+const database = require("./database");
+const email = require("./email");
+const bodyParser = require("body-parser");
+const cors = require("cors");
 
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(cors());
@@ -69,7 +69,6 @@ router.use(cors());
 //     res.send("sent");
 // })
 
-
 // testing deleteProperty
 // router.post('/testDeleteProperty',(req,res)=>{
 //     const {property_id, user_id} = req.body;
@@ -110,5 +109,3 @@ router.use(cors());
 // })
 
 module.exports = router;
-
-
