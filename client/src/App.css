@@ -1,5 +1,7 @@
 .App {
   text-align: center;
+  background-color: #282c30;
+  min-height: 100vh;
 }
 
 .App-header {
@@ -99,11 +101,32 @@ li {
   text-align: center;
 }
 
+.Page_Name {
+  height: 60px;
+  text-align: center;
+  background-color: #282c30;
+  color: white;
+}
+
+.Info_Page_Split {
+  background-color: #282c30;
+  display: flex;
+}
+
 .PropMana_menu {
   background-color: #282c30;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  color: white;
+}
+
+.display_item {
+  padding: 20px;
+  color: white;
+}
+
+.table {
   color: white;
 }
 

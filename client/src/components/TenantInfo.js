@@ -8,6 +8,7 @@ import PropertyInfo from "./PropertyInfo.js";
 import EditTenant from "./EditTenant";
 import AddTenant from "./AddTenant";
 import DeleteTenant from "./DeleteTenant";
+import Submeters from "./Submeters";
 import { Component } from "react";
 import { TableBody } from "@material-ui/core";
 import axios from "axios";
@@ -16,6 +17,7 @@ class TenantInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      display: this.props.display,
       sub: this.props.sub,
       property_id: this.props.property_id,
       tenant_list: [],
@@ -24,11 +26,9 @@ class TenantInfo extends Component {
   }
 
   componentDidUpdate() {
-    if (
-      this.props.sub !== this.state.sub ||
-      this.props.property_id !== this.state.property_id
-    ) {
+    if (this.props.sub !== this.state.sub || this.props.property_id !== this.state.property_id) {
       this.setState({
+        display: this.props.display,
         sub: this.props.sub,
         property_id: this.props.property_id,
         tenant_list: [],
@@ -73,20 +73,18 @@ class TenantInfo extends Component {
       for (var i = 0; i < tableData.length; i++) {
         res.push(
           <tr key={i} id={i}>
-            <td key={tableData[i].name}>{tableData[i].name}</td>
-            <td key={tableData[i].email}>{tableData[i].email}</td>
-            <td key={tableData[i].address}>{tableData[i].address}</td>
-            <td key={tableData[i].property_share}>
-              {tableData[i].property_share}
-            </td>
-            <td key={tableData[i].submeter}>{tableData[i].submeter}</td>
+            <td>{tableData[i].name}</td>
+            <td>{tableData[i].email}</td>
+            <td>{tableData[i].address}</td>
+            <td>{tableData[i].rented_area}</td>
+            <td>{tableData[i].submeter}</td>
             <td>
               <EditTenant
                 tenant_id={tableData[i].tenant_id}
                 name={tableData[i].name}
                 email={tableData[i].email}
                 address={tableData[i].address}
-                property_share={tableData[i].property_share}
+                rented_area={tableData[i].rented_area}
                 submeter={tableData[i].submeter}
                 property_id={this.state.property_id}
                 info={this}
@@ -98,7 +96,7 @@ class TenantInfo extends Component {
                 name={tableData[i].name}
                 email={tableData[i].email}
                 address={tableData[i].address}
-                property_share={tableData[i].property_share}
+                rented_area={tableData[i].rented_area}
                 submeter={tableData[i].submeter}
                 property_id={this.state.property_id}
                 info={this}
@@ -115,49 +113,19 @@ class TenantInfo extends Component {
   render() {
     return (
       <div>
-        <div className="PropManaAfterSign">
-          <header className="PropMana_menu">
-            <h1>Tenants information</h1>
-            <ul className="buttonUL">
-              <button className="PropMana_option" onClick={manage_tenant}>
-                Manage Tenant Info
-              </button>
-              <button className="PropMana_option" onClick={manage_property}>
-                Manage Property Info
-              </button>
-              <button className="PropMana_option" onClick={edit_profile}>
-                Edit Profile Info
-              </button>
-              <button className="PropMana_option" onClick={manage_utility}>
-                Manage Utility Bill
-              </button>
-              <button className="PropMana_option" onClick={manage_invoice}>
-                Manage Invoice History
-              </button>
-              <button className="PropMana_option" onClick={generate_invoice}>
-                Generate Invoice
-              </button>
-              <button className="PropMana_option" onClick={log_out}>
-                Log Out
-              </button>
-            </ul>
-            <div className="tenant_list" ref="tenant_list">
-              <table>
-                <tbody>
-                  <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Address</th>
-                    <th>Property Share</th>
-                    <th>Submeter</th>
-                  </tr>
-                  {this.res}
-                </tbody>
-              </table>
-              <AddTenant property_id={this.state.property_id} info={this} />
-            </div>
-          </header>
-        </div>
+        <table className="table">
+          <tbody>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Address</th>
+              <th>Property Share</th>
+              <th>Submeter</th>
+            </tr>
+            {this.res}
+          </tbody>
+        </table>
+        <AddTenant className="display_item" property_id={this.state.property_id} info={this} />
       </div>
     );
   }
@@ -225,10 +193,7 @@ function homepage() {
 }
 
 function back() {
-  return ReactDOM.render(
-    <PropManaAfterSign />,
-    document.getElementById("root")
-  );
+  return ReactDOM.render(<PropManaAfterSign />, document.getElementById("root"));
 }
 function confirm_win() {
   window.confirm("Sure?");

@@ -9,6 +9,7 @@ import EditProperty from "./EditProperty";
 import DeleteProperty from "./DeleteProperty";
 import TenantInfo from "./TenantInfo";
 import { Component } from "react";
+import Button from "@material-ui/core/Button";
 import { TableBody } from "@material-ui/core";
 import axios from "axios";
 
@@ -16,6 +17,7 @@ class PropertyInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      display: this.props.display,
       sub: this.props.sub,
       property_list: [],
     };
@@ -25,6 +27,7 @@ class PropertyInfo extends Component {
   componentDidUpdate() {
     if (this.props.sub !== this.state.sub) {
       this.setState({
+        display: this.props.display,
         sub: this.props.sub,
         property_list: [],
       });
@@ -41,51 +44,43 @@ class PropertyInfo extends Component {
     });
   }
 
-  // updatePropertyTable(sub, user_id, property_list){
+  viewTenants = (property_id) => {
+    console.log(property_id);
+    this.state.display.changeDisplay({ page: <TenantInfo display={this.state.display} property_id={property_id} />, page_name: "Tenant Information" });
+  };
 
-  //     var property_list;
-  //     for(var i=0; i<property_list.length;i++){
-  //         this.state.property_list.push({
-
-  //             property_name:property_list[i].property_name,
-  //             property_address:property_list[i].property_address,
-  //             property_type:property_list[i].property_type,
-  //             meters: property_list[i].meters
-  //         })
-  //     }
-  // }
-
-  generateTableData() {
+  generateTableData = () => {
     this.getPropertyList().then(() => {
       this.res = [];
-      let tableData = this.state.property_list;
-      for (var i = 0; i < tableData.length; i++) {
+      for (var i = 0; i < this.state.property_list.length; i++) {
         this.res.push(
           <tr key={i} id={i}>
-            <td key={tableData[i].name}>{tableData[i].name}</td>
-            <td key={tableData[i].address}>{tableData[i].address}</td>
-            <td key={tableData[i].property_type}>
-              {tableData[i].property_type}
+            <td>
+              <Button data-value={this.state.property_list[i].property_id} onClick={(e) => this.viewTenants(e.target.dataset.value)} style={{ textTransform: "none" }} color="inherit">
+                {this.state.property_list[i].name}
+              </Button>
             </td>
-            <td key={tableData[i].meters}>{tableData[i].meters}</td>
+            <td>{this.state.property_list[i].address}</td>
+            <td>{this.state.property_list[i].property_type}</td>
+            <td>{this.state.property_list[i].meters}</td>
             <td>
               <EditProperty
-                property_id={tableData[i].property_id}
-                name={tableData[i].name}
-                address={tableData[i].address}
-                property_type={tableData[i].property_type}
-                meters={tableData[i].meters}
+                property_id={this.state.property_list[i].property_id}
+                name={this.state.property_list[i].name}
+                address={this.state.property_list[i].address}
+                property_type={this.state.property_list[i].property_type}
+                meters={this.state.property_list[i].meters}
                 user_id={this.state.user_id}
                 info={this}
               />
             </td>
             <td>
               <DeleteProperty
-                property_id={tableData[i].property_id}
-                name={tableData[i].name}
-                address={tableData[i].address}
-                property_type={tableData[i].property_type}
-                meters={tableData[i].meters}
+                property_id={this.state.property_list[i].property_id}
+                name={this.state.property_list[i].name}
+                address={this.state.property_list[i].address}
+                property_type={this.state.property_list[i].property_type}
+                meters={this.state.property_list[i].meters}
                 user_id={this.state.user_id}
                 info={this}
               />
@@ -95,53 +90,23 @@ class PropertyInfo extends Component {
       }
       this.forceUpdate();
     });
-  }
+  };
 
   render() {
     return (
       <div>
-        <div className="PropManaAfterSign">
-          <header className="PropMana_menu">
-            <h1>Property information</h1>
-            <ul className="buttonUL">
-              <button className="PropMana_option" onClick={manage_tenant}>
-                Manage Tenant Info
-              </button>
-              <button className="PropMana_option" onClick={manage_property}>
-                Manage Property Info
-              </button>
-              <button className="PropMana_option" onClick={edit_profile}>
-                Edit Profile Info
-              </button>
-              <button className="PropMana_option" onClick={manage_utility}>
-                Manage Utility Bill
-              </button>
-              <button className="PropMana_option" onClick={manage_invoice}>
-                Manage Invoice History
-              </button>
-              <button className="PropMana_option" onClick={generate_invoice}>
-                Generate Invoice
-              </button>
-              <button className="PropMana_option" onClick={log_out}>
-                Log Out
-              </button>
-            </ul>
-            <div className="tenant_list" ref="tenant_list">
-              <table>
-                <tbody>
-                  <tr>
-                    <th>Property Name</th>
-                    <th>Property Address</th>
-                    <th>Property Type</th>
-                    <th>Meters</th>
-                  </tr>
-                  {this.res}
-                </tbody>
-              </table>
-              <AddProperty user_id={this.state.user_id} info={this} />
-            </div>
-          </header>
-        </div>
+        <table className="table">
+          <tbody>
+            <tr>
+              <th>Property Name</th>
+              <th>Property Address</th>
+              <th>Property Type</th>
+              <th>Meters</th>
+            </tr>
+            {this.res}
+          </tbody>
+        </table>
+        <AddProperty className="display_item" user_id={this.state.user_id} info={this} />
       </div>
     );
   }
@@ -209,10 +174,7 @@ function homepage() {
 }
 
 function back() {
-  return ReactDOM.render(
-    <PropManaAfterSign />,
-    document.getElementById("root")
-  );
+  return ReactDOM.render(<PropManaAfterSign />, document.getElementById("root"));
 }
 
 function confirm_win() {

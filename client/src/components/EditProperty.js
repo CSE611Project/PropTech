@@ -46,11 +46,9 @@ class EditProperty extends React.Component {
   }
 
   updatePropertyInfo(property_info) {
-    axios
-      .patch("/property", { property_info: property_info })
-      .then((response) => {
-        this.props.info.generateTableData();
-      });
+    axios.patch("/property", { property_info: property_info }).then((response) => {
+      this.props.info.generateTableData();
+    });
   }
 
   handleClickOpen() {
@@ -106,54 +104,14 @@ class EditProperty extends React.Component {
     return (
       <div>
         <Button onClick={this.handleClickOpen}>Edit</Button>
-        <Dialog
-          open={this.state.open}
-          onClose={this.handleClose}
-          aria-labelledby="form-dialog-title"
-        >
+        <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Edit Property Info</DialogTitle>
           <DialogContent>
             <DialogContentText></DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Property Name"
-              type="text"
-              value={this.state.name}
-              onChange={this.changeName}
-              fullWidth
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              id="address"
-              label="Property Address"
-              type="text"
-              value={this.state.address}
-              onChange={this.changeAddress}
-              fullWidth
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              id="property_type"
-              label="Property Type"
-              type="text"
-              value={this.state.property_type}
-              onChange={this.changePropertyType}
-              fullWidth
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              id="meters"
-              label="Meter List"
-              type="text"
-              value={this.state.meters}
-              onChange={this.changeMeters}
-              fullWidth
-            />
+            <TextField autoFocus margin="dense" id="name" label="Property Name" type="text" value={this.state.name} onChange={this.changeName} fullWidth />
+            <TextField autoFocus margin="dense" id="address" label="Property Address" type="text" value={this.state.address} onChange={this.changeAddress} fullWidth />
+            <TextField autoFocus margin="dense" id="property_type" label="Property Type" type="text" value={this.state.property_type} onChange={this.changePropertyType} fullWidth />
+            <TextField autoFocus margin="dense" id="meters" label="Meter List" type="text" value={this.state.meters} onChange={this.changeMeters} fullWidth />
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="secondary">

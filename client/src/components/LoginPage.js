@@ -40,9 +40,7 @@ class LoginPage extends React.Component {
       Username: this.state.email,
       Password: this.state.password,
     };
-    const authenticationDetails = new cognito.AuthenticationDetails(
-      loginDetails
-    );
+    const authenticationDetails = new cognito.AuthenticationDetails(loginDetails);
     const userDetails = {
       Username: this.state.email,
       Pool: userPool,
@@ -81,22 +79,10 @@ class LoginPage extends React.Component {
               <h1 className="Title">PropTech</h1>
 
               <label className="EmailLabel">Email</label>
-              <input
-                type="text"
-                placeholder="Email"
-                onChange={this.changeEmail}
-                value={this.state.email}
-                required
-              />
+              <input type="text" placeholder="Email" onChange={this.changeEmail} value={this.state.email} required />
 
               <label className="PasswordLabel">Password</label>
-              <input
-                type="password"
-                placeholder="Password"
-                onChange={this.changePassword}
-                value={this.state.password}
-                required
-              />
+              <input type="password" placeholder="Password" onChange={this.changePassword} value={this.state.password} required />
 
               <button className="button" type="submit" value="submit">
                 Login
@@ -119,10 +105,7 @@ function adminaftersign() {
 
 function propmanaaftersign() {
   window.location = "/PropManaAfterSign";
-  return ReactDOM.render(
-    <PropManaAfterSign />,
-    document.getElementById("root")
-  );
+  return ReactDOM.render(<PropManaAfterSign />, document.getElementById("root"));
 }
 
 function reset() {

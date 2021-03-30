@@ -1,29 +1,27 @@
 import React, { useState } from "react";
-import ReactDOM from 'react-dom';
+import ReactDOM from "react-dom";
 import "./App.css";
 import LoginPage from "./components/LoginPage.js";
 import SignUpPage from "./components/SignUpPage.js";
 import Navigation from "./components/Navigation.js";
 import HomePage from "./components/HomePage.js";
-import Abouts from "./components/About.js"
-import ResetPassword from "./components/ResetPassword.js"
-import AdminAfterSign from "./components/AdminAfterSign.js"
-import PropManaAfterSign from "./components/PropManaAfterSign.js"
+import Abouts from "./components/About.js";
+import ResetPassword from "./components/ResetPassword.js";
+import AdminAfterSign from "./components/AdminAfterSign.js";
+import PropManaAfterSign from "./components/PropManaAfterSign.js";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import RegProcess from "./components/RegProcess";
-import ResetProcess from "./components/ResetProcess"
-import ApplicationStatus from "./components/ApplicationStatus"
-import ManaInfo from "./components/ManaInfo"
-import EditUserAccount from "./components/EditUserAccount"
-import TenantInfo from "./components/TenantInfo"
-import PropertyInfo from "./components/PropertyInfo"
-
+import ResetProcess from "./components/ResetProcess";
+import ApplicationStatus from "./components/ApplicationStatus";
+import ManaInfo from "./components/ManaInfo";
+import EditUserAccount from "./components/EditUserAccount";
+import TenantInfo from "./components/TenantInfo";
+import PropertyInfo from "./components/PropertyInfo";
 
 function App() {
-
   return (
     <BrowserRouter>
-      <div className="container">
+      <div className="App">
         <Navigation />
         <Switch>
           <Route exact path="/" component={HomePage} />
