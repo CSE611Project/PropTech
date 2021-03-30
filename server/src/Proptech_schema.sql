@@ -117,3 +117,19 @@ CREATE TABLE submeter (
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+CREATE TABLE meter_tenant (
+  meter_id INT NOT NULL,
+  tenant_id INT NOT NULL,
+  PRIMARY KEY (meter_id, tenant_id),
+  UNIQUE KEY (meter_id, tenant_id),
+  KEY idx_meter_id(meter_id),
+  KEY idx_fk_3_tenant_id(tenant_id),
+  CONSTRAINT idx_fk_3_tenant_id
+	FOREIGN KEY (tenant_id)
+    REFERENCES tenant(tenant_id)
+    ON DELETE CASCADE,
+  CONSTRAINT idx_meter_id
+	FOREIGN KEY (meter_id)
+    REFERENCES meter(meter_id)
+    ON DELETE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
