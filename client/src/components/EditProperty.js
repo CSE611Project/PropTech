@@ -113,18 +113,20 @@ render(){
                     <TextField
                         autoFocus
                         margin="dense"
-                        id="property_name"
+                        id="name"
                         label="Property Name"
                         type="text"
+                        value={this.state.name}
                         onChange={this.changeName}
                         fullWidth 
                     />
                     <TextField
                         autoFocus
                         margin="dense"
-                        id="property_address"
+                        id="address"
                         label="Property Address"
                         type="text"
+                        value={this.state.address}
                         onChange={this.changeAddress}
                         fullWidth
                     />
@@ -134,6 +136,7 @@ render(){
                         id="property_type"
                         label="Property Type"
                         type="text"
+                        value={this.state.property_type}
                         onChange={this.changePropertyType}
                         fullWidth
                     />
@@ -143,6 +146,7 @@ render(){
                         id="meters"
                         label="Meter List"
                         type="text"
+                        value={this.state.meters}
                         onChange={this.changeMeters}
                         fullWidth
                     />

@@ -128,6 +128,7 @@ class EditTenant extends React.Component {
                             id="name"
                             label="Name"
                             type="text"
+                            value={this.state.name}
                             onChange={this.changeName}
                             fullWidth 
                         />
@@ -137,6 +138,7 @@ class EditTenant extends React.Component {
                             id="email"
                             label="Email Address"
                             type="email"
+                            value={this.state.email}
                             onChange={this.changeEmail}
                             fullWidth
                         />
@@ -146,6 +148,7 @@ class EditTenant extends React.Component {
                             id="address"
                             label="Address"
                             type="text"
+                            value={this.state.address}
                             onChange={this.changeAddress}
                             fullWidth
                         />
@@ -155,6 +158,7 @@ class EditTenant extends React.Component {
                             id="rented_area"
                             label="Rented Area(sqft)"
                             type="text"
+                            value={this.state.rented_area}
                             onChange={this.changeRentedArea}
                             fullWidth
                         />
@@ -164,6 +168,7 @@ class EditTenant extends React.Component {
                             id="submeter"
                             label="Submeter"
                             type="text"
+                            value={this.state.submeter}
                             onChange={this.changeSubmeter}
                             fullWidth
                         />
