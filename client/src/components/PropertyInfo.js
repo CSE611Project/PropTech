@@ -44,9 +44,13 @@ class PropertyInfo extends Component {
     });
   }
 
-  viewTenants = (property_id) => {
-    this.state.display.setState({ page_stack: [this.state.display.page_stack, this] });
-    this.state.display.changeDisplay({ page: <TenantInfo display={this.state.display} property_id={property_id} />, page_name: "Tenant Information" });
+  viewTenants = (property) => {
+    console.log(this.state.display);
+    this.state.display.setState({
+      page: <TenantInfo display={this.state.display} property_id={property[0]} />,
+      page_stack: [this.state.display.state.page_stack, this],
+      page_name: [this.state.display.state.page_name, `Property:${property.slice(2)}`],
+    });
   };
 
   generateTableData = () => {
@@ -60,7 +64,7 @@ class PropertyInfo extends Component {
             <td>{this.state.property_list[i].property_type}</td>
             <td>{this.state.property_list[i].meters}</td>
             <td>
-              <Button value={this.state.property_list[i].property_id} onClick={(e) => this.viewTenants(e.currentTarget.value)} color="inherit">
+              <Button value={[this.state.property_list[i].property_id, this.state.property_list[i].name]} onClick={(e) => this.viewTenants(e.currentTarget.value)} color="inherit">
                 View Tenants
               </Button>
             </td>

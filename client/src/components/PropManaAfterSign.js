@@ -6,14 +6,16 @@ import Navigation from "./Navigation.js";
 import HomePage from "./HomePage.js";
 import TenantInfo from "./TenantInfo.js";
 import PropertyInfo from "./PropertyInfo.js";
+import Cookies from "js-cookie";
 
 class PropManaAfterSign extends Component {
   constructor(props) {
     super(props);
     this.state = {
       sub: this.props.sub,
+      email: Cookies.get("username"),
       page: null,
-      page_name: "",
+      page_name: [Cookies.get("username")],
       page_stack: [],
     };
   }
@@ -22,25 +24,23 @@ class PropManaAfterSign extends Component {
     if (this.props.sub !== this.state.sub) {
       this.setState({
         sub: this.props.sub,
+        email: Cookies.get("username"),
         page: null,
-        page_name: "",
+        page_name: [Cookies.get("username")],
         page_stack: [],
       });
     }
   }
 
   manage_property = () => {
-    this.changeDisplay({ page: <PropertyInfo display={this} />, page_name: "Property Information" });
-  };
-  changeDisplay = (newState) => {
-    this.setState(newState);
+    this.setState({ page: <PropertyInfo display={this} /> });
   };
 
   render() {
     return (
       <div>
         <header className="Page_Name">
-          <h1>{this.state.page_name}</h1>
+          <h1>{this.state.page_name.join(">")}</h1>
         </header>
         <div className="Info_Page_Split">
           <ul className="buttonUL">
