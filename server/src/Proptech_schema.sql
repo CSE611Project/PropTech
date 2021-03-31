@@ -119,7 +119,7 @@ CREATE TABLE submeter (
 	submeter_id INT NOT NULL,
     tenant_id INT NOT NULL,
     meter_id INT NOT NULL,
-    mulyiplier FLOAT,
+    multiplier FLOAT,
     PRIMARY KEY (submeter_id),
     UNIQUE KEY (submeter_id),
     KEY idx_submeter_id (submeter_id),
