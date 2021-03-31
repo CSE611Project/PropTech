@@ -79,7 +79,7 @@ function selectAllTenants(property_id, callback) {
 }
 
 // update tenant info
-// update_info is a JSON contains name, email, address, landlord_phone, property_share
+// update_info is a JSON contains name, email, address, landlord_phone, rubs
 // return true if update successful
 // return false if update failed
 
@@ -88,7 +88,7 @@ function updateTenant(tenant_id, update_info, callback) {
   let email = update_info.email;
   let address = update_info.address;
   let landlord_phone = update_info.landlord_phone;
-  let property_share = update_info.property_share;
+  let rubs = update_info.rubs;
 
   let sql = `UPDATE tenant set ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ? WHERE ?? = ?`;
   let inserts = [
@@ -100,8 +100,8 @@ function updateTenant(tenant_id, update_info, callback) {
     address,
     "landlord_phone",
     landlord_phone,
-    "property_share",
-    property_share,
+    "rubs",
+    rubs,
     "tenant_id",
     tenant_id,
   ];
@@ -123,7 +123,7 @@ function updateTenant(tenant_id, update_info, callback) {
 }
 
 // add new tenant for a property
-// tenant_info is a JSON contains name, email, address, landlord_phone, property_share
+// tenant_info is a JSON contains name, email, address, landlord_phone, rubs
 // return true for added successfully
 // return false for added failed
 function insertTenant(property_id, tenant_info, callback) {
@@ -131,10 +131,10 @@ function insertTenant(property_id, tenant_info, callback) {
   let email = tenant_info.email;
   let address = tenant_info.address;
   let landlord_phone = tenant_info.landlord_phone;
-  let property_share = tenant_info.property_share;
+  let rubs = tenant_info.rubs;
 
-  let sql = `INSERT INTO tenant(property_id,name,email,address,landlord_phone, property_share) VALUES(?,?,?,?,?,?)`;
-  let inserts = [property_id, name, email, address, landlord_phone, property_share];
+  let sql = `INSERT INTO tenant(property_id,name,email,address,landlord_phone, rubs) VALUES(?,?,?,?,?,?)`;
+  let inserts = [property_id, name, email, address, landlord_phone, rubs];
 
   connection.query(sql, inserts, function (err, result) {
     if (err) {
