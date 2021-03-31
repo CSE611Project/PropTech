@@ -9,8 +9,7 @@ CREATE TABLE user (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE utility_account (
-
-  account_id VARCHAR(45) NOT NULL,
+  account_id INT NOT NULL,
   user_id VARCHAR(45) NOT NULL,
   PRIMARY KEY (account_id),
   UNIQUE KEY (account_id),
@@ -25,9 +24,10 @@ CREATE TABLE utility_account (
 CREATE TABLE property (
 	property_id INT NOT NULL AUTO_INCREMENT,
     user_id VARCHAR(45) NOT NULL,
-    name VARCHAR(255) NOT NULL,
+    name VARCHAR(50) NOT NULL,
     address VARCHAR(255) NOT NULL,
     property_type ENUM('commercial', 'residential') NOT NULL,
+    landlord_phone INT NOT NULL,
     PRIMARY KEY (property_id),
     UNIQUE KEY (property_id),
     KEY idx_property_id (property_id),
@@ -53,13 +53,17 @@ CREATE TABLE meter (
 
 CREATE TABLE bill (
   bill_id INT NOT NULL AUTO_INCREMENT,
-  utility_account_id INT,
-  account_id VARCHAR(45) NOT NULL,
+  account_id INT NOT NULL,
   meter_id INT NOT NULL,
-  kwh_usage INT NOT NULL,
+  m_kwh_usage FLOAT NOT NULL,
   from_date DATE NOT NULL,
   to_date DATE NOT NULL,
-  charges FLOAT NOT NULL,
+  m_charge FLOAT NOT NULL,
+  s_kwh_usage FLOAT,
+  s_charge FLOAT,
+  total_kwh_usage FLOAT NOT NULL,
+  total_charge FLOAT NOT NULL,
+  unit_charge FLOAT NOT NULL,
   PRIMARY KEY (bill_id),
   KEY idx_fk_account_id (account_id),
   KEY idx_fk_meter_id (meter_id),
@@ -68,7 +72,7 @@ CREATE TABLE bill (
 	REFERENCES utility_account(account_id) ON DELETE CASCADE,
   CONSTRAINT meter_id
 	FOREIGN KEY (meter_id)
-    REFERENCES meter(meter_id)
+    REFERENCES meter(meter_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE tenant (
@@ -77,7 +81,8 @@ CREATE TABLE tenant (
     name VARCHAR(50) NOT NULL,
     email VARCHAR(255) NOT NULL,
     address VARCHAR(255) NOT NULL,
-    property_share FLOAT NOT NULL,
+    landlord_phone INT NOT NULL,
+    rubs FLOAT NOT NULL,
     PRIMARY KEY(tenant_id),
     UNIQUE KEY(tenant_id, email),
     KEY idx_tenant_id (tenant_id),
@@ -94,7 +99,12 @@ CREATE TABLE invoice (
     tenant_id INT NOT NULL,
     from_date DATE NOT NULL,
     to_date DATE NOT NULL,
-    amount FLOAT NOT NULL,
+    prior_read FLOAT,
+    cur_read FLOAT,
+    rubs FLOAT,
+    submeter_id INT,
+    unit_charge FLOAT,
+    total_charge FLOAT NOT NULL,
     PRIMARY KEY (invoice_id),
     KEY idx_invoice_id(invoice_id),
     KEY idx_fk_tenant_id(tenant_id),
@@ -107,13 +117,20 @@ CREATE TABLE invoice (
 CREATE TABLE submeter (
 	submeter_id INT NOT NULL,
     tenant_id INT NOT NULL,
+    meter_id INT NOT NULL,
+    mulyiplier FLOAT,
     PRIMARY KEY (submeter_id),
     UNIQUE KEY (submeter_id),
     KEY idx_submeter_id (submeter_id),
     KEY idx_fk_2_tenant_id (tenant_id),
+    KEY idx_fk_meter_id (meter_id),
     CONSTRAINT idx_fk_2_tenant_id 
 		FOREIGN KEY (tenant_id)
         REFERENCES tenant(tenant_id)
+        ON DELETE CASCADE,
+	CONSTRAINT idx_fk_meter_id
+		FOREIGN KEY (meter_id)
+        REFERENCES meter(meter_id)
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -122,14 +139,41 @@ CREATE TABLE meter_tenant (
   tenant_id INT NOT NULL,
   PRIMARY KEY (meter_id, tenant_id),
   UNIQUE KEY (meter_id, tenant_id),
-  KEY idx_meter_id(meter_id),
+  KEY idx_fk_2_meter_id(meter_id),
   KEY idx_fk_3_tenant_id(tenant_id),
   CONSTRAINT idx_fk_3_tenant_id
 	FOREIGN KEY (tenant_id)
     REFERENCES tenant(tenant_id)
     ON DELETE CASCADE,
-  CONSTRAINT idx_meter_id
+  CONSTRAINT idx_fk_2_meter_id
 	FOREIGN KEY (meter_id)
     REFERENCES meter(meter_id)
     ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE submeter_bill (
+	submeter_bill_id INT NOT NULL AUTO_INCREMENT,
+    bill_id INT NOT NULL,
+    submeter_id INT NOT NULL,
+    prior_read FLOAT NOT NULL,
+    cur_read FLOAT NOT NULL,
+    from_date DATE NOT NULL,
+    to_date DATE NOT NULL,
+    cur_amt FLOAT NOT NULL,
+    amt_with_multiplier FLOAT NOT NULL,
+    amt_due FLOAT NOT NULL,
+    PRIMARY KEY (submeter_bill_id),
+    UNIQUE KEY (submeter_bill_id),
+    KEY idx_submeter_bill_id (submeter_bill_id),
+    KEY idx_fk_bill_id (bill_id),
+    KEY idx_fk_submeter_id (submeter_id),
+    CONSTRAINT idx_fk_bill_id
+		FOREIGN KEY (bill_id)
+        REFERENCES bill(bill_id)
+        ON DELETE CASCADE,
+	CONSTRAINT idx_fk_submeter_id
+		FOREIGN KEY (submeter_id)
+        REFERENCES submeter(submeter_id)
+        ON DELETE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
