@@ -104,12 +104,12 @@ CREATE TABLE invoice (
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE checkmeter (
-	checkmeter_id INT NOT NULL,
+CREATE TABLE submeter (
+	submeter_id INT NOT NULL,
     tenant_id INT NOT NULL,
-    PRIMARY KEY (checkmeter_id),
-    UNIQUE KEY (checkmeter_id),
-    KEY idx_checkmeter_id (checkmeter_id),
+    PRIMARY KEY (submeter_id),
+    UNIQUE KEY (submeter_id),
+    KEY idx_submeter_id (submeter_id),
     KEY idx_fk_2_tenant_id (tenant_id),
     CONSTRAINT idx_fk_2_tenant_id 
 		FOREIGN KEY (tenant_id)
@@ -117,3 +117,19 @@ CREATE TABLE checkmeter (
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+CREATE TABLE meter_tenant (
+  meter_id INT NOT NULL,
+  tenant_id INT NOT NULL,
+  PRIMARY KEY (meter_id, tenant_id),
+  UNIQUE KEY (meter_id, tenant_id),
+  KEY idx_meter_id(meter_id),
+  KEY idx_fk_3_tenant_id(tenant_id),
+  CONSTRAINT idx_fk_3_tenant_id
+	FOREIGN KEY (tenant_id)
+    REFERENCES tenant(tenant_id)
+    ON DELETE CASCADE,
+  CONSTRAINT idx_meter_id
+	FOREIGN KEY (meter_id)
+    REFERENCES meter(meter_id)
+    ON DELETE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
