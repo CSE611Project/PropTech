@@ -638,6 +638,110 @@ function deleteSubmeterBill(submeter_bill_id, callback){
   });
 }
 
+// insert new invoice
+// invoice_info is a JSON contains tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, total_charge
+// return true if insert successfully
+// return false if insert failed
+function insertInvoice(invoice_info, callback){
+  let tenant_id = invoice_info.tenant_id;
+  let from_date = invoice_info.from_date;
+  let to_date = invoice_info.to_date;
+  let prior_read = invoice_info.prior_read;
+  let cur_read = invoice_info.cur_read;
+  let rubs = invoice_info.rubs;
+  let has_submeter = invoice_info.has_submeter;
+  let submeter_id = invoice_info.submeter_id;
+  let unit_charge = invoice_info.unit_charge;
+  let total_charge = invoice_info.total_charge;
+
+  let sql = `INSERT INTO invoice(tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, total_charge) VALUES(?,?,?,?,?,?,?,?,?,?)`;
+  let inserts = [tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, total_charge];
+
+  connection.query(sql, inserts, function (err, result) {
+    if (err) {
+      console.log(err);
+      console.log(`not able to add new invoice for tenant_id: ${tenant_id} from_date: ${from_date} to_date: ${to_date} into database`);
+      callback(false);
+    } else {
+      if (result.affectedRows == 1) {
+        console.log("added");
+        callback(true);
+      } else {
+        console.log(`not able to add new invoice for tenant_id: ${tenant_id} from_date: ${from_date} to_date: ${to_date} into database`);
+        callback(false);
+      }
+    }
+  });
+}
+
+// update invoice
+// updated_info is a JSON contains tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, total_charge
+// return true if update successfully
+// return false if update failed
+function updateInvoice(invoice_id, updated_info, callback){
+  let tenant_id = updated_info.tenant_id;
+  let from_date = updated_info.from_date;
+  let to_date = updated_info.to_date;
+  let prior_read = updated_info.prior_read;
+  let cur_read = updated_info.cur_read;
+  let rubs = updated_info.rubs;
+  let has_submeter = updated_info.has_submeter;
+  let submeter_id = updated_info.submeter_id;
+  let unit_charge = updated_info.unit_charge;
+  let total_charge = updated_info.total_charge;
+
+  let sql = "UPDATE invoice SET ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ? WHERE ?? = ?";
+  let inserts = ["tenant_id", tenant_id,
+                 "from_date", from_date,
+                 "to_date", to_date,
+                 "prior_read", prior_read,
+                 "cur_read", cur_read,
+                 "rubs", rubs,
+                 "has_submeter", has_submeter,
+                 "submeter_id", submeter_id,
+                 "unit_charge", unit_charge,
+                 "total_charge", total_charge,
+                 "invoice_id", invoice_id];
+  connection.query(sql, inserts, function (err, result) {
+    if (err) {
+      console.log(`not able to update invoice info for invoice_id: ${invoice_id}  into database`);
+      callback(false);
+    } else {
+      if (result.affectedRows == 1) {
+        console.log("updated!");
+        callback(true);
+      } else {
+        console.log(`not able to update invoice info for invoice_id: ${invoice_id}  into database`);
+        callback(false);
+      }
+    }
+  });
+
+}
+
+// delete invoice
+// return true if delete successfully
+// return false if delete failed
+function deleteInvoice(invoice_id, callback){
+  let sql = `DELETE FROM invoice WHERE ?? = ?`;
+  let inserts = ["invoice_id", invoice_id];
+  connection.query(sql, inserts, function (err, result) {
+    if (err) {
+      console.log(err);
+      console.log(`not able to delete invoice_id: ${invoice_id} from database`);
+      callback(false);
+    } else {
+      if (result.affectedRows == 1) {
+        console.log(`invoice_id: ${invoice_id} deleted!`)
+        callback(true);
+      } else {
+        console.log(`not able to delete invoice_id: ${invoice_id} from database`);
+        callback(false);
+      }
+    }
+  });
+}
+
 // fetch bill by meter
 // fetch bill by account
 // fetch bill by property manager
@@ -676,3 +780,9 @@ exports.deleteBill = deleteBill;
 exports.insertSubmeterBill = insertSubmeterBill;
 exports.updateSubmeterBill = updateSubmeterBill;
 exports.deleteSubmeterBill = deleteSubmeterBill;
+
+exports.insertInvoice = insertInvoice;
+exports.updateInvoice = updateInvoice;
+exports.deleteInvoice = deleteInvoice;
+
+
