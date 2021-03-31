@@ -742,6 +742,53 @@ function deleteInvoice(invoice_id, callback){
   });
 }
 
+// associate meter with tenant
+// return true if add successfully
+// return false if add failed
+function associateMeterWithTenant(meter_id, tenant_id, callback){
+  let sql = `INSERT INTO meter_tenant(meter_id, tenant_id) VALUES(?,?)`;
+  let inserts = [meter_id, tenant_id];
+  connection.query(sql, inserts, function (err, result) {
+    if (err) {
+      console.log(`not able to add meter_id: ${meter_id} for tenant_id: ${tenant_id} into database`);
+      callback(false);
+    } else {
+      if (result.affectedRows == 1) {
+        console.log("added");
+        callback(true);
+      } else {
+        console.log(`not able to add meter_id: ${meter_id} for tenant_id: ${tenant_id} into database`);
+        callback(false);
+      }
+    }
+  });
+
+}
+
+// delete meter_tenant
+// return true if delete successfully
+// return false if delete failed
+function deleteMeterTenantRelation(meter_id, tenant_id, callback){
+  let sql = `DELETE FROM meter_tenant WHERE ?? = ? AND ?? = ?`;
+  let inserts = ["meter_id", meter_id,
+                 "tenant_id", tenant_id];
+  connection.query(sql, inserts, function (err, result) {
+    if (err) {
+      console.log(err);
+      console.log(`not able to delete meter_id: ${meter_id} for tenant_id: ${tenant_id} into database`);
+      callback(false);
+    } else {
+      if (result.affectedRows == 1) {
+        console.log("deleted!");
+        callback(true);
+      } else {
+        console.log(`not able to delete meter_id: ${meter_id} for tenant_id: ${tenant_id} into database`);
+        callback(false);
+      }
+    }
+  });
+}
+
 // fetch bill by meter
 // fetch bill by account
 // fetch bill by property manager
@@ -767,6 +814,9 @@ exports.deleteProperty = deleteProperty;
 exports.selectAllMeters = selectAllMeters;
 exports.insertMeter = insertMeter;
 exports.deleteMeter = deleteMeter;
+
+exports.associateMeterWithTenant = associateMeterWithTenant;
+exports.deleteMeterTenantRelation = deleteMeterTenantRelation;
 
 exports.selectAllSubmeters = selectAllSubmeters;
 exports.insertSubmeter = insertSubmeter;
