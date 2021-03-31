@@ -172,7 +172,6 @@ router.post("/auth", (req, res) => {
           res.status(401).send(err2);
         } else {
           res.cookie("authCookie", { accessToken: req.body.accessToken, idToken: req.body.idToken }, { httpOnly: true });
-          res.cookie("username", idData.email);
           res.json({ accessData, idData });
         }
       });

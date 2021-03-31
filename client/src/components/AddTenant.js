@@ -34,23 +34,10 @@ class AddTenant extends React.Component {
     this.onSubmit = this.onSubmit.bind(this);
   }
 
-  componentDidUpdate() {
-    if (this.props.property_id !== this.state.property_id) {
-      this.setState({
-        property_id: this.props.property_id,
-      });
-    }
-  }
-
-  addTenant(property_id, tenant_info) {
-    axios
-      .post("/tenant", {
-        property_id: this.state.property_id,
-        tenant_info: tenant_info,
-      })
-      .then((response) => {
-        this.props.info.generateTableData();
-      });
+  addTenant(tenant_info) {
+    axios.post("/tenant", { property_id: this.state.property_id, tenant_info: tenant_info }).then((response) => {
+      this.props.info.generateTableData();
+    });
   }
   handleClickOpen() {
     this.setState({
@@ -104,67 +91,22 @@ class AddTenant extends React.Component {
       address: this.state.address,
       property_share: this.state.property_share,
     };
-    var property_id = this.state.property_id;
-    this.addTenant(property_id, tenant_info);
+    this.addTenant(tenant_info);
   }
 
   render() {
     return (
       <div>
         <Button onClick={this.handleClickOpen}>Add Tenant</Button>
-        <Dialog
-          open={this.state.open}
-          onClose={this.handleClose}
-          aria-labelledby="form-dialog-title"
-        >
+        <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Enter Tenant Info</DialogTitle>
           <DialogContent>
             <DialogContentText></DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Name"
-              type="text"
-              onChange={this.changeName}
-              fullWidth
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              id="email"
-              label="Email Address"
-              type="email"
-              onChange={this.changeEmail}
-              fullWidth
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              id="address"
-              label="Address"
-              type="text"
-              onChange={this.changeAddress}
-              fullWidth
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              id="property_share"
-              label="Property Share"
-              type="text"
-              onChange={this.changePropertyShare}
-              fullWidth
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              id="submeter"
-              label="Submeter"
-              type="text"
-              onChange={this.changeSubmeter}
-              fullWidth
-            />
+            <TextField autoFocus margin="dense" id="name" label="Name" type="text" onChange={this.changeName} fullWidth />
+            <TextField autoFocus margin="dense" id="email" label="Email Address" type="email" onChange={this.changeEmail} fullWidth />
+            <TextField autoFocus margin="dense" id="address" label="Address" type="text" onChange={this.changeAddress} fullWidth />
+            <TextField autoFocus margin="dense" id="property_share" label="Property Share" type="text" onChange={this.changePropertyShare} fullWidth />
+            <TextField autoFocus margin="dense" id="submeter" label="Submeter" type="text" onChange={this.changeSubmeter} fullWidth />
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">

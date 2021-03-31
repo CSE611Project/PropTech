@@ -67,9 +67,7 @@ function selectAllTenants(property_id, callback) {
   let inserts = ["property_id", property_id];
   connection.query(sql, inserts, function (err, tenantList) {
     if (err) {
-      console.log(
-        `not able to select tenantList of property_id: ${property_id} from database`
-      );
+      console.log(`not able to select tenantList of property_id: ${property_id} from database`);
       callback(false);
     } else {
       console.log(`property_id: ${property_id} tenant list returned`);
@@ -91,20 +89,7 @@ function updateTenant(tenant_id, update_info, callback) {
   let property_share = update_info.property_share;
 
   let sql = `UPDATE tenant set ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ? WHERE ?? = ?`;
-  let inserts = [
-    "name",
-    name,
-    "email",
-    email,
-    "address",
-    address,
-    "landlord_phone",
-    landlord_phone,
-    "property_share",
-    property_share,
-    "tenant_id",
-    tenant_id,
-  ];
+  let inserts = ["name", name, "email", email, "address", address, "landlord_phone", landlord_phone, "property_share", property_share, "tenant_id", tenant_id];
 
   connection.query(sql, inserts, function (err, result) {
     if (err) {
@@ -138,9 +123,8 @@ function insertTenant(property_id, tenant_info, callback) {
 
   connection.query(sql, inserts, function (err, result) {
     if (err) {
-      console.log(
-        `not able to add new tenant for property_id: ${property_id} into database`
-      );
+      console.log(err);
+      console.log(`not able to add new tenant for property_id: ${property_id} into database`);
       callback(false);
     } else {
       if (result.affectedRows == 1) {
@@ -164,20 +148,14 @@ function deleteTenant(property_id, tenant_id, callback) {
     // check error type later
     if (err) {
       console.log(err);
-      console.log(
-        `not able to delete property_id: ${property_id} tenant_id: ${tenant_id} from database`
-      );
+      console.log(`not able to delete property_id: ${property_id} tenant_id: ${tenant_id} from database`);
       callback(false);
     } else {
       if (result.affectedRows == 1) {
-        console.log(
-          `property_id: ${property_id} tenant_id: ${tenant_id} deleted`
-        );
+        console.log(`property_id: ${property_id} tenant_id: ${tenant_id} deleted`);
         callback(true);
       } else {
-        console.log(
-          `property_id: ${property_id} tenant_id: ${tenant_id} delete failed`
-        );
+        console.log(`property_id: ${property_id} tenant_id: ${tenant_id} delete failed`);
         callback(false);
       }
     }
@@ -190,9 +168,7 @@ function selectAllProperties(user_id, callback) {
   let inserts = ["user_id", user_id];
   connection.query(sql, inserts, function (err, propertyList) {
     if (err) {
-      console.log(
-        `not able to select property of user_id: ${user_id} from database`
-      );
+      console.log(`not able to select property of user_id: ${user_id} from database`);
       callback(false);
     } else {
       console.log(`user_id: ${user_id} property list returned`);
@@ -217,9 +193,7 @@ function insertProperty(user_id, property_info, callback) {
   connection.query(sql, inserts, function (err, result) {
     if (err) {
       console.log(err);
-      console.log(
-        `not able to add new property for user_id: ${user_id} into database`
-      );
+      console.log(`not able to add new property for user_id: ${user_id} into database`);
       callback(false);
     } else {
       if (result.affectedRows == 1) {
@@ -245,35 +219,18 @@ function updateProperty(user_id, property_info, callback) {
   let property_id = property_info.property_id;
 
   let sql = `UPDATE property set ?? = ?, ?? = ?, ?? = ?, ?? = ? WHERE ?? = ? AND ?? = ?`;
-  let inserts = [
-    "name",
-    name,
-    "address",
-    address,
-    "property_type",
-    property_type,
-    "landlord_phone",
-    landlord_phone,
-    "user_id",
-    user_id,
-    "property_id",
-    property_id,
-  ];
+  let inserts = ["name", name, "address", address, "property_type", property_type, "landlord_phone", landlord_phone, "user_id", user_id, "property_id", property_id];
 
   connection.query(sql, inserts, function (err, result) {
     if (err) {
-      console.log(
-        `not able to update property info for user_id: ${user_id} property_id: ${property_id} into database`
-      );
+      console.log(`not able to update property info for user_id: ${user_id} property_id: ${property_id} into database`);
       callback(false);
     } else {
       if (result.affectedRows == 1) {
         console.log("updated!");
         callback(true);
       } else {
-        console.log(
-          `error! not able to update property info for user_id: ${user_id} property_id: ${property_id} into database`
-        );
+        console.log(`error! not able to update property info for user_id: ${user_id} property_id: ${property_id} into database`);
         callback(false);
       }
     }
@@ -290,17 +247,13 @@ function deleteProperty(user_id, property_id, callback) {
     // check error type later
     if (err) {
       console.log(err);
-      console.log(
-        `not able to delete property_id: ${property_id} user_id: ${user_id} from database`
-      );
+      console.log(`not able to delete property_id: ${property_id} user_id: ${user_id} from database`);
       callback(false);
     } else {
       if (result.affectedRows == 1) {
         callback(true);
       } else {
-        console.log(
-          `not able to delete property_id: ${property_id} user_id: ${user_id} from database`
-        );
+        console.log(`not able to delete property_id: ${property_id} user_id: ${user_id} from database`);
         callback(false);
       }
     }
@@ -315,9 +268,7 @@ function insertMeter(property_id, meter_id, callback) {
   let inserts = [property_id, meter_id];
   connection.query(sql, inserts, function (err, result) {
     if (err) {
-      console.log(
-        `not able to add meter_id: ${meter_id} for property_id: ${property_id} into database`
-      );
+      console.log(`not able to add meter_id: ${meter_id} for property_id: ${property_id} into database`);
       callback(false);
     } else {
       if (result.affectedRows == 1) {
@@ -340,17 +291,13 @@ function deleteMeter(property_id, meter_id, callback) {
   connection.query(sql, inserts, function (err, result) {
     if (err) {
       console.log(err);
-      console.log(
-        `not able to delete property_id: ${property_id} meter_id: ${meter_id} from database`
-      );
+      console.log(`not able to delete property_id: ${property_id} meter_id: ${meter_id} from database`);
       callback(false);
     } else {
       if (result.affectedRows == 1) {
         callback(true);
       } else {
-        console.log(
-          `not able to delete property_id: ${property_id} user_id: ${meter_id} from database`
-        );
+        console.log(`not able to delete property_id: ${property_id} user_id: ${meter_id} from database`);
         callback(false);
       }
     }
@@ -363,9 +310,7 @@ function selectAllMeters(property_id, callback) {
   let inserts = ["property_id", property_id];
   connection.query(sql, inserts, function (err, meterList) {
     if (err) {
-      console.log(
-        `not able to select meterList of property_id: ${property_id} from database`
-      );
+      console.log(`not able to select meterList of property_id: ${property_id} from database`);
       callback(false);
     } else {
       console.log(`property_id: ${property_id} meter list returned`);
@@ -382,9 +327,7 @@ function insertSubmeter(tenant_id, Submeter_id, callback) {
   let inserts = [tenant_id, Submeter_id];
   connection.query(sql, inserts, function (err, result) {
     if (err) {
-      console.log(
-        `not able to add Submeter_id: ${Submeter_id} for tenant_id: ${tenant_id} into database`
-      );
+      console.log(`not able to add Submeter_id: ${Submeter_id} for tenant_id: ${tenant_id} into database`);
       callback(false);
     } else {
       if (result.affectedRows == 1) {
@@ -407,17 +350,13 @@ function deleteSubmeter(tenant_id, Submeter_id, callback) {
   connection.query(sql, inserts, function (err, result) {
     if (err) {
       console.log(err);
-      console.log(
-        `not able to delete tenant_id: ${tenant_id} Submeter_id: ${Submeter_id} from database`
-      );
+      console.log(`not able to delete tenant_id: ${tenant_id} Submeter_id: ${Submeter_id} from database`);
       callback(false);
     } else {
       if (result.affectedRows == 1) {
         callback(true);
       } else {
-        console.log(
-          `not able to delete tenant_id: ${tenant_id} user_id: ${Submeter_id} from database`
-        );
+        console.log(`not able to delete tenant_id: ${tenant_id} user_id: ${Submeter_id} from database`);
         callback(false);
       }
     }
@@ -430,9 +369,7 @@ function selectAllSubmeters(tenant_id, callback) {
   let inserts = ["tenant_id", tenant_id];
   connection.query(sql, inserts, function (err, SubmeterList) {
     if (err) {
-      console.log(
-        `not able to select SubmeterList of tenant_id: ${tenant_id} from database`
-      );
+      console.log(`not able to select SubmeterList of tenant_id: ${tenant_id} from database`);
       callback(false);
     } else {
       console.log(`tenant_id: ${tenant_id} meter list returned`);
