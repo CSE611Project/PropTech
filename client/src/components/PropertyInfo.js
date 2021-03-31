@@ -45,6 +45,7 @@ class PropertyInfo extends Component {
   }
 
   viewTenants = (property_id) => {
+    this.state.display.setState({ page_stack: [this.state.display.page_stack, this] });
     this.state.display.changeDisplay({ page: <TenantInfo display={this.state.display} property_id={property_id} />, page_name: "Tenant Information" });
   };
 
@@ -54,14 +55,15 @@ class PropertyInfo extends Component {
       for (var i = 0; i < this.state.property_list.length; i++) {
         this.res.push(
           <tr key={i} id={i}>
-            <td>
-              <Button value={this.state.property_list[i].property_id} onClick={(e) => this.viewTenants(e.currentTarget.value)} style={{ textTransform: "none" }} color="inherit">
-                {this.state.property_list[i].name}
-              </Button>
-            </td>
+            <td>{this.state.property_list[i].name}</td>
             <td>{this.state.property_list[i].address}</td>
             <td>{this.state.property_list[i].property_type}</td>
             <td>{this.state.property_list[i].meters}</td>
+            <td>
+              <Button value={this.state.property_list[i].property_id} onClick={(e) => this.viewTenants(e.currentTarget.value)} color="inherit">
+                View Tenants
+              </Button>
+            </td>
             <td>
               <EditProperty
                 property_id={this.state.property_list[i].property_id}
@@ -97,10 +99,10 @@ class PropertyInfo extends Component {
         <table className="table">
           <tbody>
             <tr>
-              <th>Property Name</th>
-              <th>Property Address</th>
-              <th>Property Type</th>
-              <th>Meters</th>
+              <th style={{ width: "25%" }}>Property Name</th>
+              <th style={{ width: "25%" }}>Property Address</th>
+              <th style={{ width: "25%" }}>Property Type</th>
+              <th style={{ width: "10%" }}>Meters</th>
             </tr>
             {this.res}
           </tbody>

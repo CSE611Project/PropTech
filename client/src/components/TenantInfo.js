@@ -116,11 +116,10 @@ class TenantInfo extends Component {
         <table className="table">
           <tbody>
             <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Address</th>
-              <th>Property Share</th>
-              <th>Submeter</th>
+              <th style={{ width: "25%" }}>Name</th>
+              <th style={{ width: "25%" }}>Email</th>
+              <th style={{ width: "25%" }}>Address</th>
+              <th style={{ width: "10%" }}>Property Share</th>
             </tr>
             {this.res}
           </tbody>

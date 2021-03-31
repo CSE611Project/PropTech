@@ -13,8 +13,20 @@ class PropManaAfterSign extends Component {
     this.state = {
       sub: this.props.sub,
       page: null,
-      page_name: "  ",
+      page_name: "",
+      page_stack: [],
     };
+  }
+
+  componentDidUpdate() {
+    if (this.props.sub !== this.state.sub) {
+      this.setState({
+        sub: this.props.sub,
+        page: null,
+        page_name: "",
+        page_stack: [],
+      });
+    }
   }
 
   manage_property = () => {
@@ -32,9 +44,6 @@ class PropManaAfterSign extends Component {
         </header>
         <div className="Info_Page_Split">
           <ul className="buttonUL">
-            <button className="PropMana_option" onClick={manage_tenant}>
-              Manage Tenant Info
-            </button>
             <button className="PropMana_option" onClick={this.manage_property}>
               Manage Property Info
             </button>
