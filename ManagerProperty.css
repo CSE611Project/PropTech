@@ -1,0 +1,69 @@
+.ManageProperty {
+    text-align: center;
+  }
+  
+  .ManageProperty-header {
+    background-color: #282c30;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    color: white;
+  }
+  
+  .buttons {
+    display: inline-block;
+  }
+  
+  .button {
+    font-size: 20px;
+    width: 100px;
+    height: 40px;
+    margin: 40px;
+  }
+  
+  
+  .Title {
+    font-size: 80px;
+  }
+  
+  .EmailLabel {
+    margin-bottom: 20px;
+  }
+  
+  .PasswordLabel {
+    margin: 20px;
+  }
+  
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 10px;
+    overflow: hidden;
+    background-color: black;
+  }
+  
+  li {
+    display: inline;
+    padding-left: 5px;
+    padding-right: 5px;
+    color: white;
+  }
+
+  .item_name {
+    display: block;
+    text-align: center;
+  }
+  
+  .item_display{
+    display: inline-block;
+    text-align: center;
+    background-color: #282c30;
+    min-height: 1vh;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    top: 0%;
+  }
