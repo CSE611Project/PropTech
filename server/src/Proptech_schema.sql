@@ -102,6 +102,7 @@ CREATE TABLE invoice (
     prior_read FLOAT,
     cur_read FLOAT,
     rubs FLOAT,
+    has_submeter ENUM('y','n'),
     submeter_id INT,
     unit_charge FLOAT,
     total_charge FLOAT NOT NULL,
