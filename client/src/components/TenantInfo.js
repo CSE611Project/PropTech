@@ -18,23 +18,11 @@ class TenantInfo extends Component {
     super(props);
     this.state = {
       display: this.props.display,
-      sub: this.props.sub,
       property_id: this.props.property_id,
+      property_name: sessionStorage.getItem("property_name"),
       tenant_list: [],
     };
     this.generateTableData();
-  }
-
-  componentDidUpdate() {
-    if (this.props.sub !== this.state.sub || this.props.property_id !== this.state.property_id) {
-      this.setState({
-        display: this.props.display,
-        sub: this.props.sub,
-        property_id: this.props.property_id,
-        tenant_list: [],
-      });
-      this.generateTableData();
-    }
   }
 
   getTenantList() {
@@ -46,27 +34,7 @@ class TenantInfo extends Component {
     });
   }
 
-  // updateTenantTable(sub,  propery_id, tenant_list){
-  //             var tenant_list;
-  //             for(var i = 0; i < tenant_list.length; i++){
-  //                 this.state.tenant_list.push({
-  //                     tenant_id: tenant_list[i].tenant_id,
-  //                     name: tenant_list[i].name,
-  //                     email: tenant_list[i].email,
-  //                     address: tenant_list[i].address,
-  //                     property_share: tenant_list[i].property_share,
-  //                     submeter: tenant_list[i].submeter
-
-  //                 })
-  //             }
-
-  //         }
-
-  //get tenant_list from database  implement get_tenant_list function here
-
   generateTableData() {
-    //call updateTable everytime when we need to generate a list of tenants
-    //this.updateTenantTable(this.state.sub, this.state.property_id);
     this.getTenantList().then(() => {
       var res = [];
       let tableData = this.state.tenant_list;
@@ -76,7 +44,7 @@ class TenantInfo extends Component {
             <td>{tableData[i].name}</td>
             <td>{tableData[i].email}</td>
             <td>{tableData[i].address}</td>
-            <td>{tableData[i].rented_area}</td>
+            <td>{tableData[i].property_share}</td>
             <td>{tableData[i].submeter}</td>
             <td>
               <EditTenant
@@ -84,23 +52,14 @@ class TenantInfo extends Component {
                 name={tableData[i].name}
                 email={tableData[i].email}
                 address={tableData[i].address}
-                rented_area={tableData[i].rented_area}
+                property_share={tableData[i].property_share}
                 submeter={tableData[i].submeter}
                 property_id={this.state.property_id}
                 info={this}
               />
             </td>
             <td>
-              <DeleteTenant
-                tenant_id={tableData[i].tenant_id}
-                name={tableData[i].name}
-                email={tableData[i].email}
-                address={tableData[i].address}
-                rented_area={tableData[i].rented_area}
-                submeter={tableData[i].submeter}
-                property_id={this.state.property_id}
-                info={this}
-              />
+              <DeleteTenant tenant_id={tableData[i].tenant_id} info={this} />
             </td>
           </tr>
         );
@@ -116,11 +75,10 @@ class TenantInfo extends Component {
         <table className="table">
           <tbody>
             <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Address</th>
-              <th>Property Share</th>
-              <th>Submeter</th>
+              <th style={{ width: "25%" }}>Name</th>
+              <th style={{ width: "25%" }}>Email</th>
+              <th style={{ width: "25%" }}>Address</th>
+              <th style={{ width: "10%" }}>Property Share</th>
             </tr>
             {this.res}
           </tbody>
@@ -129,77 +87,6 @@ class TenantInfo extends Component {
       </div>
     );
   }
-}
-
-function manage_tenant() {
-  const ele = (
-    <div>
-      <TenantInfo />
-    </div>
-  );
-  window.location = "/PropManaAfterSign/TenantInfo";
-  return ReactDOM.render(ele, document.getElementById("root"));
-}
-
-function manage_property() {
-  const ele = (
-    <div>
-      <PropertyInfo />
-    </div>
-  );
-  window.location = "/PropManaAfterSign/PropertyInfo";
-  return ReactDOM.render(ele, document.getElementById("root"));
-}
-
-function edit_profile() {
-  const ele = <div></div>;
-  return ReactDOM.render(ele, document.getElementById("root"));
-}
-
-function manage_utility() {
-  const ele = <div></div>;
-  return ReactDOM.render(ele, document.getElementById("root"));
-}
-
-function manage_invoice() {
-  const ele = <div></div>;
-  return ReactDOM.render(ele, document.getElementById("root"));
-}
-
-function generate_invoice() {
-  const ele = <div></div>;
-  return ReactDOM.render(ele, document.getElementById("root"));
-}
-
-function log_out() {
-  const ele = (
-    <div>
-      <div className="PropMana_menu" id="logout">
-        <header className="RegProcess-header">
-          <h1>You have successfully logout</h1>
-          <button className="button" onClick={homepage}>
-            OK
-          </button>
-        </header>
-      </div>
-    </div>
-  );
-  return ReactDOM.render(ele, document.getElementById("root"));
-}
-
-function homepage() {
-  window.location = "/";
-  return ReactDOM.render(<HomePage />, document.getElementById("root"));
-}
-
-function back() {
-  return ReactDOM.render(<PropManaAfterSign />, document.getElementById("root"));
-}
-function confirm_win() {
-  window.confirm("Sure?");
-}
-function addNewTenant(sub, property_id, new_tenant) {
-  //call add_new_tenant function here to add to database
 }
 
 export default TenantInfo;

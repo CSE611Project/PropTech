@@ -30,14 +30,15 @@ function App() {
           <Route path="/About" component={Abouts} />
           <Route path="/ResetPassword" component={ResetPassword} />
           <Route exact path="/AdminAfterSign" component={AdminAfterSign} />
-          <Route exact path="/PropManaAfterSign" component={PropManaAfterSign} />
+          <Route exact path="/PropMana" component={PropManaAfterSign} />
+          <Route exact path="/PropMana/:sub" component={PropManaAfterSign} />
+          <Route exact path="/PropMana/:sub/property" component={PropManaAfterSign} />
+          <Route exact path="/PropMana/:sub/property/:propertyId" component={PropManaAfterSign} />
           <Route path="/RegProcess" component={RegProcess} />
           <Route path="/ResetProcess" component={ResetProcess} />
           <Route path="/ApplicationStatus" component={ApplicationStatus} />
           <Route path="/ManaInfo" component={ManaInfo} />
           <Route path="/EditUserAccount" component={EditUserAccount} />
-          <Route path="/PropManaAfterSign/TenantInfo" component={TenantInfo} />
-          <Route path="/PropManaAfterSign/PropertyInfo" component={PropertyInfo} />
         </Switch>
       </div>
     </BrowserRouter>

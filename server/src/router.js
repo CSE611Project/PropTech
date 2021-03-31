@@ -25,22 +25,19 @@ const idVerifier = new verifier({
 });
 
 const verifyClient = async (req, res, callback) => {
-  accessVerifier.validate(
-    req.cookies.authCookie.accessToken,
-    (err, accessData) => {
-      if (err) {
-        res.status(401).send(err);
-      } else {
-        idVerifier.validate(req.cookies.authCookie.idToken, (err2, idData) => {
-          if (err2) {
-            res.status(401).send(err2);
-          } else {
-            callback(accessData, idData);
-          }
-        });
-      }
+  accessVerifier.validate(req.cookies.authCookie.accessToken, (err, accessData) => {
+    if (err) {
+      res.status(401).send(err);
+    } else {
+      idVerifier.validate(req.cookies.authCookie.idToken, (err2, idData) => {
+        if (err2) {
+          res.status(401).send(err2);
+        } else {
+          callback(accessData, idData);
+        }
+      });
     }
-  );
+  });
 };
 
 // req json needs email, password, street_name, company_name, suite_number, city, state, zipcode
@@ -127,10 +124,7 @@ router.post("/activate", (req, res) => {
             res.json(err2);
           } else {
             db.insertUserId(req.body.sub);
-            emailer.sentEmail(
-              req.body.email,
-              `The PropTech Web App Account associated with ${req.body.email} email has been approved`
-            );
+            emailer.sentEmail(req.body.email, `The PropTech Web App Account associated with ${req.body.email} email has been approved`);
             res.json(data);
           }
         });
@@ -177,11 +171,7 @@ router.post("/auth", (req, res) => {
         if (err2) {
           res.status(401).send(err2);
         } else {
-          res.cookie(
-            "authCookie",
-            { accessToken: req.body.accessToken, idToken: req.body.idToken },
-            { httpOnly: true }
-          );
+          res.cookie("authCookie", { accessToken: req.body.accessToken, idToken: req.body.idToken }, { httpOnly: true });
           res.json({ accessData, idData });
         }
       });

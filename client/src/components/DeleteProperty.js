@@ -16,12 +16,7 @@ class DeleteProperty extends React.Component {
     super(props);
     this.state = {
       open: false,
-      name: this.props.name,
       property_id: this.props.property_id,
-      address: this.props.address,
-      property_type: this.props.property_type,
-      meters: this.props.meters,
-      user_id: this.props.user_id,
     };
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -30,22 +25,15 @@ class DeleteProperty extends React.Component {
   componentDidUpdate() {
     if (this.props.property_id !== this.state.property_id) {
       this.setState({
-        name: this.props.name,
         property_id: this.props.property_id,
-        address: this.props.address,
-        property_type: this.props.property_type,
-        meters: this.props.meters,
-        user_id: this.props.user_id,
       });
     }
   }
 
   deleteProperty() {
-    axios
-      .delete("/property", { data: { property_id: this.state.property_id } })
-      .then((response) => {
-        this.props.info.generateTableData();
-      });
+    axios.delete("/property", { data: { property_id: this.state.property_id } }).then((response) => {
+      this.props.info.generateTableData();
+    });
   }
 
   handleClickOpen() {
@@ -71,19 +59,10 @@ class DeleteProperty extends React.Component {
     return (
       <div>
         <Button onClick={this.handleClickOpen}>Delete</Button>
-        <Dialog
-          open={this.state.open}
-          onClose={this.handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            {"Use Google's location service?"}
-          </DialogTitle>
+        <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+          <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
           <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Are you sure you want to delete the chosen property?
-            </DialogContentText>
+            <DialogContentText id="alert-dialog-description">Are you sure you want to delete the chosen property?</DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">

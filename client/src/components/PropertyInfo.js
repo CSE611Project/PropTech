@@ -18,21 +18,9 @@ class PropertyInfo extends Component {
     super(props);
     this.state = {
       display: this.props.display,
-      sub: this.props.sub,
       property_list: [],
     };
     this.generateTableData();
-  }
-
-  componentDidUpdate() {
-    if (this.props.sub !== this.state.sub) {
-      this.setState({
-        display: this.props.display,
-        sub: this.props.sub,
-        property_list: [],
-      });
-      this.generateTableData();
-    }
   }
 
   getPropertyList() {
@@ -44,24 +32,25 @@ class PropertyInfo extends Component {
     });
   }
 
-  viewTenants = (property_id) => {
-    this.state.display.changeDisplay({ page: <TenantInfo display={this.state.display} property_id={property_id} />, page_name: "Tenant Information" });
-  };
-
   generateTableData = () => {
     this.getPropertyList().then(() => {
       this.res = [];
       for (var i = 0; i < this.state.property_list.length; i++) {
         this.res.push(
           <tr key={i} id={i}>
-            <td>
-              <Button value={this.state.property_list[i].property_id} onClick={(e) => this.viewTenants(e.currentTarget.value)} style={{ textTransform: "none" }} color="inherit">
-                {this.state.property_list[i].name}
-              </Button>
-            </td>
+            <td>{this.state.property_list[i].name}</td>
             <td>{this.state.property_list[i].address}</td>
             <td>{this.state.property_list[i].property_type}</td>
             <td>{this.state.property_list[i].meters}</td>
+            <td>
+              <Button
+                value={`{"property_id":"${this.state.property_list[i].property_id}", "property_name":"${this.state.property_list[i].name}"}`}
+                onClick={(e) => manage_tenants(e.currentTarget.value)}
+                color="inherit"
+              >
+                View Tenants
+              </Button>
+            </td>
             <td>
               <EditProperty
                 property_id={this.state.property_list[i].property_id}
@@ -74,15 +63,7 @@ class PropertyInfo extends Component {
               />
             </td>
             <td>
-              <DeleteProperty
-                property_id={this.state.property_list[i].property_id}
-                name={this.state.property_list[i].name}
-                address={this.state.property_list[i].address}
-                property_type={this.state.property_list[i].property_type}
-                meters={this.state.property_list[i].meters}
-                user_id={this.state.user_id}
-                info={this}
-              />
+              <DeleteProperty property_id={this.state.property_list[i].property_id} info={this} />
             </td>
           </tr>
         );
@@ -97,10 +78,10 @@ class PropertyInfo extends Component {
         <table className="table">
           <tbody>
             <tr>
-              <th>Property Name</th>
-              <th>Property Address</th>
-              <th>Property Type</th>
-              <th>Meters</th>
+              <th style={{ width: "25%" }}>Property Name</th>
+              <th style={{ width: "25%" }}>Property Address</th>
+              <th style={{ width: "25%" }}>Property Type</th>
+              <th style={{ width: "10%" }}>Meters</th>
             </tr>
             {this.res}
           </tbody>
@@ -111,77 +92,11 @@ class PropertyInfo extends Component {
   }
 }
 
-function manage_tenant() {
-  const ele = (
-    <div>
-      <TenantInfo />
-    </div>
-  );
-  window.location = "/PropManaAfterSign/TenantInfo";
-  return ReactDOM.render(ele, document.getElementById("root"));
-}
-
-function manage_property() {
-  const ele = (
-    <div>
-      <PropertyInfo />
-    </div>
-  );
-  window.location = "/PropManaAfterSign/PropertyInfo";
-  return ReactDOM.render(ele, document.getElementById("root"));
-}
-
-function edit_profile() {
-  const ele = <div></div>;
-  return ReactDOM.render(ele, document.getElementById("root"));
-}
-
-function manage_utility() {
-  const ele = <div></div>;
-  return ReactDOM.render(ele, document.getElementById("root"));
-}
-
-function manage_invoice() {
-  const ele = <div></div>;
-  return ReactDOM.render(ele, document.getElementById("root"));
-}
-
-function generate_invoice() {
-  const ele = <div></div>;
-  return ReactDOM.render(ele, document.getElementById("root"));
-}
-
-function log_out() {
-  const ele = (
-    <div>
-      <div className="PropMana_menu" id="logout">
-        <header className="RegProcess-header">
-          <h1>You have successfully logout</h1>
-          <button className="button" onClick={homepage}>
-            OK
-          </button>
-        </header>
-      </div>
-    </div>
-  );
-  return ReactDOM.render(ele, document.getElementById("root"));
-}
-
-function homepage() {
-  window.location = "/";
-  return ReactDOM.render(<HomePage />, document.getElementById("root"));
-}
-
-function back() {
-  return ReactDOM.render(<PropManaAfterSign />, document.getElementById("root"));
-}
-
-function confirm_win() {
-  window.confirm("Sure?");
-}
-
-function addNewProperty(sub, user_id, new_property) {
-  //call add_new_property function here to add to database
+function manage_tenants(info) {
+  var infos = JSON.parse(info);
+  sessionStorage.setItem("property_name", infos.property_name);
+  sessionStorage.setItem("property_id", infos.property_id);
+  window.location = `/PropMana/${sessionStorage.getItem("sub")}/property/${infos.property_id}`;
 }
 
 export default PropertyInfo;

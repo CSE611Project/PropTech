@@ -58,6 +58,8 @@ class LoginPage extends React.Component {
             console.log(response.data);
             let userType = response.data.accessData["cognito:groups"][0];
             if (userType == "PropertyManager") {
+              sessionStorage.setItem("username", response.data.idData.email);
+              sessionStorage.setItem("sub", response.data.accessData.sub);
               propmanaaftersign();
             } else if (userType == "Admin") {
               adminaftersign();
@@ -100,17 +102,14 @@ class LoginPage extends React.Component {
 
 function adminaftersign() {
   window.location = "/AdminAfterSign";
-  return ReactDOM.render(<AdminAfterSign />, document.getElementById("root"));
 }
 
 function propmanaaftersign() {
-  window.location = "/PropManaAfterSign";
-  return ReactDOM.render(<PropManaAfterSign />, document.getElementById("root"));
+  window.location = `/PropMana/${sessionStorage.getItem("sub")}`;
 }
 
 function reset() {
   window.location = "/ResetPassword";
-  return ReactDOM.render(<ResetPassword />, document.getElementById("root"));
 }
 
 export default LoginPage;
