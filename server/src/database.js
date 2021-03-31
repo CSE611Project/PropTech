@@ -79,16 +79,18 @@ function selectAllTenants(property_id, callback) {
 }
 
 // update tenant info
-// update_info is a JSON contains name, email, address, property_share
+// update_info is a JSON contains name, email, address, landlord_phone, property_share
 // return true if update successful
 // return false if update failed
+
 function updateTenant(tenant_id, update_info, callback) {
   let name = update_info.name;
   let email = update_info.email;
   let address = update_info.address;
+  let landlord_phone = update_info.landlord_phone;
   let property_share = update_info.property_share;
 
-  let sql = `UPDATE tenant set ?? = ?, ?? = ?, ?? = ?, ?? = ? WHERE ?? = ?`;
+  let sql = `UPDATE tenant set ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ? WHERE ?? = ?`;
   let inserts = [
     "name",
     name,
@@ -96,6 +98,8 @@ function updateTenant(tenant_id, update_info, callback) {
     email,
     "address",
     address,
+    "landlord_phone",
+    landlord_phone,
     "property_share",
     property_share,
     "tenant_id",
@@ -119,17 +123,18 @@ function updateTenant(tenant_id, update_info, callback) {
 }
 
 // add new tenant for a property
-// tenant_info is a JSON contains name, email, address, property_share
+// tenant_info is a JSON contains name, email, address, landlord_phone, property_share
 // return true for added successfully
 // return false for added failed
 function insertTenant(property_id, tenant_info, callback) {
   let name = tenant_info.name;
   let email = tenant_info.email;
   let address = tenant_info.address;
+  let landlord_phone = tenant_info.landlord_phone;
   let property_share = tenant_info.property_share;
 
-  let sql = `INSERT INTO tenant(property_id,name,email,address,property_share) VALUES(?,?,?,?,?)`;
-  let inserts = [property_id, name, email, address, property_share];
+  let sql = `INSERT INTO tenant(property_id,name,email,address,landlord_phone, property_share) VALUES(?,?,?,?,?,?)`;
+  let inserts = [property_id, name, email, address, landlord_phone, property_share];
 
   connection.query(sql, inserts, function (err, result) {
     if (err) {
@@ -197,16 +202,17 @@ function selectAllProperties(user_id, callback) {
 }
 
 // insert property info
-// property_info is a JSON with name, address, property_type
+// property_info is a JSON with name, address, property_type, landlord_phone
 // return true if it success
 // return false if it failed
 function insertProperty(user_id, property_info, callback) {
   let name = property_info.name;
   let address = property_info.address;
   let property_type = property_info.property_type;
+  let landlord_phone = property_info.landlord_phone;
 
-  let sql = `INSERT INTO property(user_id,name,address,property_type) VALUES(?,?,?,?)`;
-  let inserts = [user_id, name, address, property_type];
+  let sql = `INSERT INTO property(user_id,name,address,property_type, landlord_phone) VALUES(?,?,?,?,?)`;
+  let inserts = [user_id, name, address, property_type, landlord_phone];
 
   connection.query(sql, inserts, function (err, result) {
     if (err) {
@@ -228,16 +234,17 @@ function insertProperty(user_id, property_info, callback) {
 }
 
 // update property info
-// property_info is a JSON with name, address, property_type
+// property_info is a JSON with name, address, property_type, landlord phone
 // return true if update successful
 // return false if update failed
 function updateProperty(user_id, property_info, callback) {
   let name = property_info.name;
   let address = property_info.address;
   let property_type = property_info.property_type;
+  let landlord_phone = property_info.landlord_phone;
   let property_id = property_info.property_id;
 
-  let sql = `UPDATE property set ?? = ?, ?? = ?, ?? = ? WHERE ?? = ? AND ?? = ?`;
+  let sql = `UPDATE property set ?? = ?, ?? = ?, ?? = ?, ?? = ? WHERE ?? = ? AND ?? = ?`;
   let inserts = [
     "name",
     name,
@@ -245,6 +252,8 @@ function updateProperty(user_id, property_info, callback) {
     address,
     "property_type",
     property_type,
+    "landlord_phone",
+    landlord_phone,
     "user_id",
     user_id,
     "property_id",
@@ -432,6 +441,14 @@ function selectAllSubmeters(tenant_id, callback) {
   });
 }
 
+// add new bill
+// delete bill
+// update bill
+// fetch bill by meter
+// fetch bill by account
+// fetch bill by property manager
+// fetch bill by time period
+// insert invoice into database
 exports.establishDatabaseConnection = establishDatabaseConnection;
 exports.connection = connection;
 
