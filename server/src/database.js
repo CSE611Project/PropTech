@@ -537,6 +537,106 @@ function deleteBill(bill_id, callback){
   });
 }
 
+// insert submeter_bill
+// submeter_bill_info is a JSON contains bill_id, submeter_id, prior_read, cur_read, from_date, to_date, cur_amt, amt_with_multiplier, amt_due
+// return true if insert successfully
+// return false if insert failed
+function insertSubmeterBill(submeter_bill_info, callback) {
+  let bill_id = submeter_bill_info.bill_id;
+  let submeter_id = submeter_bill_info.submeter_id;
+  let prior_read = submeter_bill_info.prior_read;
+  let cur_read = submeter_bill_info.cur_read;
+  let from_date = submeter_bill_info.from_date;
+  let to_date = submeter_bill_info.to_date;
+  let cur_amt = submeter_bill_info.s_kwh_usage;
+  let amt_with_multiplier = submeter_bill_info.amt_with_multiplier;
+  let amt_due = submeter_bill_info.amt_due;
+
+  let sql = `INSERT INTO submeter_bill(bill_id, submeter_id, prior_read, cur_read, from_date, to_date, cur_amt, amt_with_multiplier, amt_due) VALUES(?,?,?,?,?,?,?,?,?)`;
+  let inserts = [bill_id, submeter_id, prior_read, cur_read, from_date, to_date, cur_amt, amt_with_multiplier, amt_due];
+
+  connection.query(sql, inserts, function (err, result) {
+    if (err) {
+      console.log(err);
+      console.log(`not able to add new submeter_bill for submeter_id: ${submeter_id} from_date: ${from_date} to_date: ${to_date} into database`);
+      callback(false);
+    } else {
+      if (result.affectedRows == 1) {
+        console.log("inserted");
+        callback(true);
+      } else {
+        console.log(`not able to add new submeter_bill for account_id: ${account_id} from_date: ${from_date} to_date: ${to_date} into database`);
+        callback(false);
+      }
+    }
+  });
+
+}
+
+// update submeter_bill
+// updated_info is a JSON contains bill_id, submeter_id, prior_read, cur_read, from_date, to_date, cur_amt, amt_with_multiplier, amt_due
+// return true if update successfully
+// return false if update failed
+function updateSubmeterBill(submeter_bill_id, updated_info, callback) {
+  let bill_id = updated_info.bill_id;
+  let submeter_id = updated_info.submeter_id;
+  let prior_read = updated_info.prior_read;
+  let cur_read = updated_info.cur_read;
+  let from_date = updated_info.from_date;
+  let to_date = updated_info.to_date;
+  let cur_amt = updated_info.s_kwh_usage;
+  let amt_with_multiplier = updated_info.amt_with_multiplier;
+  let amt_due = updated_info.amt_due;
+
+  let sql = `UPDATE submeter_bill SET ?? = ?, ?? = ?, ?? = ?, ?? = ?,?? = ?,?? = ?,?? = ?,?? = ?,?? = ? WHERE ?? = ?`;
+  let inserts = ["bill_id", bill_id,
+                 "submeter_id", submeter_id,
+                 "prior_read", prior_read,
+                 "cur_read", cur_read,
+                 "from_date", from_date,
+                 "to_date", to_date,
+                 "cur_amt", cur_amt,
+                 "amt_with_multiplier", amt_with_multiplier,
+                 "amt_due", amt_due,
+                 "submeter_bill_id", submeter_bill_id];
+  connection.query(sql, inserts, function (err, result) {
+    if (err) {
+      console.log(`not able to update submeter_bill info for submeter_bill_id: ${submeter_bill_id} into database`);
+      callback(false);
+    } else {
+      if (result.affectedRows == 1) {
+        console.log("updated!");
+        callback(true);
+      } else {
+        console.log(`not able to update submeter_bill info for submeter_bill_id: ${submeter_bill_id} into database`);
+        callback(false);
+      }
+    }
+  });
+}
+
+// delete submeter_bill
+// return true if delete successfully
+// return false if delete failed
+function deleteSubmeterBill(submeter_bill_id, callback){
+  let sql = `DELETE FROM submeter_bill WHERE ?? = ?`;
+  let inserts = ["submeter_bill_id", submeter_bill_id];
+  connection.query(sql, inserts, function (err, result) {
+    if (err) {
+      console.log(err);
+      console.log(`not able to delete submeter_bill_id: ${submeter_bill_id} from database`);
+      callback(false);
+    } else {
+      if (result.affectedRows == 1) {
+        console.log(`submeter_bill_id: ${submeter_bill_id} deleted!`)
+        callback(true);
+      } else {
+        console.log(`not able to delete submeter_bill_id: ${submeter_bill_id} from database`);
+        callback(false);
+      }
+    }
+  });
+}
 
 // fetch bill by meter
 // fetch bill by account
@@ -572,3 +672,7 @@ exports.deleteSubmeter = deleteSubmeter;
 exports.insertBill = insertBill;
 exports.updateBill = updateBill;
 exports.deleteBill = deleteBill;
+
+exports.insertSubmeterBill = insertSubmeterBill;
+exports.updateSubmeterBill = updateSubmeterBill;
+exports.deleteSubmeterBill = deleteSubmeterBill;
