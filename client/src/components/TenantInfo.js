@@ -85,7 +85,16 @@ class TenantInfo extends Component {
                         <td key={tableData[i].address}>{tableData[i].address}</td>
                         <td key={tableData[i].rented_area}>{tableData[i].rented_area}</td>
                         <td key={tableData[i].submeter}>{tableData[i].submeter}</td>
-                        <td><Submeters /></td>
+                        <td><Submeters 
+                            tenant_id={tableData[i].tenant_id}
+                            name={tableData[i].name}
+                            email={tableData[i].email}
+                            address={tableData[i].address}
+                            rented_area={tableData[i].rented_area}
+                            submeter={tableData[i].submeter}
+                            property_id={this.state.property_id}
+                            info={this}
+                        /></td>
                         <td><EditTenant
                             tenant_id={tableData[i].tenant_id}
                             name={tableData[i].name}

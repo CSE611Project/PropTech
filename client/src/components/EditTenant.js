@@ -20,7 +20,7 @@ class EditTenant extends React.Component {
             tenant_id: this.props.tenant_id,
             email: this.props.email,
             address: this.props.address,
-            rented_area: this.props.rented_area,
+            phone_number: this.props.phone_number,
             submeter: this.props.submeter,
             property_id: this.props.property_id
         }
@@ -30,7 +30,7 @@ class EditTenant extends React.Component {
         this.changeName = this.changeName.bind(this)
         this.changeEmail = this.changeEmail.bind(this)
         this.changeAddress = this.changeAddress.bind(this)
-        this.changeRentedArea = this.changeRentedArea.bind(this)
+        this.changePhoneNumber = this.changePhoneNumber.bind(this)
         this.changeSubmeter = this.changeSubmeter.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
@@ -40,7 +40,7 @@ class EditTenant extends React.Component {
                 tenant_id: this.props.tenant_id,
                 email: this.props.email,
                 address: this.props.address,
-                rented_area: this.props.rented_area,
+                phone_number: this.props.phone_number,
                 submeter: this.props.submeter,
                 property_id: this.props.property_id});
         }
@@ -81,9 +81,9 @@ class EditTenant extends React.Component {
         })
     }
 
-    changeRentedArea(event) {
+    changePhoneNumber(event) {
         this.setState({
-            rented_area: event.target.value
+            phone_number: event.target.value
         })
     }
 
@@ -102,7 +102,7 @@ class EditTenant extends React.Component {
             name: this.state.name,
             email: this.state.email,
             address: this.state.address,
-            property_share: this.state.rented_area,
+            phone_number: this.state.phone_number,
             submeter: this.state.submeter,
             property_id: this.state.property_id
         }
@@ -155,21 +155,11 @@ class EditTenant extends React.Component {
                         <TextField
                             autoFocus
                             margin="dense"
-                            id="rented_area"
-                            label="Rented Area(sqft)"
+                            id="phone_number"
+                            label="Landlord Phone Number"
                             type="text"
-                            value={this.state.rented_area}
-                            onChange={this.changeRentedArea}
-                            fullWidth
-                        />
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            id="submeter"
-                            label="Submeter"
-                            type="text"
-                            value={this.state.submeter}
-                            onChange={this.changeSubmeter}
+                            value={this.state.phone_number}
+                            onChange={this.changePhoneNumber}
                             fullWidth
                         />
                     </DialogContent>
