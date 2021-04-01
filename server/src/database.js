@@ -183,17 +183,18 @@ function selectAllProperties(user_id, callback) {
 }
 
 // insert property info
-// property_info is a JSON with name, address, property_type, landlord_phone
+// property_info is a JSON with name, address, property_type, total_footage, landlord_phone
 // return true if it success
 // return false if it failed
 function insertProperty(user_id, property_info, callback) {
   let name = property_info.name;
   let address = property_info.address;
   let property_type = property_info.property_type;
+  let total_footage = property_info.total_footage;
   let landlord_phone = property_info.landlord_phone;
 
-  let sql = `INSERT INTO property(user_id,name,address,property_type,landlord_phone) VALUES(?,?,?,?,?)`;
-  let inserts = [user_id, name, address, property_type, landlord_phone];
+  let sql = `INSERT INTO property(user_id,name,address,property_type, total_footage, landlord_phone) VALUES(?,?,?,?,?,?)`;
+  let inserts = [user_id, name, address, property_type, total_footage, landlord_phone];
 
   connection.query(sql, inserts, function (err, result) {
     if (err) {
@@ -213,20 +214,22 @@ function insertProperty(user_id, property_info, callback) {
 }
 
 // update property info
-// property_info is a JSON with name, address, property_type, landlord phone
+// property_info is a JSON with name, address, property_type, total_footage, landlord phone
 // return true if update successful
 // return false if update failed
 function updateProperty(user_id, property_info, callback) {
   let name = property_info.name;
   let address = property_info.address;
   let property_type = property_info.property_type;
+  let total_footage = property_info.total_footage;
   let landlord_phone = property_info.landlord_phone;
   let property_id = property_info.property_id;
 
-  let sql = `UPDATE property set ?? = ?, ?? = ?, ?? = ?, ?? = ? WHERE ?? = ? AND ?? = ?`;
+  let sql = `UPDATE property set ?? = ?, ?? = ?, ?? = ?, ?? = ? , ?? = ? WHERE ?? = ? AND ?? = ?`;
   let inserts = ["name",  name,
                  "address", address,
                  "property_type", property_type,
+                 "total_footage", total_footage,
                  "landlord_phone", landlord_phone,
                  "user_id", user_id,
                  "property_id", property_id];
@@ -788,6 +791,14 @@ function deleteMeterTenantRelation(meter_id, tenant_id, callback){
     }
   });
 }
+
+// get meter to tenant list(property_id)
+// this function will return a list of meter-tenant relations existed in given property_id
+
+
+// get all meter and submeter bill(property_id, from_date, to_date)
+// get all meter and submeter (property_id)
+
 
 // fetch bill by meter
 // fetch bill by account
