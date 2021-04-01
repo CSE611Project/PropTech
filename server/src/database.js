@@ -819,11 +819,36 @@ function selectMeterTenantListByProperty(property_id, callback){
   });
 }
 
-// get all meter and submeter bill(property_id, from_date, to_date)
+// this function will return a list of meter-submeter bill by property_id and given time period
+function selectMeterSubmeterBillByProperty(property_id, from_date, to_date, callback){
+  let sql = `
+      with ?? as
+        (
+          select ?? from ?? where ?? = ?
+        ) 
+      select * from ??, ?? inner join ?? on ?? = ?? 
+      where ?? = ?? and ?? >= ? and ?? <= ? `;
+  let inserts = [
+      "meter_list",
+      "meter_id", "meter", "property_id", property_id,
+      "meter_list", "bill", "submeter_bill", "bill.bill_id", "submeter_bill.bill_id",
+      "meter_list.meter_id", "bill.meter_id", "bill.from_date", from_date, "bill.to_date", to_date];
+
+  connection.query(sql, inserts, function (err, meterSubmeterBillList) {
+    if (err) {
+      console.log(`not able to select meterSubmeterBillList of property_id: ${property_id} between ${from_date} and ${to_date} from database`);
+      callback(false);
+    } else {
+      console.log(`property_id: ${property_id} between ${from_date} and ${to_date} meterSubmeterBillList returned`);
+      callback(meterSubmeterBillList);
+    }
+  });
+
+}
 
 // get all meter and submeter (property_id)
 
-// this function will return a list of meter-submeter
+
 // fetch bill by meter
 // fetch bill by account
 // fetch bill by property manager
@@ -871,4 +896,4 @@ exports.insertInvoice = insertInvoice;
 exports.updateInvoice = updateInvoice;
 exports.deleteInvoice = deleteInvoice;
 
-
+exports.selectMeterSubmeterBillByProperty = selectMeterSubmeterBillByProperty;
