@@ -12,6 +12,8 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import axios from "axios";
 import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import DatePicker from './DatePicker.js'
 
 class MeterBillPage extends React.Component{
     constructor(props) {
@@ -63,7 +65,7 @@ class MeterBillPage extends React.Component{
         })
     }
 
-    chagneMeter(event){
+    changeMeter(event){
         this.setState({
             meter_code:event.target.value
         })
@@ -110,6 +112,7 @@ class MeterBillPage extends React.Component{
             setCheck: event.target.checked
         })
     }
+    
 
     addBill(bill_info) {
     /*    axios.post("/bill", { bill_info: bill_info }).then((response) => {
@@ -147,23 +150,21 @@ class MeterBillPage extends React.Component{
               <DialogTitle id="form-dialog-title">Enter Billing Info</DialogTitle>
               <DialogContent>
                 <DialogContentText></DialogContentText>
+                
                 <TextField autoFocus margin="dense" id="meter_code" label="meter#" type="text" onChange={this.changeMeter} fullWidth />
-                <TextField autoFocus margin="dense" id="s_date" label="start date" type="text" onChange={this.changeStart} fullWidth />
-                <TextField autoFocus margin="dense" id="e_date" label="end date" type="text" onChange={this.changeEnd} fullWidth />
+                <DatePicker />
                 <TextField autoFocus margin="dense" id="kwh_rate" label="KWH" type="text" onChange={this.changeKWH} fullWidth />
                 <TextField autoFocus margin="dense" id="bill_amount" label="bill $" type="text" onChange={this.changeBill} fullWidth />
 
-        
-                <Checkbox checked={checked} onChange={this.changeCheckBox} 
-                label = "I have second bill/constellation company need to input"
-                inputProps={{ "aria-label": "primary checkbox" }}/>
 
+                <FormControlLabel
+                control={<Checkbox checked={this.state.setCheck} onChange={this.changeCheckBox} inputProps={{ "aria-label": "primary checkbox" }}/>
+            }
+                 label="I have second bill/constellation company need to input"/>
 
-              <ListItem alignItems="center">
-              <DialogTitle id="form-dialog-title" disabled={!this.state.checked} onChange={this.changeKWH}>Enter Constellation Billing Info</DialogTitle>
-              <TextField autoFocus margin="dense" id="kwh_rate" label="KWH" type="text" disabled={!this.state.checked} onChange={this.changeKWH} fullWidth />
-              <TextField autoFocus margin="dense" id="bill_amount" label="bill $" type="text" disabled={!this.state.checked} onChange={this.changeBill} fullWidth />
-              </ListItem>
+              <TextField autoFocus margin="dense" id="kwh_rate" label="KWH" type="text" disabled={!this.state.setCheck} onChange={this.changeKWH} fullWidth />
+              <TextField autoFocus margin="dense" id="bill_amount" label="bill $" type="text" disabled={!this.state.setCheck} onChange={this.changeBill} fullWidth />
+              
               
 
               </DialogContent>
