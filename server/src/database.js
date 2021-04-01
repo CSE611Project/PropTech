@@ -693,7 +693,7 @@ function updateInvoice(invoice_id, updated_info, callback){
   let unit_charge = updated_info.unit_charge;
   let total_charge = updated_info.total_charge;
 
-  let sql = "UPDATE invoice SET ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ? WHERE ?? = ?";
+  let sql = `UPDATE invoice SET ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ? WHERE ?? = ?`;
   let inserts = ["tenant_id", tenant_id,
                  "from_date", from_date,
                  "to_date", to_date,
@@ -792,14 +792,38 @@ function deleteMeterTenantRelation(meter_id, tenant_id, callback){
   });
 }
 
-// get meter to tenant list(property_id)
 // this function will return a list of meter-tenant relations existed in given property_id
-
+function selectMeterTenantListByProperty(property_id, callback){
+  let sql = `
+        select 
+            ??,
+            ?? 
+        from 
+            ?? inner join ?? on ?? = ??
+        where ?? = ?
+        order by ??`;
+  let inserts = [
+    "meter.meter_id",
+    "meter_tenant.tenant_id",
+    "meter", "meter_tenant", "meter.meter_id", "meter_tenant.meter_id",
+    "meter.property_id", property_id,
+    "meter.meter_id"];
+  connection.query(sql, inserts, function (err, meterTenantList) {
+    if (err) {
+      console.log(`not able to select meterTenantList of property_id: ${property_id} from database`);
+      callback(false);
+    } else {
+      console.log(`property_id: ${property_id} meterTenantList list returned`);
+      callback(meterTenantList);
+    }
+  });
+}
 
 // get all meter and submeter bill(property_id, from_date, to_date)
+
 // get all meter and submeter (property_id)
 
-
+// this function will return a list of meter-submeter
 // fetch bill by meter
 // fetch bill by account
 // fetch bill by property manager
@@ -828,6 +852,7 @@ exports.deleteMeter = deleteMeter;
 
 exports.associateMeterWithTenant = associateMeterWithTenant;
 exports.deleteMeterTenantRelation = deleteMeterTenantRelation;
+exports.selectMeterTenantListByProperty = selectMeterTenantListByProperty;
 
 exports.selectAllSubmeters = selectAllSubmeters;
 exports.insertSubmeter = insertSubmeter;
