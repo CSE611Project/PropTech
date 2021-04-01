@@ -9,7 +9,7 @@ CREATE TABLE user (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE utility_account (
-  account_id INT NOT NULL,
+  account_id VARCHAR(45) NOT NULL,
   user_id VARCHAR(45) NOT NULL,
   PRIMARY KEY (account_id),
   UNIQUE KEY (account_id),
@@ -27,7 +27,8 @@ CREATE TABLE property (
     name VARCHAR(50) NOT NULL,
     address VARCHAR(255) NOT NULL,
     property_type ENUM('commercial', 'residential') NOT NULL,
-    landlord_phone INT NOT NULL,
+    total_footage FLOAT NOT NULL,
+    landlord_phone VARCHAR(14) NOT NULL,
     PRIMARY KEY (property_id),
     UNIQUE KEY (property_id),
     KEY idx_property_id (property_id),
@@ -39,7 +40,7 @@ CREATE TABLE property (
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE meter (
-  meter_id INT NOT NULL,
+  meter_id VARCHAR(45) NOT NULL,
   property_id INT NOT NULL,
   PRIMARY KEY (meter_id, property_id),
   UNIQUE KEY (meter_id, property_id),
@@ -53,8 +54,8 @@ CREATE TABLE meter (
 
 CREATE TABLE bill (
   bill_id INT NOT NULL AUTO_INCREMENT,
-  account_id INT NOT NULL,
-  meter_id INT NOT NULL,
+  account_id VARCHAR(45) NOT NULL,
+  meter_id VARCHAR(45) NOT NULL,
   m_kwh_usage FLOAT NOT NULL,
   from_date DATE NOT NULL,
   to_date DATE NOT NULL,
@@ -76,12 +77,12 @@ CREATE TABLE bill (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE tenant (
-	tenant_id INT AUTO_INCREMENT,
+	tenant_id INT NOT NULL AUTO_INCREMENT,
     property_id INT NOT NULL,
     name VARCHAR(50) NOT NULL,
     email VARCHAR(255) NOT NULL,
     address VARCHAR(255) NOT NULL,
-    landlord_phone INT NOT NULL,
+    landlord_phone VARCHAR(14) NOT NULL,
     rubs FLOAT NOT NULL,
     PRIMARY KEY(tenant_id),
     UNIQUE KEY(tenant_id, email),
@@ -103,7 +104,7 @@ CREATE TABLE invoice (
     cur_read FLOAT,
     rubs FLOAT,
     has_submeter ENUM('y','n'),
-    submeter_id INT,
+    submeter_id VARCHAR(45),
     unit_charge FLOAT,
     total_charge FLOAT NOT NULL,
     PRIMARY KEY (invoice_id),
@@ -116,9 +117,9 @@ CREATE TABLE invoice (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE submeter (
-	submeter_id INT NOT NULL,
+	submeter_id VARCHAR(45) NOT NULL,
     tenant_id INT NOT NULL,
-    meter_id INT NOT NULL,
+    meter_id VARCHAR(45) NOT NULL,
     multiplier FLOAT,
     PRIMARY KEY (submeter_id),
     UNIQUE KEY (submeter_id),
@@ -136,7 +137,7 @@ CREATE TABLE submeter (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE meter_tenant (
-  meter_id INT NOT NULL,
+  meter_id VARCHAR(45) NOT NULL,
   tenant_id INT NOT NULL,
   PRIMARY KEY (meter_id, tenant_id),
   UNIQUE KEY (meter_id, tenant_id),
@@ -155,7 +156,7 @@ CREATE TABLE meter_tenant (
 CREATE TABLE submeter_bill (
 	submeter_bill_id INT NOT NULL AUTO_INCREMENT,
     bill_id INT NOT NULL,
-    submeter_id INT NOT NULL,
+    submeter_id VARCHAR(45) NOT NULL,
     prior_read FLOAT NOT NULL,
     cur_read FLOAT NOT NULL,
     from_date DATE NOT NULL,
