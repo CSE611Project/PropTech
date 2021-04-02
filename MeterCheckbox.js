@@ -23,15 +23,17 @@ class MeterCheckBox extends React.Component {
             meter_1: false,
             meter_2: false
         }
+        this.onChange = this.onChange.bind(this)
         this.onChangeOnlyOption = this.onChangeOnlyOption.bind(this)
         this.onChangeMultiOption = this.onChangeMultiOption.bind(this)
+        this.generateTable();
     }
 
     onChangeOnlyOption(event) {
         {/* this part should also return the chosen meter value */ }
         this.setState({ meter: event.target.value }, () => {
             console.log(`state: ${this.state.meter}, value: ${event.target.value}`); // this is my checking
-          });
+        });
         this.props.methodfromparent(this.state.meter);
     }
 
@@ -43,6 +45,40 @@ class MeterCheckBox extends React.Component {
         this.props.methodfromparent(this.state.meter);
     }
 
+    generateTable() {
+        var res = [];
+        const onlyOp = this.state.onlyOption;
+        let tableData = this.state.meter_list;
+        if (OnlyOp === true) {
+            for (var i = 0; i < tableData.length; i++) {
+                res.push(
+                    <FormControlLabel name={tableData[i]} value={tableData[i]} control={<Radio />} label={tableData[i]} />
+                )
+            }
+            this.res = res;
+            this.forceUpdate();
+        } else {
+            for (var i = 0; i < tableData.length; i++) {
+                res.push(
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                onChange={this.onChangeMultiOption}
+                                name={tableData[i]}
+                                color="primary"
+                            />
+                        }
+                        label={tableData[i]}
+                    />
+                )
+            }
+            this.res = res;
+            this.forceUpdate();
+        }
+
+    }
+
+
     render() {
         const only = this.state.onlyOption;
         return (
@@ -51,40 +87,15 @@ class MeterCheckBox extends React.Component {
                     ? <div>
                         <FormControl>
                             <FormLabel>Which meter number is associated with this submeter?</FormLabel>
-                            <RadioGroup aria-label="meter">
-                                <FormControlLabel value="123456" control={<Radio onChange={this.onChangeOnlyOption} />} label="123456" />
-                                <FormControlLabel value="654321" control={<Radio onChange={this.onChangeOnlyOption} />} label="654321" />
-                                <FormControlLabel value="555555" control={<Radio onChange={this.onChangeOnlyOption} />} label="555555" />
+                            <RadioGroup aria-label="meter" onChange={this.onChangeOnlyOption}>
+                                {this.res}
                             </RadioGroup>
                         </FormControl>
                     </div>
                     : <FormControl>
                         <FormLabel>Which meter number is associated with this tenant?</FormLabel>
                         <FormGroup column>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={this.state.meter_1}
-                                        onChange={this.onChangeMultiOption}
-                                        name="meter_1"
-                                        value="meter_1"
-                                        color="primary"
-                                    />
-                                }
-                                label={this.state.meters}
-                            />
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={this.state.meter_2}
-                                        onChange={this.onChangeMultiOption}
-                                        name="meter_2"
-                                        value="meter_2"
-                                        color="primary"
-                                    />
-                                }
-                                label="543321"
-                            />
+                            {this.res}
                         </FormGroup>
                     </FormControl>
                 }

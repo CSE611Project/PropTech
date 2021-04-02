@@ -37,6 +37,7 @@ class Submeters extends React.Component {
             submeter_id: '',
             meter_list: [],
             meter: ''
+            
         }
 
         this.handleClickOpen = this.handleClickOpen.bind(this)
@@ -65,20 +66,24 @@ class Submeters extends React.Component {
         this.setState({
             open: true
         })
+        this.generateTable();
     }
     handleClose() {
         this.setState({
             open: false
         })
     }
+    
+
+
 
     getSubmeterList() {
-        {/*return new Promise((resolve, reject) => {
-            axios.get(`/tenant/${this.state.property_id}`).then((response) => {
+        return new Promise((resolve, reject) => {
+            axios.get(`/submeter/${this.state.tenant_id}`).then((response) => {
                 this.setState({ submeter_list: response.data })
                 resolve();
             })
-        })*/}
+        })
     }
 
     getMultiplierList() {
@@ -98,9 +103,9 @@ class Submeters extends React.Component {
     }
 
     addSubmeter(property_id, tenant_info) {
-        {/*axios.post('/tenant', {property_id: this.state.property_id, tenant_info: tenant_info}).then(response => {
-            this.props.info.generateTableData();
-        })*/}
+        axios.post('/add_submeter', {submeter_id: this.state.submeter_id, tenant_id: this.state.tenant_id}).then(response => {
+            this.generateTable();
+        })
     }
 
     addMultiplier() {
@@ -114,7 +119,7 @@ class Submeters extends React.Component {
         event.preventDefault();
         this.addSubmeter()
         this.addMultiplier()
-        console.log(this.state.meter)
+        console.log(this.state.submeter, this.state.multiplier)
         
     }
 
@@ -122,6 +127,7 @@ class Submeters extends React.Component {
         event.preventDefault();
         this.setState({
             open: false,
+
         })
 
     }
@@ -132,36 +138,40 @@ class Submeters extends React.Component {
         })
     }
 
-
     generateTable() {
         //call updateTable everytime when we need to generate a list of submeter and multiplier
         // see hardcode below in render() function
         this.getSubmeterList().then(() => {
             var res = [];
             let tableData = this.state.submeter_list;
+            console.log(tableData);
             for (var i = 0; i < tableData.length; i++) {
                 res.push(
 
                     <tr key={i} id={i}>
-                        <td key={tableData[i]}>{tableData[i]}</td>
+                        <td>{tableData[i].submeter_id}</td>
                         <td><EditSubmeters
                             tenant_id={tableData[i].tenant_id}
-                            name={tableData[i].name}
-                            email={tableData[i].email}
-                            address={tableData[i].address}
-                            phone_number={tableData[i].phone_number}
-                            submeter={tableData[i].submeter}
+                            // name={tableData[i].name}
+                            // email={tableData[i].email}
+                            // address={tableData[i].address}
+                            // phone_number={tableData[i].phone_number}
+                            meter={tableData[i].meter_id}
+                            submeter={tableData[i].submeter_id}
                             property_id={this.state.property_id}
                         /></td>
                         <td><DeleteSubmeters
                             tenant_id={tableData[i].tenant_id}
-                            name={tableData[i].name}
-                            email={tableData[i].email}
-                            address={tableData[i].address}
-                            phone_number={tableData[i].phone_number}
-                            submeter={tableData[i].submeter}
+                            // name={tableData[i].name}
+                            // email={tableData[i].email}
+                            // address={tableData[i].address}
+                            // phone_number={tableData[i].phone_number}
+                            info={this}
+                            meter={tableData[i].meter_id}
+                            submeter_id={tableData[i].submeter_id}
                             property_id={this.state.property_id}
                         /></td>
+                        <td><SubmeterBill submeter={tableData[i].submeter_id}/></td>
                     </tr>
                 )
             }
@@ -179,19 +189,7 @@ class Submeters extends React.Component {
                 <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
                     <DialogTitle id="form-dialog-title">Manage Submeters</DialogTitle>
                     {this.res}
-                    <table>
-                        <tr>
-                            <th>Submeter</th>
-                            <th>multiplier</th>
-                        </tr>
-                        <tr>
-                            <td>192962</td>
-                            <td>20</td>
-                            <td><EditSubmeters submeter="192962" /></td>
-                            <td><SubmeterBill submeter="192962"/></td>
-                            <td><DeleteSubmeters submeter="192962" /></td>
-                        </tr>
-                    </table>
+
                     <DialogContent>
                         <DialogContentText>
                         </DialogContentText>
@@ -226,9 +224,7 @@ class Submeters extends React.Component {
                         <Button onClick={this.handleClose} color="primary">
                             Cancel
                         </Button>
-                        <Button onClick={this.onSubmit} color="primary">
-                            Save
-                        </Button>
+
                     </DialogActions>
                 </Dialog>
             </div>

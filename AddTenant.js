@@ -29,10 +29,10 @@ class AddTenant extends React.Component {
       name: "",
       email: "",
       address: "",
-      phone_number: "",
-      multiplier: "",
+      landlord_phone: "",
       rubs: "",
       property_id: this.props.property_id,
+      multiplier: "",
       meter: "",
       meter_list: []
     };
@@ -42,9 +42,9 @@ class AddTenant extends React.Component {
     this.changeName = this.changeName.bind(this);
     this.changeEmail = this.changeEmail.bind(this);
     this.changeAddress = this.changeAddress.bind(this);
-    this.changePhoneNumber = this.changePhoneNumber.bind(this);
+    this.changeLandlordPhone = this.changeLandlordPhone.bind(this);
+    this.changeRubs = this.changeRubs.bind(this);
     this.changeMultiplier = this.changeMultiplier.bind(this);
-    this.changeRUBS = this.changeRUBS.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.getAssociatedMeter = this.getAssociatedMeter.bind(this)
   }
@@ -55,11 +55,6 @@ class AddTenant extends React.Component {
     });
   }
 
-  addTenant(property_id, tenant_info) {
-    axios.post("/tenant", { property_id: this.state.property_id, tenant_info: tenant_info }).then((response) => {
-      this.props.info.generateTableData();
-    });
-  }
   handleClickOpen() {
     this.setState({
       open: true,
@@ -89,21 +84,21 @@ class AddTenant extends React.Component {
     });
   }
 
-  changePhoneNumber(event) {
+  changeLandlordPhone(event) {
     this.setState({
-      phone_number: event.target.value,
+      landlord_phone: event.target.value,
+    });
+  }
+
+  changeRubs(event) {
+    this.setState({
+      rubs: event.target.value,
     });
   }
 
   changeMultiplier(event) {
     this.setState({
       multiplier: event.target.value,
-    });
-  }
-
-  changeRUBS(event) {
-    this.setState({
-      rubs: event.target.value,
     });
   }
   onSubmit(event) {
@@ -118,12 +113,12 @@ class AddTenant extends React.Component {
       name: this.state.name,
       email: this.state.email,
       address: this.state.address,
-      phone_number: this.state.phone_number,
-      multiplier: this.state.multiplier,
+      landlord_phone: this.state.landlord_phone,
       rubs: this.state.rubs,
     };
+    console.log(tenant_info);
     var property_id = this.state.property_id;
-    this.addTenant(property_id, tenant_info);
+    this.addTenant(tenant_info);
   }
 
   getAssociatedMeter(meters) {
@@ -143,7 +138,7 @@ class AddTenant extends React.Component {
             <TextField autoFocus margin="dense" id="name" label="Name" type="text" onChange={this.changeName} fullWidth />
             <TextField autoFocus margin="dense" id="email" label="Email Address" type="email" onChange={this.changeEmail} fullWidth />
             <TextField autoFocus margin="dense" id="address" label="Address" type="text" onChange={this.changeAddress} fullWidth />
-            <TextField autoFocus margin="dense" id="phone_number" label="Landlord Phone Number" type="text" onChange={this.changePhoneNumber} fullWidth />
+            <TextField autoFocus margin="dense" id="landlord_phone" label="Landlord Phone" type="text" onChange={this.changeLandlordPhone} fullWidth />
             <DialogContent></DialogContent>
             <DialogContent></DialogContent>
             {/* 
