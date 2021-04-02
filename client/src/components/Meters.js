@@ -13,6 +13,14 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import axios from "axios";
 
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+
 class Meters extends React.Component {
   constructor(props) {
     super(props);
@@ -66,12 +74,15 @@ class Meters extends React.Component {
       this.res = [];
       for (var i = 0; i < this.state.meter_list.length; i++) {
         this.res.push(
-          <tr key={i} id={i}>
-            <td key={this.state.meter_list[i].meter_id}>{this.state.meter_list[i].meter_id}</td>
-            <td>
+          <TableRow key={i} id={i}>
+            <TableCell key={this.state.meter_list[i].meter_id}>{this.state.meter_list[i].meter_id}</TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell>
               <DeleteMeters meter_id={this.state.meter_list[i].meter_id} property_id={this.state.property_id} info={this} />
-            </td>
-          </tr>
+            </TableCell>
+          </TableRow>
         );
       }
       this.forceUpdate();
@@ -86,12 +97,21 @@ class Meters extends React.Component {
   render() {
     return (
       <div>
-        <Button onClick={this.handleClickOpen}>Meters</Button>
+        <Button color="primary" onClick={this.handleClickOpen}>
+          Meters
+        </Button>
         <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Manage Meters</DialogTitle>
-          <table className="table">
-            <tbody>{this.res}</tbody>
-          </table>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Meters</TableCell>
+                </TableRow>
+                <TableBody>{this.res}</TableBody>
+              </TableHead>
+            </Table>
+          </TableContainer>
           <DialogContent>
             <DialogContentText></DialogContentText>
             <TextField autoFocus margin="dense" id="meter" label="Meter" type="text" onChange={this.changeMeterToAdd} fullWidth />

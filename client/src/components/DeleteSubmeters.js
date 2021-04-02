@@ -80,7 +80,7 @@ class DeleteSubmeters extends React.Component {
   render() {
     return (
       <div>
-        <Button onClick={this.handleClickOpen} color="primary">
+        <Button color="secondary" onClick={this.handleClickOpen}>
           Delete
         </Button>
         <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
@@ -92,7 +92,7 @@ class DeleteSubmeters extends React.Component {
             <Button onClick={this.handleClose} color="primary">
               Back
             </Button>
-            <Button onClick={this.onSubmit} color="primary" autoFocus>
+            <Button onClick={this.onSubmit} color="secondary" autoFocus>
               Delete
             </Button>
           </DialogActions>

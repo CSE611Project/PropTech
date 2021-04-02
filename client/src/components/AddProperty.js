@@ -19,6 +19,7 @@ class AddProperty extends React.Component {
       name: "",
       address: "",
       property_type: "",
+      meters: "",
       total_footage: "",
       landlord_phone: "",
     };
@@ -29,8 +30,8 @@ class AddProperty extends React.Component {
     this.changeAddress = this.changeAddress.bind(this);
     this.changePropertyType = this.changePropertyType.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-    this.changeTotalFootage = this.changeTotalFootage.bind(this);
-    this.changeLandlordPhone = this.changeLandlordPhone.bind(this);
+    this.changeTotal_footage = this.changeTotal_footage.bind(this);
+    this.changeLandlord_phone = this.changeLandlord_phone.bind(this);
   }
   addProperty(property_info) {
     axios.post("/property", { property_info: property_info }).then((response) => {
@@ -71,8 +72,13 @@ class AddProperty extends React.Component {
       total_footage: event.target.value,
     });
   }
+  changeTotal_footage(event) {
+    this.setState({
+      total_footage: event.target.value,
+    });
+  }
 
-  changeLandlordPhone(event) {
+  changeLandlord_phone(event) {
     this.setState({
       landlord_phone: event.target.value,
     });
@@ -97,7 +103,9 @@ class AddProperty extends React.Component {
   render() {
     return (
       <div>
-        <Button onClick={this.handleClickOpen}>Add Property</Button>
+        <Button color="primary" onClick={this.handleClickOpen}>
+          Add Property
+        </Button>
         <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Enter Property Info</DialogTitle>
           <DialogContent>
@@ -105,8 +113,9 @@ class AddProperty extends React.Component {
             <TextField autoFocus margin="dense" id="name" label="Name" type="text" onChange={this.changeName} fullWidth />
             <TextField autoFocus margin="dense" id="address" label="Address" type="text" onChange={this.changeAddress} fullWidth />
             <TextField autoFocus margin="dense" id="property_type" label="Property Type" type="text" onChange={this.changePropertyType} fullWidth />
-            <TextField autoFocus margin="dense" id="total_footage" label="Total Footage" type="text" onChange={this.changeTotalFootage} fullWidth />
-            <TextField autoFocus margin="dense" id="landlord_phone" label="Landlord Phone" type="text" onChange={this.changeLandlordPhone} fullWidth />
+            <TextField autoFocus margin="dense" id="meters" label="Meter List" type="text" onChange={this.changeMeters} fullWidth />
+            <TextField autoFocus margin="dense" id="totalfootage" label="Total Footage" type="text" onChange={this.changeTotal_footage} fullWidth />
+            <TextField autoFocus margin="dense" id="landlord_phone" label="landlord_phone" type="text" onChange={this.changeLandlord_phone} fullWidth />
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">

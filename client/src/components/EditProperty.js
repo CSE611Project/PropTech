@@ -113,7 +113,7 @@ class EditProperty extends React.Component {
   render() {
     return (
       <div>
-        <Button onClick={this.handleClickOpen}>Edit</Button>
+        <Button color="primary" onClick={this.handleClickOpen}>Edit</Button>
         <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Edit Property Info</DialogTitle>
           <DialogContent>

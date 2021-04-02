@@ -3,8 +3,9 @@ ul {
   margin: 0;
   padding: 10px;
   overflow: hidden;
-  background-color: black;
+  background-color: inherit;
   text-align: right;
+  justify-content: right;
 }
 
 li {
@@ -13,4 +14,5 @@ li {
   padding-right: 5px;
   color: white;
   text-align: inherit;
+  justify-content: right;
 }

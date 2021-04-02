@@ -15,6 +15,15 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import axios from "axios";
 import MeterCheckBox from "./MeterCheckbox";
 
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+import Divider from "@material-ui/core/Divider";
+
 {
   /* should import all information of certain tenant
     new variables: submeter_list, multiplier_list, submeter, multiplier, meter_id, submeter_id
@@ -140,9 +149,9 @@ class Submeters extends React.Component {
       let tableData = this.state.submeter_list;
       for (var i = 0; i < tableData.length; i++) {
         res.push(
-          <tr key={i} id={i}>
-            <td>{tableData[i].submeter_id}</td>
-            <td>
+          <TableRow key={i} id={i}>
+            <TableCell>{tableData[i].submeter_id}</TableCell>
+            <TableCell>
               <EditSubmeters
                 tenant_id={tableData[i].tenant_id}
                 // name={tableData[i].name}
@@ -153,8 +162,8 @@ class Submeters extends React.Component {
                 submeter={tableData[i].submeter_id}
                 property_id={this.state.property_id}
               />
-            </td>
-            <td>
+            </TableCell>
+            <TableCell>
               <DeleteSubmeters
                 tenant_id={tableData[i].tenant_id}
                 // name={tableData[i].name}
@@ -166,11 +175,11 @@ class Submeters extends React.Component {
                 submeter_id={tableData[i].submeter_id}
                 property_id={this.state.property_id}
               />
-            </td>
-            {/* <td> TODO what is this???
+            </TableCell>
+            <TableCell>
               <SubmeterBill submeter={tableData[i].submeter_id} />
-            </td> */}
-          </tr>
+            </TableCell>
+          </TableRow>
         );
       }
       this.res = res;
@@ -181,17 +190,27 @@ class Submeters extends React.Component {
   render() {
     return (
       <div>
-        <Button onClick={this.handleClickOpen}>Submeters</Button>
+        <Button color="primary" onClick={this.handleClickOpen}>
+          Submeters
+        </Button>
         <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Manage Submeters</DialogTitle>
-          <table className="table">
-            <tbody>{this.res}</tbody>
-          </table>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Submeters</TableCell>
+                </TableRow>
+                <TableBody>{this.res}</TableBody>
+              </TableHead>
+            </Table>
+          </TableContainer>
           <DialogContent>
             <DialogContentText></DialogContentText>
             <TextField autoFocus margin="dense" id="submeter" label="Enter new submeter" type="text" onChange={this.changeSubmeter} fullWidth />
             <TextField autoFocus margin="dense" id="multiplier" label="Enter associated multiplier if has one" type="text" onChange={this.changeMultiplier} fullWidth />
-            <MeterCheckBox const methodfromparent={this.getAssociatedMeter} property_id={this.state.property_id} />
+            <DialogContent></DialogContent>
+            <MeterCheckBox const methodfromparent={this.getAssociatedMeter} property_id={this.state.property_id} onlyOption={true} />
             <Button onClick={this.onAdd} color="primary">
               Add
             </Button>

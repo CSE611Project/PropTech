@@ -11,8 +11,15 @@ import DeleteTenant from "./DeleteTenant";
 import Submeters from "./Submeters";
 import Meters from "./Meters";
 import { Component } from "react";
-import { TableBody } from "@material-ui/core";
 import axios from "axios";
+
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
 
 class TenantInfo extends Component {
   constructor(props) {
@@ -41,13 +48,13 @@ class TenantInfo extends Component {
       this.res = [];
       for (var i = 0; i < this.state.tenant_list.length; i++) {
         this.res.push(
-          <tr key={i} id={i}>
-            <td>{this.state.tenant_list[i].name}</td>
-            <td>{this.state.tenant_list[i].email}</td>
-            <td>{this.state.tenant_list[i].address}</td>
-            <td>{this.state.tenant_list[i].landlord_phone}</td>
-            <td>{this.state.tenant_list[i].rubs}</td>
-            <td>
+          <TableRow key={i} id={i}>
+            <TableCell>{this.state.tenant_list[i].name}</TableCell>
+            <TableCell>{this.state.tenant_list[i].email}</TableCell>
+            <TableCell>{this.state.tenant_list[i].address}</TableCell>
+            <TableCell>{this.state.tenant_list[i].landlord_phone}</TableCell>
+            <TableCell>{this.state.tenant_list[i].rubs}</TableCell>
+            <TableCell>
               <EditTenant
                 tenant_id={this.state.tenant_list[i].tenant_id}
                 name={this.state.tenant_list[i].name}
@@ -58,11 +65,11 @@ class TenantInfo extends Component {
                 property_id={this.state.property_id}
                 info={this}
               />
-            </td>
-            <td>
+            </TableCell>
+            <TableCell>
               <DeleteTenant tenant_id={this.state.tenant_list[i].tenant_id} info={this} />
-            </td>
-            <td>
+            </TableCell>
+            <TableCell>
               <Submeters
                 tenant_id={this.state.tenant_list[i].tenant_id}
                 name={this.state.tenant_list[i].name}
@@ -73,8 +80,8 @@ class TenantInfo extends Component {
                 property_id={this.state.property_id}
                 info={this}
               />
-            </td>
-          </tr>
+            </TableCell>
+          </TableRow>
         );
       }
       this.forceUpdate();
@@ -84,20 +91,27 @@ class TenantInfo extends Component {
   render() {
     return (
       <div className="main">
-        <table className="display_item">
-          <tbody>
-            <tr>
-              <th style={{ width: "20%" }}>Name</th>
-              <th style={{ width: "20%" }}>Email</th>
-              <th style={{ width: "20%" }}>Address</th>
-              <th style={{ width: "10%" }}>Landlord Phone</th>
-              <th style={{ width: "10%" }}>RUBS</th>
-            </tr>
-            {this.res}
-          </tbody>
-        </table>
-        <AddTenant className="display_item" property_id={this.state.property_id} info={this} />
-        <Meters className="display_item" property_id={this.state.property_id} info={this} />
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Address</TableCell>
+                <TableCell>Landlord Phone</TableCell>
+                <TableCell>RUBS</TableCell>
+                <TableCell />
+                <TableCell>
+                  <Meters className="display_item" property_id={this.state.property_id} info={this} />
+                </TableCell>
+                <TableCell>
+                  <AddTenant className="display_item" property_id={this.state.property_id} info={this} />
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>{this.res}</TableBody>
+          </Table>
+        </TableContainer>
       </div>
     );
   }

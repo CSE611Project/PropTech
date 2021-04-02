@@ -21,7 +21,7 @@ class MeterCheckBox extends React.Component {
       meter_list: this.props.meter_list,
       meter_id: "",
       property_id: this.props.property_id,
-      onlyOption: true,
+      onlyOption: this.props.onlyOption,
     };
     this.onChangeOnlyOption = this.onChangeOnlyOption.bind(this);
     this.onChangeMultiOption = this.onChangeMultiOption.bind(this);
@@ -61,9 +61,8 @@ class MeterCheckBox extends React.Component {
   generateTable() {
     var res = [];
     this.getMeterList().then(() => {
-      var onlyOp = this.state.onlyOption;
       var tableData = this.state.meter_list;
-      if (onlyOp === true) {
+      if (this.state.onlyOption === true) {
         for (var i = 0; i < tableData.length; i++) {
           res.push(<FormControlLabel name={tableData[i].meter_id} value={tableData[i].meter_id} control={<Radio />} label={tableData[i].meter_id} />);
         }
@@ -80,10 +79,9 @@ class MeterCheckBox extends React.Component {
   }
 
   render() {
-    const only = this.state.onlyOption;
     return (
       <div>
-        {only ? (
+        {this.state.onlyOption ? (
           <div>
             <FormControl>
               <FormLabel>Which meter number is associated with this submeter?</FormLabel>
@@ -93,10 +91,12 @@ class MeterCheckBox extends React.Component {
             </FormControl>
           </div>
         ) : (
-          <FormControl>
-            <FormLabel>Which meter number is associated with this tenant?</FormLabel>
-            {this.res}
-          </FormControl>
+          <div>
+            <FormControl>
+              <FormLabel>Which meter number is associated with this tenant?</FormLabel>
+              {this.res}
+            </FormControl>
+          </div>
         )}
       </div>
     );
