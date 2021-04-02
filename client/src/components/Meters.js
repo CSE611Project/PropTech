@@ -77,7 +77,7 @@ class Meters extends React.Component {
         );
       }
       this.forceUpdate();
-      this.info.state.meter_list = this.state.meter_list;
+      this.info.setState({ meter_list: this.state.meter_list });
     });
   }
 
