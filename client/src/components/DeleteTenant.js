@@ -22,6 +22,7 @@ class DeleteTenant extends React.Component {
     this.handleClose = this.handleClose.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
+
   componentDidUpdate() {
     if (this.props.tenant_id !== this.state.tenant_id) {
       this.setState({

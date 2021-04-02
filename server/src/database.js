@@ -88,12 +88,7 @@ function updateTenant(tenant_id, update_info, callback) {
   let rubs = update_info.rubs;
 
   let sql = `UPDATE tenant set ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ? WHERE ?? = ?`;
-  let inserts = ["name", name,
-                 "email", email,
-                 "address", address,
-                 "landlord_phone", landlord_phone,
-                 "rubs", rubs,
-                 "tenant_id", tenant_id];
+  let inserts = ["name", name, "email", email, "address", address, "landlord_phone", landlord_phone, "rubs", rubs, "tenant_id", tenant_id];
 
   connection.query(sql, inserts, function (err, result) {
     if (err) {
@@ -147,8 +142,7 @@ function insertTenant(property_id, tenant_info, callback) {
 // return false if delete failed
 function deleteTenant(property_id, tenant_id, callback) {
   let sql = `DELETE FROM tenant WHERE ?? = ? AND ?? = ?`;
-  let inserts = ["property_id", property_id,
-                 "tenant_id", tenant_id];
+  let inserts = ["property_id", property_id, "tenant_id", tenant_id];
   connection.query(sql, inserts, function (err, result) {
     // check error type later
     if (err) {
@@ -226,13 +220,7 @@ function updateProperty(user_id, property_info, callback) {
   let property_id = property_info.property_id;
 
   let sql = `UPDATE property set ?? = ?, ?? = ?, ?? = ?, ?? = ? , ?? = ? WHERE ?? = ? AND ?? = ?`;
-  let inserts = ["name",  name,
-                 "address", address,
-                 "property_type", property_type,
-                 "total_footage", total_footage,
-                 "landlord_phone", landlord_phone,
-                 "user_id", user_id,
-                 "property_id", property_id];
+  let inserts = ["name", name, "address", address, "property_type", property_type, "total_footage", total_footage, "landlord_phone", landlord_phone, "user_id", user_id, "property_id", property_id];
 
   connection.query(sql, inserts, function (err, result) {
     if (err) {
@@ -255,8 +243,7 @@ function updateProperty(user_id, property_info, callback) {
 // return false if delete fails
 function deleteProperty(user_id, property_id, callback) {
   let sql = `DELETE FROM property WHERE ?? = ? AND ?? = ?`;
-  let inserts = ["property_id", property_id,
-                 "user_id", user_id];
+  let inserts = ["property_id", property_id, "user_id", user_id];
   connection.query(sql, inserts, function (err, result) {
     // check error type later
     if (err) {
@@ -301,8 +288,7 @@ function insertMeter(property_id, meter_id, callback) {
 // return false if adds failed
 function deleteMeter(property_id, meter_id, callback) {
   let sql = `DELETE FROM meter WHERE ?? = ? AND ?? = ?`;
-  let inserts = ["property_id", property_id,
-                 "meter_id", meter_id];
+  let inserts = ["property_id", property_id, "meter_id", meter_id];
   connection.query(sql, inserts, function (err, result) {
     if (err) {
       console.log(err);
@@ -366,16 +352,13 @@ function insertSubmeter(submeter_info, callback) {
 // update_info is a JSON contains tenant_id, meter_id, multiplier
 // return true if update successfully
 // return false if update failed
-function updateSubmeter(submeter_id, update_info, callback){
+function updateSubmeter(submeter_id, update_info, callback) {
   let tenant_id = update_info.tenant_id;
   let meter_id = update_info.meter_id;
   let multiplier = update_info.multiplier;
 
   let sql = `UPDATE tenant SET ?? = ?, ?? = ?, ?? = ? WHERE ?? = ?`;
-  let inserts = ["tenant_id", tenant_id,
-                 "meter_id", meter_id,
-                 "multiplier", multiplier,
-                 "submeter_id", submeter_id];
+  let inserts = ["tenant_id", tenant_id, "meter_id", meter_id, "multiplier", multiplier, "submeter_id", submeter_id];
   connection.query(sql, inserts, function (err, result) {
     if (err) {
       console.log(`not able to update submeter_id: ${submeter_id} into database`);
@@ -397,8 +380,7 @@ function updateSubmeter(submeter_id, update_info, callback){
 // return false if deletes failed
 function deleteSubmeter(tenant_id, submeter_id, callback) {
   let sql = `DELETE FROM submeter WHERE ?? = ? AND ?? = ?`;
-  let inserts = ["tenant_id", tenant_id,
-                 "submeter_id", submeter_id];
+  let inserts = ["tenant_id", tenant_id, "submeter_id", submeter_id];
   connection.query(sql, inserts, function (err, result) {
     if (err) {
       console.log(err);
@@ -450,7 +432,7 @@ function insertBill(bill_info, callback) {
   let unit_charge = bill_info.unit_charge;
 
   let sql = `INSERT INTO bill(account_id,meter_id,m_kwh_usage,from_date, to_date,m_charge,s_kwh_usage,s_charge,total_kwh_usage,total_charge,unit_charge) VALUES(?,?,?,?,?,?,?,?,?,?,?)`;
-  let inserts = [account_id, meter_id, m_kwh_usage, from_date, to_date,m_charge,s_kwh_usage,s_charge,total_kwh_usage,total_charge,unit_charge];
+  let inserts = [account_id, meter_id, m_kwh_usage, from_date, to_date, m_charge, s_kwh_usage, s_charge, total_kwh_usage, total_charge, unit_charge];
 
   connection.query(sql, inserts, function (err, result) {
     if (err) {
@@ -467,7 +449,6 @@ function insertBill(bill_info, callback) {
       }
     }
   });
-
 }
 
 // update bill
@@ -476,7 +457,7 @@ function insertBill(bill_info, callback) {
 // total_kwh_usage, total_charge, unit_charge
 // return true if update successfully
 // return false if update failed
-function updateBill(bill_id,bill_info, callback) {
+function updateBill(bill_id, bill_info, callback) {
   let account_id = bill_info.account_id;
   let meter_id = bill_info.meter_id;
   let m_kwh_usage = bill_info.m_kwh_usage;
@@ -490,18 +471,32 @@ function updateBill(bill_id,bill_info, callback) {
   let unit_charge = bill_info.unit_charge;
 
   let sql = `UPDATE bill set ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?,?? = ?,?? = ?,?? = ?,?? = ?,?? = ?,?? = ? WHERE ?? = ?`;
-  let inserts = ["account_id", account_id,
-                 "meter_id", meter_id,
-                 "m_kwh_usage", m_kwh_usage,
-                 "from_date", from_date,
-                 "to_date", to_date,
-                 "m_charge", m_charge,
-                 "s_kwh_usage", s_kwh_usage,
-                 "s_charge", s_charge,
-                 "total_kwh_usage", total_kwh_usage,
-                 "total_charge", total_charge,
-                 "unit_charge", unit_charge,
-                 "bill_id", bill_id];
+  let inserts = [
+    "account_id",
+    account_id,
+    "meter_id",
+    meter_id,
+    "m_kwh_usage",
+    m_kwh_usage,
+    "from_date",
+    from_date,
+    "to_date",
+    to_date,
+    "m_charge",
+    m_charge,
+    "s_kwh_usage",
+    s_kwh_usage,
+    "s_charge",
+    s_charge,
+    "total_kwh_usage",
+    total_kwh_usage,
+    "total_charge",
+    total_charge,
+    "unit_charge",
+    unit_charge,
+    "bill_id",
+    bill_id,
+  ];
   connection.query(sql, inserts, function (err, result) {
     if (err) {
       console.log(`not able to update bill info for bill_id: ${bill_id}  into database`);
@@ -521,7 +516,7 @@ function updateBill(bill_id,bill_info, callback) {
 // delete bill
 // return true if delete successfully
 // return false if delete failed
-function deleteBill(bill_id, callback){
+function deleteBill(bill_id, callback) {
   let sql = `DELETE FROM bill WHERE ?? = ?`;
   let inserts = ["bill_id", bill_id];
   connection.query(sql, inserts, function (err, result) {
@@ -573,7 +568,6 @@ function insertSubmeterBill(submeter_bill_info, callback) {
       }
     }
   });
-
 }
 
 // update submeter_bill
@@ -592,16 +586,28 @@ function updateSubmeterBill(submeter_bill_id, updated_info, callback) {
   let amt_due = updated_info.amt_due;
 
   let sql = `UPDATE submeter_bill SET ?? = ?, ?? = ?, ?? = ?, ?? = ?,?? = ?,?? = ?,?? = ?,?? = ?,?? = ? WHERE ?? = ?`;
-  let inserts = ["bill_id", bill_id,
-                 "submeter_id", submeter_id,
-                 "prior_read", prior_read,
-                 "cur_read", cur_read,
-                 "from_date", from_date,
-                 "to_date", to_date,
-                 "cur_amt", cur_amt,
-                 "amt_with_multiplier", amt_with_multiplier,
-                 "amt_due", amt_due,
-                 "submeter_bill_id", submeter_bill_id];
+  let inserts = [
+    "bill_id",
+    bill_id,
+    "submeter_id",
+    submeter_id,
+    "prior_read",
+    prior_read,
+    "cur_read",
+    cur_read,
+    "from_date",
+    from_date,
+    "to_date",
+    to_date,
+    "cur_amt",
+    cur_amt,
+    "amt_with_multiplier",
+    amt_with_multiplier,
+    "amt_due",
+    amt_due,
+    "submeter_bill_id",
+    submeter_bill_id,
+  ];
   connection.query(sql, inserts, function (err, result) {
     if (err) {
       console.log(`not able to update submeter_bill info for submeter_bill_id: ${submeter_bill_id} into database`);
@@ -621,7 +627,7 @@ function updateSubmeterBill(submeter_bill_id, updated_info, callback) {
 // delete submeter_bill
 // return true if delete successfully
 // return false if delete failed
-function deleteSubmeterBill(submeter_bill_id, callback){
+function deleteSubmeterBill(submeter_bill_id, callback) {
   let sql = `DELETE FROM submeter_bill WHERE ?? = ?`;
   let inserts = ["submeter_bill_id", submeter_bill_id];
   connection.query(sql, inserts, function (err, result) {
@@ -631,7 +637,7 @@ function deleteSubmeterBill(submeter_bill_id, callback){
       callback(false);
     } else {
       if (result.affectedRows == 1) {
-        console.log(`submeter_bill_id: ${submeter_bill_id} deleted!`)
+        console.log(`submeter_bill_id: ${submeter_bill_id} deleted!`);
         callback(true);
       } else {
         console.log(`not able to delete submeter_bill_id: ${submeter_bill_id} from database`);
@@ -645,7 +651,7 @@ function deleteSubmeterBill(submeter_bill_id, callback){
 // invoice_info is a JSON contains tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, total_charge
 // return true if insert successfully
 // return false if insert failed
-function insertInvoice(invoice_info, callback){
+function insertInvoice(invoice_info, callback) {
   let tenant_id = invoice_info.tenant_id;
   let from_date = invoice_info.from_date;
   let to_date = invoice_info.to_date;
@@ -681,7 +687,7 @@ function insertInvoice(invoice_info, callback){
 // updated_info is a JSON contains tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, total_charge
 // return true if update successfully
 // return false if update failed
-function updateInvoice(invoice_id, updated_info, callback){
+function updateInvoice(invoice_id, updated_info, callback) {
   let tenant_id = updated_info.tenant_id;
   let from_date = updated_info.from_date;
   let to_date = updated_info.to_date;
@@ -694,17 +700,30 @@ function updateInvoice(invoice_id, updated_info, callback){
   let total_charge = updated_info.total_charge;
 
   let sql = "UPDATE invoice SET ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ? WHERE ?? = ?";
-  let inserts = ["tenant_id", tenant_id,
-                 "from_date", from_date,
-                 "to_date", to_date,
-                 "prior_read", prior_read,
-                 "cur_read", cur_read,
-                 "rubs", rubs,
-                 "has_submeter", has_submeter,
-                 "submeter_id", submeter_id,
-                 "unit_charge", unit_charge,
-                 "total_charge", total_charge,
-                 "invoice_id", invoice_id];
+  let inserts = [
+    "tenant_id",
+    tenant_id,
+    "from_date",
+    from_date,
+    "to_date",
+    to_date,
+    "prior_read",
+    prior_read,
+    "cur_read",
+    cur_read,
+    "rubs",
+    rubs,
+    "has_submeter",
+    has_submeter,
+    "submeter_id",
+    submeter_id,
+    "unit_charge",
+    unit_charge,
+    "total_charge",
+    total_charge,
+    "invoice_id",
+    invoice_id,
+  ];
   connection.query(sql, inserts, function (err, result) {
     if (err) {
       console.log(`not able to update invoice info for invoice_id: ${invoice_id}  into database`);
@@ -719,13 +738,12 @@ function updateInvoice(invoice_id, updated_info, callback){
       }
     }
   });
-
 }
 
 // delete invoice
 // return true if delete successfully
 // return false if delete failed
-function deleteInvoice(invoice_id, callback){
+function deleteInvoice(invoice_id, callback) {
   let sql = `DELETE FROM invoice WHERE ?? = ?`;
   let inserts = ["invoice_id", invoice_id];
   connection.query(sql, inserts, function (err, result) {
@@ -735,7 +753,7 @@ function deleteInvoice(invoice_id, callback){
       callback(false);
     } else {
       if (result.affectedRows == 1) {
-        console.log(`invoice_id: ${invoice_id} deleted!`)
+        console.log(`invoice_id: ${invoice_id} deleted!`);
         callback(true);
       } else {
         console.log(`not able to delete invoice_id: ${invoice_id} from database`);
@@ -748,7 +766,7 @@ function deleteInvoice(invoice_id, callback){
 // associate meter with tenant
 // return true if add successfully
 // return false if add failed
-function associateMeterWithTenant(meter_id, tenant_id, callback){
+function associateMeterWithTenant(meter_id, tenant_id, callback) {
   let sql = `INSERT INTO meter_tenant(meter_id, tenant_id) VALUES(?,?)`;
   let inserts = [meter_id, tenant_id];
   connection.query(sql, inserts, function (err, result) {
@@ -765,16 +783,14 @@ function associateMeterWithTenant(meter_id, tenant_id, callback){
       }
     }
   });
-
 }
 
 // delete meter_tenant
 // return true if delete successfully
 // return false if delete failed
-function deleteMeterTenantRelation(meter_id, tenant_id, callback){
+function deleteMeterTenantRelation(meter_id, tenant_id, callback) {
   let sql = `DELETE FROM meter_tenant WHERE ?? = ? AND ?? = ?`;
-  let inserts = ["meter_id", meter_id,
-                 "tenant_id", tenant_id];
+  let inserts = ["meter_id", meter_id, "tenant_id", tenant_id];
   connection.query(sql, inserts, function (err, result) {
     if (err) {
       console.log(err);
@@ -795,10 +811,8 @@ function deleteMeterTenantRelation(meter_id, tenant_id, callback){
 // get meter to tenant list(property_id)
 // this function will return a list of meter-tenant relations existed in given property_id
 
-
 // get all meter and submeter bill(property_id, from_date, to_date)
 // get all meter and submeter (property_id)
-
 
 // fetch bill by meter
 // fetch bill by account
@@ -845,5 +859,3 @@ exports.deleteSubmeterBill = deleteSubmeterBill;
 exports.insertInvoice = insertInvoice;
 exports.updateInvoice = updateInvoice;
 exports.deleteInvoice = deleteInvoice;
-
-

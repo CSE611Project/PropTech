@@ -16,12 +16,12 @@ class EditTenant extends React.Component {
     super(props);
     this.state = {
       open: false,
-      name: this.props.name,
       tenant_id: this.props.tenant_id,
+      name: this.props.name,
       email: this.props.email,
       address: this.props.address,
-      phone_number: this.props.phone_number,
-      submeter: this.props.submeter,
+      landlord_phone: this.props.landlord_phone,
+      rubs: this.props.rubs,
       property_id: this.props.property_id,
     };
 
@@ -30,19 +30,19 @@ class EditTenant extends React.Component {
     this.changeName = this.changeName.bind(this);
     this.changeEmail = this.changeEmail.bind(this);
     this.changeAddress = this.changeAddress.bind(this);
-    this.changePhoneNumber = this.changePhoneNumber.bind(this);
-    this.changeSubmeter = this.changeSubmeter.bind(this);
+    this.changeLandlordPhone = this.changeLandlordPhone.bind(this);
+    this.changeRubs = this.changeRubs.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
   componentDidUpdate() {
     if (this.props.tenant_id !== this.state.tenant_id) {
       this.setState({
-        name: this.props.name,
         tenant_id: this.props.tenant_id,
+        name: this.props.name,
         email: this.props.email,
         address: this.props.address,
-        phone_number: this.props.phone_number,
-        submeter: this.props.submeter,
+        landlord_phone: this.props.landlord_phone,
+        rubs: this.props.rubs,
         property_id: this.props.property_id,
       });
     }
@@ -83,15 +83,15 @@ class EditTenant extends React.Component {
     });
   }
 
-  changePhoneNumber(event) {
+  changeLandlordPhone(event) {
     this.setState({
-      phone_number: event.target.value,
+      landlord_phone: event.target.value,
     });
   }
 
-  changeSubmeter(event) {
+  changeRubs(event) {
     this.setState({
-      submeter: event.target.value,
+      rubs: event.target.value,
     });
   }
 
@@ -104,8 +104,8 @@ class EditTenant extends React.Component {
       name: this.state.name,
       email: this.state.email,
       address: this.state.address,
-      phone_number: this.state.phone_number,
-      submeter: this.state.submeter,
+      landlord_phone: this.state.landlord_phone,
+      rubs: this.state.rubs,
       property_id: this.state.property_id,
     };
     var tenant_id = this.state.tenant_id;
@@ -123,7 +123,8 @@ class EditTenant extends React.Component {
             <TextField autoFocus margin="dense" id="name" label="Name" type="text" value={this.state.name} onChange={this.changeName} fullWidth />
             <TextField autoFocus margin="dense" id="email" label="Email Address" type="email" value={this.state.email} onChange={this.changeEmail} fullWidth />
             <TextField autoFocus margin="dense" id="address" label="Address" type="text" value={this.state.address} onChange={this.changeAddress} fullWidth />
-            <TextField autoFocus margin="dense" id="phone_number" label="Landlord Phone Number" type="text" value={this.state.phone_number} onChange={this.changePhoneNumber} fullWidth />
+            <TextField autoFocus margin="dense" id="landlord_phone" label="Landlord Phone" type="text" value={this.state.landlord_phone} onChange={this.changeLandlordPhone} fullWidth />
+            <TextField autoFocus margin="dense" id="rubs" label="rubs" type="text" value={this.state.rubs} onChange={this.changeRubs} fullWidth />
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">
