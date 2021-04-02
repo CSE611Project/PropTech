@@ -61,6 +61,16 @@ class TenantInfo extends Component {
             <td>
               <DeleteTenant tenant_id={tableData[i].tenant_id} info={this} />
             </td>
+          <td><Submeters 
+                tenant_id={tableData[i].tenant_id}
+                name={tableData[i].name}
+                email={tableData[i].email}
+                address={tableData[i].address}
+                rented_area={tableData[i].rented_area}
+                submeter={tableData[i].submeter}
+                property_id={this.state.property_id}
+                info={this}
+            /></td>
           </tr>
         );
       }
