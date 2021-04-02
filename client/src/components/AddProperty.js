@@ -21,7 +21,7 @@ class AddProperty extends React.Component {
       property_type: "",
       meters: "",
       total_footage: "",
-      landlord_phone: ""
+      landlord_phone: "",
     };
 
     this.handleClickOpen = this.handleClickOpen.bind(this);
@@ -95,7 +95,7 @@ class AddProperty extends React.Component {
       address: this.state.address,
       property_type: this.state.property_type,
       total_footage: this.state.total_footage,
-      landlord_phone: this.state.landlord_phone
+      landlord_phone: this.state.landlord_phone,
     };
 
     this.addProperty(property_info);
