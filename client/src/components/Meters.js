@@ -3,7 +3,6 @@ import ReactDOM from "react-dom";
 import "./../App.css";
 import PropertyInfo from "./PropertyInfo.js";
 import DeleteMeters from "./DeleteMeters.js";
-import EditMeters from "./EditMeters.js";
 import MeterBillPage from "./MeterBillPage";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
