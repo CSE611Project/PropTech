@@ -66,11 +66,8 @@ class PropManaAfterSign extends Component {
   render() {
     return (
       <div>
-        <header className="Page_Name">
-          <h1>{this.state.page_name}</h1>
-        </header>
         <Typography component="h1" variant="h5" color="primary">
-          Property manager: email
+          {this.state.page_name}
         </Typography>
         <DialogContent />
         <div className="Info_Page_Split">

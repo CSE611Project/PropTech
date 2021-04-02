@@ -1,4 +1,3 @@
-
 .App {
   text-align: center;
   background-color: #ffffff;
@@ -136,12 +135,7 @@ li {
 .table {
   color: rgb(0, 0, 0);
   width: 100%;
-<<<<<<< HEAD
-  padding-left: 20px;
-=======
   margin-right: 0px;
-
->>>>>>> origin/Front-end
 }
 
 .buttonUL {
@@ -206,10 +200,6 @@ label {
   margin-left: 230px;
 }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/Front-end
 /************************************************************/
 /* The sidebar menu */
 .sidenav {
@@ -240,17 +230,12 @@ label {
 
 /* Style page content */
 .main {
-<<<<<<< HEAD
-  margin-left: 160px; /* Same as the width of the sidebar */
-=======
   margin-left: 130px; /* Same as the width of the sidebar */
->>>>>>> origin/Front-end
   padding: 0px 10px;
 }
 
 /* On smaller screens, where height is less than 450px, change the style of the sidebar (less padding and a smaller font size) */
 @media screen and (max-height: 450px) {
-<<<<<<< HEAD
   .sidenav {
     padding-top: 15px;
   }
@@ -258,8 +243,3 @@ label {
     font-size: 18px;
   }
 }
-=======
-  .sidenav {padding-top: 15px;}
-  .sidenav a {font-size: 18px;}
-}
->>>>>>> origin/Front-end
