@@ -179,6 +179,10 @@ router.post("/auth", (req, res) => {
   });
 });
 
+router.post("/logout", (req, res) => {
+  res.clearCookie("authCookie").send();
+});
+
 // req json needs sub if admin group
 // req cookie needs admin or propertyManager group
 router.get("/property/:sub?", (req, res) => {

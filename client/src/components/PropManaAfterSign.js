@@ -65,7 +65,7 @@ class PropManaAfterSign extends Component {
 
   render() {
     return (
-      <div>
+      <div className="topOffset leftOffset">
         <Typography component="h1" variant="h5" color="primary">
           {this.state.page_name}
         </Typography>

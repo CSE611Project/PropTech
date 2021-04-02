@@ -151,6 +151,8 @@ class Submeters extends React.Component {
         res.push(
           <TableRow key={i} id={i}>
             <TableCell>{tableData[i].submeter_id}</TableCell>
+            <TableCell>{tableData[i].multiplier}</TableCell>
+            <TableCell>{tableData[i].meter_id}</TableCell>
             <TableCell>
               <EditSubmeters
                 tenant_id={tableData[i].tenant_id}
@@ -176,9 +178,6 @@ class Submeters extends React.Component {
                 property_id={this.state.property_id}
               />
             </TableCell>
-            <TableCell>
-              <SubmeterBill submeter={tableData[i].submeter_id} />
-            </TableCell>
           </TableRow>
         );
       }
@@ -200,9 +199,11 @@ class Submeters extends React.Component {
               <TableHead>
                 <TableRow>
                   <TableCell>Submeters</TableCell>
+                  <TableCell>Multiplier</TableCell>
+                  <TableCell>Associated Meter</TableCell>
                 </TableRow>
-                <TableBody>{this.res}</TableBody>
               </TableHead>
+              <TableBody>{this.res}</TableBody>
             </Table>
           </TableContainer>
           <DialogContent>

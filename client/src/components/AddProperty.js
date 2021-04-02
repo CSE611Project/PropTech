@@ -19,7 +19,6 @@ class AddProperty extends React.Component {
       name: "",
       address: "",
       property_type: "",
-      meters: "",
       total_footage: "",
       landlord_phone: "",
     };
@@ -113,9 +112,8 @@ class AddProperty extends React.Component {
             <TextField autoFocus margin="dense" id="name" label="Name" type="text" onChange={this.changeName} fullWidth />
             <TextField autoFocus margin="dense" id="address" label="Address" type="text" onChange={this.changeAddress} fullWidth />
             <TextField autoFocus margin="dense" id="property_type" label="Property Type" type="text" onChange={this.changePropertyType} fullWidth />
-            <TextField autoFocus margin="dense" id="meters" label="Meter List" type="text" onChange={this.changeMeters} fullWidth />
-            <TextField autoFocus margin="dense" id="totalfootage" label="Total Footage" type="text" onChange={this.changeTotal_footage} fullWidth />
-            <TextField autoFocus margin="dense" id="landlord_phone" label="landlord_phone" type="text" onChange={this.changeLandlord_phone} fullWidth />
+            <TextField autoFocus margin="dense" id="totalfootage" label="Total Building Square Footage" type="text" onChange={this.changeTotal_footage} fullWidth />
+            <TextField autoFocus margin="dense" id="landlord_phone" label="Landlord Phone Number" type="text" onChange={this.changeLandlord_phone} fullWidth />
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">

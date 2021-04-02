@@ -144,7 +144,9 @@ class MeterBillPage extends React.Component {
   render() {
     return (
       <div>
-        <Button onClick={this.handleClickOpen}>Manually Input The Bill</Button>
+        <Button onClick={this.handleClickOpen} color="primary">
+          Manually Input The Bill
+        </Button>
         <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Enter Billing Info</DialogTitle>
           <DialogContent>
@@ -159,7 +161,6 @@ class MeterBillPage extends React.Component {
               control={<Checkbox checked={this.state.setCheck} onChange={this.changeCheckBox} inputProps={{ "aria-label": "primary checkbox" }} />}
               label="I have second bill/constellation company need to input"
             />
-
             <TextField autoFocus margin="dense" id="kwh_rate" label="KWH" type="text" disabled={!this.state.setCheck} onChange={this.changeKWH} fullWidth />
             <TextField autoFocus margin="dense" id="bill_amount" label="bill $" type="text" disabled={!this.state.setCheck} onChange={this.changeBill} fullWidth />
           </DialogContent>

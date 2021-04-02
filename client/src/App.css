@@ -138,6 +138,14 @@ li {
   margin-right: 0px;
 }
 
+.topOffset {
+  margin-top: 100px;
+}
+
+.leftOffset {
+  margin-left: 160px;
+}
+
 .buttonUL {
   list-style-type: none;
   margin: 0;

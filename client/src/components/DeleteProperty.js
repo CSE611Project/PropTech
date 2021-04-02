@@ -58,9 +58,11 @@ class DeleteProperty extends React.Component {
   render() {
     return (
       <div>
-        <Button color="secondary" onClick={this.handleClickOpen}>Delete</Button>
+        <Button color="secondary" onClick={this.handleClickOpen}>
+          Delete
+        </Button>
         <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
-          <DialogTitle id="alert-dialog-title">{"Delete Propery"}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">{"Delete Property?"}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">Are you sure you want to delete the chosen property?</DialogContentText>
           </DialogContent>

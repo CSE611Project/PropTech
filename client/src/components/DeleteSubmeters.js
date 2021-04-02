@@ -84,7 +84,7 @@ class DeleteSubmeters extends React.Component {
           Delete
         </Button>
         <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
-          <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">{"Delete Submeter"}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">Are you sure you want to delete this submeter?</DialogContentText>
           </DialogContent>

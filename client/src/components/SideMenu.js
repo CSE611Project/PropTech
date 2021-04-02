@@ -27,6 +27,7 @@ import FormLabel from "@material-ui/core/FormLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import axios from "axios";
 
 class SideMenu extends Component {
   constructor(props) {
@@ -37,38 +38,28 @@ class SideMenu extends Component {
   render() {
     return (
       <div className="sidenav">
-        <Grid container direction="column" justify="flex-start" alignItems="center">
-          <Paper elevation={2}>
-            <Button color="primary" onClick={manage_property}>
-              Manage Property
-            </Button>
-            <Divider />
-            <Divider />
-            <Button color="primary" onClick={edit_profile}>
+        <header>
+          <ul>
+            <a href="#" onClick={manage_property}>
+              Manage Property Info
+            </a>
+            <a href="#" onClick={edit_profile}>
               Edit Profile Info
-            </Button>
-            <Divider />
-            <Divider />
-            <Button color="primary" onClick={manage_utility}>
+            </a>
+            <a href="#" onClick={manage_utility}>
               Manage Utility Bill
-            </Button>
-            <Divider />
-            <Divider />
-            <Button color="primary" onClick={manage_invoice}>
-              Invoice History
-            </Button>
-            <Divider />
-            <Divider />
-            <Button color="primary" onClick={generate_invoice}>
+            </a>
+            <a href="#" onClick={manage_invoice}>
+              Manage Invoice History
+            </a>
+            <a href="#" onClick={generate_invoice}>
               Generate Invoice
-            </Button>
-            <Divider />
-            <Divider />
-            <Button color="primary" onClick={log_out}>
+            </a>
+            <a href="#" onClick={log_out}>
               Log Out
-            </Button>
-          </Paper>
-        </Grid>
+            </a>
+          </ul>
+        </header>
       </div>
     );
   }
@@ -103,7 +94,7 @@ function log_out() {
   sessionStorage.removeItem("username");
   sessionStorage.removeItem("property_id");
   sessionStorage.removeItem("property_name");
-  Cookies.remove("authCookie", { path: "/" });
+  axios.post("/logout");
   window.location = "/";
 }
 
