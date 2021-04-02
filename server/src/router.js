@@ -366,4 +366,70 @@ router.post("/tenant", (req, res) => {
   });
 });
 
+//get submeter list by tenant id
+router.get("/submeter/:tenant_id?", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.body.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+    db.selectAllSubmeters(req.params.tenant_id, (results) => {
+      res.json(JSON.parse(JSON.stringify(results)));
+    });
+  });
+});
+
+//delete submeter
+router.delete("/delete_tenant", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.body.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+
+    db.deleteSubmeter(req.body.tenant_id, req.body.submeter_id, (result) => {
+      res.json(result);
+    });
+  });
+});
+
+router.post("/add_submeter", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.body.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+
+    db.insertSubmeter(req.body.submeter_info, (result) => {
+      res.json(result);
+    });
+  });
+});
 module.exports = router;

@@ -50,9 +50,11 @@ class DeleteSubmeters extends React.Component {
   }
   deleteSubmeter() {
     {
-      /*axios.delete('/tenant', {data: {tenant_id: this.state.tenant_id , property_id: this.state.property_id }}).then(response => {
-            this.props.info.generateTableData();
-        })*/
+      console.log("this tenant id:", this.state.tenant_id);
+      console.log("this submeter_id: ", this.state.submeter_id);
+      axios.delete('/delete_tenant', {data: {tenant_id: this.state.tenant_id , submeter_id: this.state.submeter_id }}).then(response => {
+            this.props.info.generateTable();
+        })
     }
   }
 
