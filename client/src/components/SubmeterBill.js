@@ -24,31 +24,15 @@ class SubmeterBill extends React.Component {
             current_read: '',
             from_date: '',
             to_date: '',
-            cur_amt: '',
-            amt_with_multiplier: '',
             amt_due: '',
-
-            prior_read2: '',
-            current_read2: '',
-            from_date2: '',
-            to_date2: '',
-            cur_amt2: '',
-            amt_with_multiplier2: '',
-            amt_due2: ''
         }
 
         this.handleClickOpen = this.handleClickOpen.bind(this)
         this.handleClose = this.handleClose.bind(this)
         this.changePriorRead = this.changePriorRead.bind(this)
         this.changeCurrentRead = this.changeCurrentRead.bind(this)
-        this.changeCurrentAmount = this.changeCurrentAmount.bind(this)
-        this.changeAmountWithMultiplier = this.changeAmountWithMultiplier.bind(this)
         this.changeAmountDue = this.changeAmountDue.bind(this)
-        this.change2ndPriorRead = this.changePriorRead.bind(this)
-        this.change2ndCurrentRead = this.changeCurrentRead.bind(this)
-        this.change2ndCurrentAmount = this.changeCurrentAmount.bind(this)
-        this.change2ndAmountWithMultiplier = this.changeAmountWithMultiplier.bind(this)
-        this.change2ndAmountDue = this.changeAmountDue.bind(this)
+        this.calculate = this.calculate.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
     componentDidUpdate() {
@@ -62,7 +46,7 @@ class SubmeterBill extends React.Component {
                 property_id: this.props.property_id});
         }*/}
     }
-    updateBill(submeter_id, bill_id){
+    updateBill(submeter_id, bill_id) {
         {/*axios.patch('/tenant', {tenant_id: tenant_id, tenant_info: tenant_info}).then(response => {
             this.props.info.generateTableData();
         })*/}
@@ -79,7 +63,7 @@ class SubmeterBill extends React.Component {
             open: false
         })
     }
-    
+
     changePriorRead(event) {
         this.setState({
             prior_read: event.target.value
@@ -92,52 +76,14 @@ class SubmeterBill extends React.Component {
         })
     }
 
-    changeCurrentAmount(event) {
-        this.setState({
-            cur_amt: event.target.value
-        })
-    }
-
-    changeAmountWithMultiplier(event) {
-        this.setState({
-            amt_with_multiplier: event.target.value
-        })
-    }
-
     changeAmountDue(event) {
         this.setState({
             amt_due: event.target.value
         })
     }
 
-    change2ndPriorRead(event) {
-        this.setState({
-            prior_read: event.target.value
-        })
-    }
+    calculate() {
 
-    change2ndCurrentRead(event) {
-        this.setState({
-            current_read: event.target.value
-        })
-    }
-
-    change2ndCurrentAmount(event) {
-        this.setState({
-            cur_amt: event.target.value
-        })
-    }
-
-    change2ndAmountWithMultiplier(event) {
-        this.setState({
-            amt_with_multiplier: event.target.value
-        })
-    }
-
-    change2ndAmountDue(event) {
-        this.setState({
-            amt_due: event.target.value
-        })
     }
 
     onSubmit(event) {
@@ -146,7 +92,7 @@ class SubmeterBill extends React.Component {
             open: false
         })
 
-        {/* updateBill not so sure about parameter */}
+        {/* updateBill not so sure about parameter */ }
         this.updateBill(this.state.submeter_id, this.state.submeter);
         console.log(this.state.submeter)
     }
@@ -160,8 +106,6 @@ class SubmeterBill extends React.Component {
                 </Button>
                 <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
                     <DialogTitle id="form-dialog-title">Input utility bill manually</DialogTitle>
-
-                    <DialogTitle id="form-dialog-title">Input 2nd bill if exists</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
                         </DialogContentText>
@@ -175,53 +119,36 @@ class SubmeterBill extends React.Component {
                             value={this.props.submeter}
                             fullWidth
                         />
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            id="prior_read2"
-                            label="Prior read"
-                            type="text"
-                            onChange={this.change2ndPriorRead}
-                            fullWidth
-                        />
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            id="current_read2"
-                            label="Current read"
-                            type="text"
-                            onChange={this.change2ndCurrentRead}
-                            fullWidth
-                        />
                         <DialogContent></DialogContent>
                         <DatePicker />
                         <TextField
                             autoFocus
                             margin="dense"
-                            id="cur_amt2"
-                            label="Current amount"
+                            id="prior_read"
+                            label="Prior read"
                             type="text"
-                            onChange={this.change2ndCurrentAmount}
+                            onChange={this.changePriorRead}
                             fullWidth
                         />
                         <TextField
                             autoFocus
                             margin="dense"
-                            id="amt_with_multiplier2"
-                            label="Amount with multiplier"
+                            id="current_read"
+                            label="Current read"
                             type="text"
-                            onChange={this.change2ndAmountWithMultiplier}
+                            onChange={this.changeCurrentRead}
                             fullWidth
                         />
                         <TextField
                             autoFocus
                             margin="dense"
-                            id="amt_due2"
+                            id="amt_due"
                             label="Amount due"
                             type="text"
-                            onChange={this.change2ndAmountDue}
+                            onChange={this.changeAmountDue}
                             fullWidth
                         />
+                        <Button color="primary" onClic  k={this.calculate}>Calculate</Button>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">
@@ -235,6 +162,6 @@ class SubmeterBill extends React.Component {
             </div>
         );
     }
-    
+
 }
 export default SubmeterBill;
