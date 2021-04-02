@@ -305,7 +305,7 @@ function deleteMeter(property_id, meter_id, callback) {
 
 // return a list of JSON contains meter list of a property
 function selectAllMeters(property_id, callback) {
-  let sql = `SELECT meter_id FROM meter WHERE property_id = ?`;
+  let sql = `SELECT * FROM meter WHERE property_id = ?`;
   let inserts = [property_id];
   connection.query(sql, inserts, function (err, meterList) {
     if (err) {
@@ -327,7 +327,7 @@ function insertSubmeter(submeter_info, callback) {
   let tenant_id = submeter_info.tenant_id;
   let meter_id = submeter_info.meter_id;
   let multiplier = submeter_info.multiplier;
-
+  console.log(submeter_info);
   let sql = `INSERT INTO submeter(submeter_id, tenant_id, meter_id, multiplier) VALUES(?,?,?,?)`;
   let inserts = [submeter_id, tenant_id, meter_id, multiplier];
   connection.query(sql, inserts, function (err, result) {
@@ -397,13 +397,8 @@ function deleteSubmeter(tenant_id, submeter_id, callback) {
 
 // return a list of JSON contains Submeter list of a tenant
 function selectAllSubmeters(tenant_id, callback) {
-<<<<<<< HEAD
-  let sql = `SELECT * FROM submeter WHERE ?? = ?`;
-  let inserts = ["tenant_id", tenant_id];
-=======
   let sql = `SELECT submeter_id FROM submeter WHERE tenant_id = ?`;
   let inserts = [tenant_id];
->>>>>>> 35643814cf4824055ff4d5f676dbb616ec42e364
   connection.query(sql, inserts, function (err, submeterList) {
     if (err) {
       console.log(`not able to select submeterList of tenant_id: ${tenant_id} from database`);

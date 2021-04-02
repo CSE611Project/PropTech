@@ -359,7 +359,7 @@ router.post("/tenant", (req, res) => {
       });
       return;
     }
-
+    console.log("my tenantinfo:", req.body.tenant_info);
     db.insertTenant(req.body.property_id, req.body.tenant_info, (result) => {
       res.json(result);
     });
@@ -389,7 +389,7 @@ router.get("/submeter/:tenant_id?", (req, res) => {
 });
 
 //delete submeter
-router.delete("/delete_tenant", (req, res) => {
+router.delete("/delete_submeter", (req, res) => {
   verifyClient(req, res, (accessData, idData) => {
     var sub;
     if (accessData["cognito:groups"][0] == "Admin") {

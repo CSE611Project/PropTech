@@ -34,8 +34,9 @@ class Submeters extends React.Component {
             multiplier: '',
             property_id: this.props.property_id,
             meter_id: this.props.meter_id,
-            submeter_id: ''
-
+            submeter_id: '',
+            meter_list: [],
+            meter: ''
             
         }
 
@@ -50,6 +51,7 @@ class Submeters extends React.Component {
         this.onAdd = this.onAdd.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
         this.generateTable = this.generateTable.bind(this)
+        this.getAssociatedMeter = this.getAssociatedMeter.bind(this)
     }
 
     componentDidUpdate() {
@@ -100,8 +102,8 @@ class Submeters extends React.Component {
         })
     }
 
-    addSubmeter(property_id, tenant_info) {
-        axios.post('/add_submeter', {property_id: this.state.property_id, tenant_info: tenant_info}).then(response => {
+    addSubmeter(submeter_info) {
+        axios.post('/add_submeter', {submeter_info: submeter_info}).then(response => {
             this.generateTable();
         })
     }
@@ -115,18 +117,30 @@ class Submeters extends React.Component {
             as well as connect to a meter in database
         */}
         event.preventDefault();
-        this.addSubmeter()
+        var submeter_info ={
+            submeter_id : this.state.submeter,
+            tenant_id : this.state.tenant_id,
+            meter_id : this.state.meter_id,
+            multiplier : this.state.multiplier
+        }
+        this.addSubmeter(submeter_info)
         this.addMultiplier()
-        console.log(this.state.submeter, this.state.multiplier)
-        
+        console.log(this.state.submeter, this.state.multiplier)       
     }
 
     onSubmit(event) {
         event.preventDefault();
         this.setState({
             open: false,
+
         })
 
+    }
+
+    getAssociatedMeter(meters) {
+        this.setState({
+            meter_id: meters,
+        })
     }
 
     generateTable() {
@@ -204,9 +218,8 @@ class Submeters extends React.Component {
                         />
                         <DialogContent></DialogContent>
                         <MeterCheckBox 
-                            meter_list={[]} 
-                            meters="123456"
                             onlyOption={true}
+                            methodfromparent={this.getAssociatedMeter}
                         />
                         <Button onClick={this.onAdd} color="primary">
                             Add
@@ -216,9 +229,7 @@ class Submeters extends React.Component {
                         <Button onClick={this.handleClose} color="primary">
                             Cancel
                         </Button>
-                        <Button onClick={this.onSubmit} color="primary">
-                            Save
-                        </Button>
+
                     </DialogActions>
                 </Dialog>
             </div>

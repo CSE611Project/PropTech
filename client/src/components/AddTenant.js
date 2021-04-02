@@ -33,6 +33,8 @@ class AddTenant extends React.Component {
       rubs: "",
       property_id: this.props.property_id,
       multiplier: "",
+      meter: "",
+      meter_list: []
     };
 
     this.handleClickOpen = this.handleClickOpen.bind(this);
@@ -44,6 +46,7 @@ class AddTenant extends React.Component {
     this.changeRubs = this.changeRubs.bind(this);
     this.changeMultiplier = this.changeMultiplier.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.getAssociatedMeter = this.getAssociatedMeter.bind(this)
   }
 
   addTenant(tenant_info) {
@@ -113,8 +116,15 @@ class AddTenant extends React.Component {
       landlord_phone: this.state.landlord_phone,
       rubs: this.state.rubs,
     };
+    console.log(tenant_info);
     var property_id = this.state.property_id;
-    this.addTenant(property_id, tenant_info);
+    this.addTenant(tenant_info);
+  }
+
+  getAssociatedMeter(meters) {
+    this.setState({
+        meter: meters
+    })
   }
 
   render() {
@@ -134,7 +144,7 @@ class AddTenant extends React.Component {
             {/* 
                             After import meter_list, assign meter_list to the MeterCheckBox variable
                         */}
-            <MeterCheckBox meter_list={[]} meters="123456" onlyOption={false} />
+            <MeterCheckBox onlyOption={false} methodfromparent={this.getAssociatedMeter}/>
             <TextField autoFocus margin="dense" id="multiplier" label="Is there a multiplier?" type="text" onChange={this.changeMultiplier} fullWidth />
             <WhatIsMultiplier />
             <DialogContent></DialogContent>
