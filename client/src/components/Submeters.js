@@ -124,7 +124,6 @@ class Submeters extends React.Component {
     event.preventDefault();
     this.addSubmeter();
     this.addMultiplier();
-    console.log(this.state.submeter, this.state.multiplier);
   }
 
   onSubmit(event) {
@@ -139,7 +138,6 @@ class Submeters extends React.Component {
     // see hardcode below in render() function
     this.getSubmeterList().then(() => {
       this.res = [];
-      console.log(this.state.submeter_list);
       for (var i = 0; i < this.state.submeter_list.length; i++) {
         this.res.push(
           <tr key={i} id={i}>
@@ -185,8 +183,9 @@ class Submeters extends React.Component {
         <Button onClick={this.handleClickOpen}>Submeters</Button>
         <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Manage Submeters</DialogTitle>
-          {this.res}
-
+          <table>
+            <tbody>{this.res}</tbody>
+          </table>
           <DialogContent>
             <DialogContentText></DialogContentText>
             <TextField autoFocus margin="dense" id="submeter" label="Enter new submeter" type="text" onChange={this.changeSubmeter} fullWidth />

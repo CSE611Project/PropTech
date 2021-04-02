@@ -96,7 +96,7 @@ class TenantInfo extends Component {
           </tbody>
         </table>
         <AddTenant className="display_item" property_id={this.state.property_id} info={this} />
-        <Meters className="display_item" info={this} />
+        <Meters className="display_item" property_id={this.state.property_id} info={this} />
       </div>
     );
   }

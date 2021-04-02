@@ -20,13 +20,15 @@ class Meters extends React.Component {
     this.state = {
       open: false,
       meter_list: [],
+      property_id: this.props.property_id,
+      meter_to_add: "",
       info: this.props.info,
     };
 
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.getMeterList = this.getMeterList.bind(this);
-    this.changeMeter = this.changeMeter.bind(this);
+    this.changeMeterToAdd = this.changeMeterToAdd.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.generateMeter = this.generateMeter.bind(this);
   }
@@ -35,6 +37,7 @@ class Meters extends React.Component {
     this.setState({
       open: true,
     });
+    this.generateMeter();
   }
 
   handleClose() {
@@ -44,26 +47,17 @@ class Meters extends React.Component {
   }
 
   getMeterList() {
-    {
-      /*return new Promise((resolve, reject) => {
-            axios.get(`/property/${this.state.user_id}`).then((response) => {
-                this.setState({ meter_list: response.data })
-                resolve();
-            })
-        })*/
-    }
-  }
-
-  changeMeter(event) {
-    this.setState({
-      meter: event.target.value,
+    return new Promise((resolve, reject) => {
+      axios.get(`/meter/${this.state.property_id}`).then((response) => {
+        this.setState({ meter_list: response.data });
+        resolve();
+      });
     });
   }
 
-  onSubmit(event) {
-    event.preventDefault();
+  changeMeterToAdd(event) {
     this.setState({
-      open: false,
+      meter_to_add: event.target.value,
     });
   }
 
@@ -75,24 +69,9 @@ class Meters extends React.Component {
       for (var i = 0; i < this.state.meter_list.length; i++) {
         this.res.push(
           <tr key={i} id={i}>
-            <td key={this.state.meter_list[i]}>{this.state.meter_list[i]}</td>
+            <td key={this.state.meter_list[i].meter_id}>{this.state.meter_list[i].meter_id}</td>
             <td>
-              <EditMeters
-                properity_id={this.state.meter_list[i].property_id}
-                name={this.state.meter_list[i].name}
-                address={this.state.meter_list[i].address}
-                meter={this.state.meter_list[i].meter}
-                user_id={this.state.user_id}
-              />
-            </td>
-            <td>
-              <DeleteMeters
-                properity_id={this.state.meter_list[i].property_id}
-                name={this.state.meter_list[i].name}
-                address={this.state.meter_list[i].address}
-                meter={this.state.meter_list[i].meter}
-                user_id={this.state.user_id}
-              />
+              <DeleteMeters meter_id={this.state.meter_list[i].meter_id} property_id={this.state.property_id} info={this} />
             </td>
           </tr>
         );
@@ -101,43 +80,30 @@ class Meters extends React.Component {
     });
   }
 
+  addMeter = () => {
+    axios.post("/meter", { property_id: this.state.property_id, meter_id: this.state.meter_to_add }).then((response) => {
+      this.generateMeter();
+    });
+  };
   render() {
     return (
       <div>
         <Button onClick={this.handleClickOpen}>Meters</Button>
         <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Manage Meters</DialogTitle>
-          {this.res}
           <table>
-            <tr>
-              <th>Meter</th>
-            </tr>
-            <tr>
-              <td>192962</td>
-              <td>
-                <EditMeters submeter="192962" />
-              </td>
-              <td>
-                <DeleteMeters submeter="192962" />
-              </td>
-              <td>
-                <MeterBillPage submeter="192962" />
-              </td>
-            </tr>
+            <tbody>{this.res}</tbody>
           </table>
           <DialogContent>
             <DialogContentText></DialogContentText>
-            <TextField autoFocus margin="dense" id="meter" label="Meter" type="text" onChange={this.changeMeter} fullWidth />
-            <Button onClick={this.onAdd} color="primary">
+            <TextField autoFocus margin="dense" id="meter" label="Meter" type="text" onChange={this.changeMeterToAdd} fullWidth />
+            <Button onClick={this.addMeter} color="primary">
               Add
             </Button>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={this.onSubmit} color="primary">
-              Save
+              Back
             </Button>
           </DialogActions>
         </Dialog>

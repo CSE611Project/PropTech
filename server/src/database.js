@@ -262,7 +262,7 @@ function deleteProperty(user_id, property_id, callback) {
 // add new meter to a property
 // return true if adds successfully
 // return false if adds failed
-function insertMeter(property_id, meter_id, callback) {
+function insertMeter(meter_id, property_id, callback) {
   let sql = `INSERT INTO meter(property_id,meter_id) VALUES(?,?)`;
   let inserts = [property_id, meter_id];
   connection.query(sql, inserts, function (err, result) {
@@ -284,7 +284,7 @@ function insertMeter(property_id, meter_id, callback) {
 // delete meter info
 // return true if adds successfully
 // return false if adds failed
-function deleteMeter(property_id, meter_id, callback) {
+function deleteMeter(meter_id, property_id, callback) {
   let sql = `DELETE FROM meter WHERE property_id = ? AND meter_id = ?`;
   let inserts = [property_id, meter_id];
   connection.query(sql, inserts, function (err, result) {

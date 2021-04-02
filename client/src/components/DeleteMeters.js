@@ -16,12 +16,9 @@ class DeleteMeters extends React.Component {
     super(props);
     this.state = {
       open: false,
-      name: this.props.name,
+      meter_id: this.props.meter_id,
+      info: this.props.info,
       property_id: this.props.property_id,
-      address: this.props.address,
-      meter_list: this.props.meter_list,
-      meter: this.props.meter,
-      user_id: this.props.user_id,
     };
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -29,24 +26,19 @@ class DeleteMeters extends React.Component {
   }
 
   componentDidUpdate() {
-    if (this.props.property_id !== this.state.property_id) {
+    if (this.props.meter_id !== this.state.meter_id) {
       this.setState({
-        name: this.props.name,
+        meter_id: this.props.meter_id,
+        info: this.props.info,
         property_id: this.props.property_id,
-        address: this.props.address,
-        meter_list: this.props.meter_list,
-        meter: this.props.meter,
-        user_id: this.props.user_id,
       });
     }
   }
 
   deleteMeter() {
-    {
-      /*axios.delete('/property', {data: {property_id: this.state.property_id , user_id: this.state.user_id }}).then(response => {
-                this.props.info.generateTableData();
-            })*/
-    }
+    axios.delete("/meter", { data: { meter_id: this.state.meter_id, property_id: this.state.property_id } }).then((response) => {
+      this.props.info.generateMeter();
+    });
   }
 
   handleClickOpen() {
