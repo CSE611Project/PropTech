@@ -21,220 +21,6 @@ import MeterCheckBox from "./MeterCheckbox";
 */
 }
 class Submeters extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            open: false,
-            name: this.props.name,
-            tenant_id: this.props.tenant_id,
-            email: this.props.email,
-            address: this.props.address,
-            phone_number: this.props.phone_number,
-            submeter_list: [],
-            submeter: '',
-            multiplier_list: [],
-            multiplier: '',
-            property_id: this.props.property_id,
-            meter_id: this.props.meter_id,
-            submeter_id: '',
-            meter_list: [],
-            meter: ''
-            
-        }
-
-        this.handleClickOpen = this.handleClickOpen.bind(this)
-        this.handleClose = this.handleClose.bind(this)
-        this.getSubmeterList = this.getSubmeterList.bind(this)
-        this.getMultiplierList = this.getMultiplierList.bind(this)
-        this.changeSubmeter = this.changeSubmeter.bind(this)
-        this.changeMultiplier = this.changeMultiplier.bind(this)
-        this.addSubmeter = this.addSubmeter.bind(this)
-        this.addMultiplier = this.addMultiplier.bind(this)
-        this.onAdd = this.onAdd.bind(this)
-        this.onSubmit = this.onSubmit.bind(this)
-        this.generateTable = this.generateTable.bind(this)
-        this.getAssociatedMeter = this.getAssociatedMeter.bind(this)
-    }
-
-    componentDidUpdate() {
-        if (this.props.property_id !== this.state.property_id) {
-            this.setState({
-                property_id: this.props.property_id
-            });
-        }
-    }
-
-    handleClickOpen() {
-        this.setState({
-            open: true
-        })
-        this.generateTable();
-    }
-    handleClose() {
-        this.setState({
-            open: false
-        })
-    }
-    
-
-
-
-    getSubmeterList() {
-        return new Promise((resolve, reject) => {
-            axios.get(`/submeter/${this.state.tenant_id}`).then((response) => {
-                this.setState({ submeter_list: response.data })
-                resolve();
-            })
-        })
-    }
-
-    getMultiplierList() {
-
-    }
-
-    changeSubmeter(event) {
-        this.setState({
-            submeter: event.target.value
-        })
-    }
-
-    changeMultiplier(event) {
-        this.setState({
-            multiplier: event.target.value
-        })
-    }
-
-    addSubmeter(submeter_info) {
-        axios.post('/add_submeter', {submeter_info: submeter_info}).then(response => {
-            this.generateTable();
-        })
-    }
-
-    addMultiplier() {
-
-    }
-
-    onAdd(event) {
-        {/* this function add submeter into submeterlist and multiplier list associated with one tenant 
-            as well as connect to a meter in database
-        */}
-        event.preventDefault();
-        var submeter_info ={
-            submeter_id : this.state.submeter,
-            tenant_id : this.state.tenant_id,
-            meter_id : this.state.meter_id,
-            multiplier : this.state.multiplier
-        }
-        this.addSubmeter(submeter_info)
-        this.addMultiplier()
-        console.log(this.state.submeter, this.state.multiplier)       
-    }
-
-    onSubmit(event) {
-        event.preventDefault();
-        this.setState({
-            open: false,
-
-        })
-
-    }
-
-    getAssociatedMeter(meters) {
-        this.setState({
-            meter_id: meters,
-        })
-    }
-
-    generateTable() {
-        //call updateTable everytime when we need to generate a list of submeter and multiplier
-        // see hardcode below in render() function
-        this.getSubmeterList().then(() => {
-            var res = [];
-            let tableData = this.state.submeter_list;
-            console.log(tableData);
-            for (var i = 0; i < tableData.length; i++) {
-                res.push(
-
-                    <tr key={i} id={i}>
-                        <td>{tableData[i].submeter_id}</td>
-                        <td><EditSubmeters
-                            tenant_id={tableData[i].tenant_id}
-                            // name={tableData[i].name}
-                            // email={tableData[i].email}
-                            // address={tableData[i].address}
-                            // phone_number={tableData[i].phone_number}
-                            meter={tableData[i].meter_id}
-                            submeter={tableData[i].submeter_id}
-                            property_id={this.state.property_id}
-                        /></td>
-                        <td><DeleteSubmeters
-                            tenant_id={tableData[i].tenant_id}
-                            // name={tableData[i].name}
-                            // email={tableData[i].email}
-                            // address={tableData[i].address}
-                            // phone_number={tableData[i].phone_number}
-                            info={this}
-                            meter={tableData[i].meter_id}
-                            submeter_id={tableData[i].submeter_id}
-                            property_id={this.state.property_id}
-                        /></td>
-                        <td><SubmeterBill submeter={tableData[i].submeter_id}/></td>
-                    </tr>
-                )
-            }
-            this.res = res;
-            this.forceUpdate();
-        })
-    }
-
-    render() {
-        return (
-            <div>
-                <Button onClick={this.handleClickOpen}>
-                    Submeters
-                </Button>
-                <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
-                    <DialogTitle id="form-dialog-title">Manage Submeters</DialogTitle>
-                    {this.res}
-
-                    <DialogContent>
-                        <DialogContentText>
-                        </DialogContentText>
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            id="submeter"
-                            label="Enter new submeter"
-                            type="text"
-                            onChange={this.changeSubmeter}
-                            fullWidth
-                        />
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            id="multiplier"
-                            label="Enter associated multiplier if has one"
-                            type="text"
-                            onChange={this.changeMultiplier}
-                            fullWidth
-                        />
-                        <DialogContent></DialogContent>
-                        <MeterCheckBox 
-                            onlyOption={true}
-                            methodfromparent={this.getAssociatedMeter}
-                        />
-                        <Button onClick={this.onAdd} color="primary">
-                            Add
-                        </Button>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={this.handleClose} color="primary">
-                            Cancel
-                        </Button>
-
-                    </DialogActions>
-                </Dialog>
-            </div>
   constructor(props) {
     super(props);
     this.state = {
@@ -250,26 +36,25 @@ class Submeters extends React.Component {
       multiplier: "",
       property_id: this.props.property_id,
       meter_id: this.props.meter_id,
-      submeter_id: "",
+      meter_list: [],
+      meter: "",
     };
 
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.getSubmeterList = this.getSubmeterList.bind(this);
-    this.getMultiplierList = this.getMultiplierList.bind(this);
     this.changeSubmeter = this.changeSubmeter.bind(this);
     this.changeMultiplier = this.changeMultiplier.bind(this);
     this.addSubmeter = this.addSubmeter.bind(this);
-    this.addMultiplier = this.addMultiplier.bind(this);
     this.onAdd = this.onAdd.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.generateTable = this.generateTable.bind(this);
+    this.getAssociatedMeter = this.getAssociatedMeter.bind(this);
   }
 
   componentDidUpdate() {
     if (this.props.tenant_id !== this.state.tenant_id) {
       this.setState({
-        open: false,
         name: this.props.name,
         tenant_id: this.props.tenant_id,
         email: this.props.email,
@@ -281,7 +66,8 @@ class Submeters extends React.Component {
         multiplier: "",
         property_id: this.props.property_id,
         meter_id: this.props.meter_id,
-        submeter_id: "",
+        meter_list: [],
+        meter: "",
       });
     }
   }
@@ -307,8 +93,6 @@ class Submeters extends React.Component {
     });
   }
 
-  getMultiplierList() {}
-
   changeSubmeter(event) {
     this.setState({
       submeter: event.target.value,
@@ -321,13 +105,11 @@ class Submeters extends React.Component {
     });
   }
 
-  addSubmeter(property_id, tenant_info) {
-    axios.post("/add_submeter", { property_id: this.state.property_id, tenant_info: tenant_info }).then((response) => {
+  addSubmeter() {
+    axios.post("/add_submeter", { submeter_id: this.state.submeter, tenant_id: this.state.tenant_id, meter_id: this.state.meter_id, multiplier: this.state.multiplier }).then((response) => {
       this.generateTable();
     });
   }
-
-  addMultiplier() {}
 
   onAdd(event) {
     {
@@ -337,7 +119,6 @@ class Submeters extends React.Component {
     }
     event.preventDefault();
     this.addSubmeter();
-    this.addMultiplier();
   }
 
   onSubmit(event) {
@@ -347,46 +128,52 @@ class Submeters extends React.Component {
     });
   }
 
+  getAssociatedMeter(meters) {
+    this.setState({ meter_id: meters });
+  }
+
   generateTable() {
     //call updateTable everytime when we need to generate a list of submeter and multiplier
     // see hardcode below in render() function
     this.getSubmeterList().then(() => {
-      this.res = [];
-      for (var i = 0; i < this.state.submeter_list.length; i++) {
-        this.res.push(
+      var res = [];
+      let tableData = this.state.submeter_list;
+      for (var i = 0; i < tableData.length; i++) {
+        res.push(
           <tr key={i} id={i}>
-            <td>{this.state.submeter_list[i].submeter_id}</td>
+            <td>{tableData[i].submeter_id}</td>
             <td>
               <EditSubmeters
-                tenant_id={this.state.submeter_list[i].tenant_id}
+                tenant_id={tableData[i].tenant_id}
                 // name={tableData[i].name}
                 // email={tableData[i].email}
                 // address={tableData[i].address}
                 // phone_number={tableData[i].phone_number}
-                meter={this.state.submeter_list[i].meter_id}
-                submeter={this.state.submeter_list[i].submeter_id}
+                meter={tableData[i].meter_id}
+                submeter={tableData[i].submeter_id}
                 property_id={this.state.property_id}
               />
             </td>
             <td>
               <DeleteSubmeters
-                tenant_id={this.state.submeter_list[i].tenant_id}
+                tenant_id={tableData[i].tenant_id}
                 // name={tableData[i].name}
                 // email={tableData[i].email}
                 // address={tableData[i].address}
                 // phone_number={tableData[i].phone_number}
                 info={this}
-                meter={this.state.submeter_list[i].meter_id}
-                submeter_id={this.state.submeter_list[i].submeter_id}
+                meter={tableData[i].meter_id}
+                submeter_id={tableData[i].submeter_id}
                 property_id={this.state.property_id}
               />
             </td>
-            <td>
-              <SubmeterBill submeter={this.state.submeter_list[i].submeter_id} />
-            </td>
+            {/* <td> TODO what is this???
+              <SubmeterBill submeter={tableData[i].submeter_id} />
+            </td> */}
           </tr>
         );
       }
+      this.res = res;
       this.forceUpdate();
     });
   }
@@ -397,15 +184,14 @@ class Submeters extends React.Component {
         <Button onClick={this.handleClickOpen}>Submeters</Button>
         <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Manage Submeters</DialogTitle>
-          <table>
+          <table className="table">
             <tbody>{this.res}</tbody>
           </table>
           <DialogContent>
             <DialogContentText></DialogContentText>
             <TextField autoFocus margin="dense" id="submeter" label="Enter new submeter" type="text" onChange={this.changeSubmeter} fullWidth />
             <TextField autoFocus margin="dense" id="multiplier" label="Enter associated multiplier if has one" type="text" onChange={this.changeMultiplier} fullWidth />
-            <DialogContent></DialogContent>
-            <MeterCheckBox meter_list={[]} meters="123456" onlyOption={true} />
+            <MeterCheckBox const methodfromparent={this.getAssociatedMeter} property_id={this.state.property_id} />
             <Button onClick={this.onAdd} color="primary">
               Add
             </Button>
@@ -413,9 +199,6 @@ class Submeters extends React.Component {
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">
               Cancel
-            </Button>
-            <Button onClick={this.onSubmit} color="primary">
-              Save
             </Button>
           </DialogActions>
         </Dialog>

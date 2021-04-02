@@ -29,7 +29,6 @@ class Meters extends React.Component {
     this.handleClose = this.handleClose.bind(this);
     this.getMeterList = this.getMeterList.bind(this);
     this.changeMeterToAdd = this.changeMeterToAdd.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
     this.generateMeter = this.generateMeter.bind(this);
   }
 
@@ -77,7 +76,6 @@ class Meters extends React.Component {
         );
       }
       this.forceUpdate();
-      this.info.setState({ meter_list: this.state.meter_list });
     });
   }
 
@@ -92,7 +90,7 @@ class Meters extends React.Component {
         <Button onClick={this.handleClickOpen}>Meters</Button>
         <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Manage Meters</DialogTitle>
-          <table>
+          <table className="table">
             <tbody>{this.res}</tbody>
           </table>
           <DialogContent>

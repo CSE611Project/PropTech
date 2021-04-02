@@ -83,14 +83,15 @@ class TenantInfo extends Component {
 
   render() {
     return (
-      <div>
-        <table className="table">
+      <div className="main">
+        <table className="display_item">
           <tbody>
             <tr>
-              <th style={{ width: "25%" }}>Name</th>
-              <th style={{ width: "25%" }}>Email</th>
-              <th style={{ width: "25%" }}>Address</th>
-              <th style={{ width: "10%" }}>Property Share</th>
+              <th style={{ width: "20%" }}>Name</th>
+              <th style={{ width: "20%" }}>Email</th>
+              <th style={{ width: "20%" }}>Address</th>
+              <th style={{ width: "10%" }}>Landlord Phone</th>
+              <th style={{ width: "10%" }}>RUBS</th>
             </tr>
             {this.res}
           </tbody>

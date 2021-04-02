@@ -33,7 +33,7 @@ class DeleteSubmeters extends React.Component {
     this.onSubmit = this.onSubmit.bind(this);
   }
   componentDidUpdate() {
-    if (this.props.tenant_id !== this.state.tenant_id) {
+    if (this.props.submeter_id !== this.state.submeter_id) {
       this.setState({
         name: this.props.name,
         tenant_id: this.props.tenant_id,
@@ -52,9 +52,9 @@ class DeleteSubmeters extends React.Component {
     {
       console.log("this tenant id:", this.state.tenant_id);
       console.log("this submeter_id: ", this.state.submeter_id);
-      axios.delete('/delete_submeter', {data: {tenant_id: this.state.tenant_id , submeter_id: this.state.submeter_id }}).then(response => {
-            this.props.info.generateTable();
-        })
+      axios.delete("/delete_submeter", { data: { tenant_id: this.state.tenant_id, submeter_id: this.state.submeter_id } }).then((response) => {
+        this.props.info.generateTable();
+      });
     }
   }
 

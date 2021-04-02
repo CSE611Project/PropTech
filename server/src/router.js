@@ -426,7 +426,7 @@ router.post("/add_submeter", (req, res) => {
       return;
     }
 
-    db.insertSubmeter(req.body.submeter_info, (result) => {
+    db.insertSubmeter(req.body, (result) => {
       res.json(result);
     });
   });

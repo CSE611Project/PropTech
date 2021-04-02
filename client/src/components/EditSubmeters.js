@@ -34,7 +34,7 @@ class EditSubmeters extends React.Component {
     this.onSubmit = this.onSubmit.bind(this);
   }
   componentDidUpdate() {
-    if (this.props.tenant_id !== this.state.tenant_id) {
+    if (this.props.submeter_id !== this.state.submeter_id) {
       this.setState({
         name: this.props.name,
         name: this.props.name,
@@ -52,6 +52,7 @@ class EditSubmeters extends React.Component {
   }
   updateSubmeter(tenant_id, submeter) {
     {
+      //TODO
       /*axios.patch('/tenant', {tenant_id: tenant_id, tenant_info: tenant_info}).then(response => {
             this.props.info.generateTableData();
         })*/

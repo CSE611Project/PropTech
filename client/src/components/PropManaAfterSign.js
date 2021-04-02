@@ -15,15 +15,17 @@ class PropManaAfterSign extends Component {
     this.state = {
       sub: this.props.match.params.sub,
       page: null,
-      page_name: [sessionStorage.getItem("username")],
+      page_name: null,
       pathname: this.props.location.pathname,
     };
   }
 
   componentDidMount() {
     if (matchPath(this.state.pathname, { path: "/PropMana/:sub/property", exact: true, strict: false })) {
+      this.setState({ page_name: sessionStorage.getItem("username") + " Properties" });
       this.manage_property();
     } else if (matchPath(this.state.pathname, { path: "/PropMana/:sub/property/:propertyId", exact: true, strict: false })) {
+      this.setState({ page_name: sessionStorage.getItem("property_name") + " Information" });
       this.manage_tenant(this.props.match.params.propertyId);
     }
   }
@@ -40,7 +42,7 @@ class PropManaAfterSign extends Component {
     return (
       <div>
         <header className="Page_Name">
-          <h1>{this.state.page_name.join(">")}</h1>
+          <h1>{this.state.page_name}</h1>
         </header>
         <div className="Info_Page_Split">
           <SideMenu page={this} />

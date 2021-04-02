@@ -49,7 +49,7 @@ class PropertyInfo extends Component {
                 onClick={(e) => manage_tenants(e.currentTarget.value)}
                 color="inherit"
               >
-                View Tenants
+                View Details
               </Button>
             </td>
             <td>
@@ -75,8 +75,8 @@ class PropertyInfo extends Component {
 
   render() {
     return (
-      <div>
-        <table className="table">
+      <div className="main">
+        <table className="display_item">
           <tbody>
             <tr>
               <th style={{ width: "20%" }}>Property Name</th>
@@ -88,7 +88,7 @@ class PropertyInfo extends Component {
             {this.res}
           </tbody>
         </table>
-        <AddProperty className="display_item display" info={this} />
+        <AddProperty className="display_item" info={this} />
       </div>
     );
   }
