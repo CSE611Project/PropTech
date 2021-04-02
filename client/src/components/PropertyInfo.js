@@ -41,7 +41,8 @@ class PropertyInfo extends Component {
             <td>{this.state.property_list[i].name}</td>
             <td>{this.state.property_list[i].address}</td>
             <td>{this.state.property_list[i].property_type}</td>
-            <td>{this.state.property_list[i].meters}</td>
+            <td>{this.state.property_list[i].total_footage}</td>
+            <td>{this.state.property_list[i].landlord_phone}</td>
             <td>
               <Button
                 value={`{"property_id":"${this.state.property_list[i].property_id}", "property_name":"${this.state.property_list[i].name}"}`}
@@ -57,8 +58,8 @@ class PropertyInfo extends Component {
                 name={this.state.property_list[i].name}
                 address={this.state.property_list[i].address}
                 property_type={this.state.property_list[i].property_type}
-                meters={this.state.property_list[i].meters}
-                user_id={this.state.user_id}
+                total_footage={this.state.property_list[i].total_footage}
+                landlord_phone={this.state.property_list[i].landlord_phone}
                 info={this}
               />
             </td>
@@ -78,15 +79,16 @@ class PropertyInfo extends Component {
         <table className="table">
           <tbody>
             <tr>
-              <th style={{ width: "25%" }}>Property Name</th>
-              <th style={{ width: "25%" }}>Property Address</th>
-              <th style={{ width: "25%" }}>Property Type</th>
-              <th style={{ width: "10%" }}>Meters</th>
+              <th style={{ width: "20%" }}>Property Name</th>
+              <th style={{ width: "20%" }}>Property Address</th>
+              <th style={{ width: "20%" }}>Property Type</th>
+              <th style={{ width: "10%" }}>Total Footage</th>
+              <th style={{ width: "10%" }}>Landlord Phone</th>
             </tr>
             {this.res}
           </tbody>
         </table>
-        <AddProperty className="display_item display" user_id={this.state.user_id} info={this} />
+        <AddProperty className="display_item display" info={this} />
       </div>
     );
   }

@@ -18,7 +18,7 @@ class TenantInfo extends Component {
     super(props);
     this.state = {
       display: this.props.display,
-      property_id: this.props.property_id,
+      property_id: sessionStorage.getItem("property_id"),
       property_name: sessionStorage.getItem("property_name"),
       tenant_list: [],
       meter_list: this.props.meter_list
@@ -45,16 +45,16 @@ class TenantInfo extends Component {
             <td>{tableData[i].name}</td>
             <td>{tableData[i].email}</td>
             <td>{tableData[i].address}</td>
-            <td>{tableData[i].property_share}</td>
-            <td>{tableData[i].submeter}</td>
+            <td>{tableData[i].landlord_phone}</td>
+            <td>{tableData[i].rubs}</td>
             <td>
               <EditTenant
                 tenant_id={tableData[i].tenant_id}
                 name={tableData[i].name}
                 email={tableData[i].email}
                 address={tableData[i].address}
-                property_share={tableData[i].property_share}
-                submeter={tableData[i].submeter}
+                landlord_phone={tableData[i].landlord_phone}
+                rubs={tableData[i].rubs}
                 property_id={this.state.property_id}
                 info={this}
               />
