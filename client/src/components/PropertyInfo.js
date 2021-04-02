@@ -1,220 +1,101 @@
 import React, { useState } from "react";
-import ReactDOM from 'react-dom';
+import ReactDOM from "react-dom";
 import "./../App.css";
-import Navigation from "./Navigation.js"
-import HomePage from "./HomePage.js"
-import PropManaAfterSign from "./PropManaAfterSign.js"
-import AddProperty from "./AddProperty"
-import EditProperty from "./EditProperty"
-import DeleteProperty from "./DeleteProperty"
-import TenantInfo from "./TenantInfo"
+import Navigation from "./Navigation.js";
+import HomePage from "./HomePage.js";
+import PropManaAfterSign from "./PropManaAfterSign.js";
+import AddProperty from "./AddProperty";
+import EditProperty from "./EditProperty";
+import DeleteProperty from "./DeleteProperty";
+import TenantInfo from "./TenantInfo";
 import { Component } from "react";
+import Button from "@material-ui/core/Button";
 import { TableBody } from "@material-ui/core";
 import axios from "axios";
 
 class PropertyInfo extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      display: this.props.display,
+      property_list: [],
+    };
+    this.generateTableData();
+  }
 
-    constructor(props){
-        super(props);
-        this.state = {
-            sub: this.props.sub,
-            property_list:[
-            ]
-        }
-        this.generateTableData();
-    }
+  getPropertyList() {
+    return new Promise((resolve, reject) => {
+      axios.get(`/property`).then((response) => {
+        this.setState({ property_list: response.data });
+        resolve();
+      });
+    });
+  }
 
-    componentDidUpdate() {
-        if (this.props.sub !== this.state.sub) {
-            this.setState({
-                sub: this.props.sub,
-                property_list:[
-                ]
-            });
-            this.generateTableData();
-        }
-    }
-
-    getPropertyList(){
-        return new Promise((resolve, reject) => {
-            axios.get(`/property`).then((response) => {
-                this.setState({property_list: response.data})
-                resolve();
-            })
-        })
-    }
-
-    // updatePropertyTable(sub, user_id, property_list){
-
-    //     var property_list;
-    //     for(var i=0; i<property_list.length;i++){
-    //         this.state.property_list.push({
-
-    //             property_name:property_list[i].property_name,
-    //             property_address:property_list[i].property_address,
-    //             property_type:property_list[i].property_type,
-    //             meters: property_list[i].meters
-    //         })
-    //     }
-    // }
-
-    generateTableData(){
-        this.getPropertyList().then(() => {
-            this.res=[];
-            let tableData = this.state.property_list;
-            for(var i =0; i<tableData.length; i++){
-                this.res.push(
-
-                <tr key={i} id={i}>
-                    <td key={tableData[i].name}>{tableData[i].name}</td>
-                    <td key={tableData[i].address}>{tableData[i].address}</td>
-                    <td key={tableData[i].property_type}>{tableData[i].property_type}</td>
-                    <td key={tableData[i].meters}>{tableData[i].meters}</td>
-                    <td><EditProperty
-                                property_id={tableData[i].property_id}
-                                name = {tableData[i].name}
-                                address = {tableData[i].address}
-                                property_type = {tableData[i].property_type}
-                                meters = {tableData[i].meters}
-                                user_id = {this.state.user_id}
-                                info={this}
-                            />
-                    </td>
-                    <td><DeleteProperty
-                                property_id={tableData[i].property_id}
-                                name = {tableData[i].name}
-                                address = {tableData[i].address}
-                                property_type = {tableData[i].property_type}
-                                meters = {tableData[i].meters}
-                                user_id = {this.state.user_id}
-                                info={this}
-                            />
-                    </td>
-                </tr>
-            )}
-            this.forceUpdate();
-        })
-    }
-
-    render(){
-    return (
-        <div>
-            <div className="AdminAfterSign">
-                <header className="Admin_menu">
-                    <h1>Property information</h1>
-                    <ul className="buttonUL">
-                        <button className="Admin_option" onClick={manage_tenant}>Manage Tenant Info</button>
-                        <button className="Admin_option" onClick={manage_property}>Manage Property Info</button>
-                        <button className="Admin_option" onClick={edit_profile}>Edit Profile Info</button>
-                        <button className="Admin_option" onClick={manage_utility}>Manage Utility Bill</button>
-                        <button className="Admin_option" onClick={manage_invoice}>Manage Invoice History</button>
-                        <button className="Admin_option" onClick={generate_invoice}>Generate Invoice</button>
-                        <button className="Admin_option" onClick={log_out}>Log Out</button>
-                        </ul>
-                    <div className="tenant_list" ref="tenant_list">
-                    <table className="display_item">
-                                <tbody>
-                                <tr>
-                                    <th>Property Name</th>
-                                    <th>Property Address</th>
-                                    <th>Property Type</th>
-                                    <th>Meters</th>
-                                </tr>
-                                {this.res}
-                                </tbody>
-                            </table>
-                            <AddProperty className="display_item" user_id={this.state.user_id}
-                            info={this}
-                            />
-                        </div>
-                    </header>
-                </div>
-            </div>
+  generateTableData = () => {
+    this.getPropertyList().then(() => {
+      this.res = [];
+      for (var i = 0; i < this.state.property_list.length; i++) {
+        this.res.push(
+          <tr key={i} id={i}>
+            <td>{this.state.property_list[i].name}</td>
+            <td>{this.state.property_list[i].address}</td>
+            <td>{this.state.property_list[i].property_type}</td>
+            <td>{this.state.property_list[i].meters}</td>
+            <td>
+              <Button
+                value={`{"property_id":"${this.state.property_list[i].property_id}", "property_name":"${this.state.property_list[i].name}"}`}
+                onClick={(e) => manage_tenants(e.currentTarget.value)}
+                color="inherit"
+              >
+                View Tenants
+              </Button>
+            </td>
+            <td>
+              <EditProperty
+                property_id={this.state.property_list[i].property_id}
+                name={this.state.property_list[i].name}
+                address={this.state.property_list[i].address}
+                property_type={this.state.property_list[i].property_type}
+                meters={this.state.property_list[i].meters}
+                user_id={this.state.user_id}
+                info={this}
+              />
+            </td>
+            <td>
+              <DeleteProperty property_id={this.state.property_list[i].property_id} info={this} />
+            </td>
+          </tr>
         );
-    }
-}
+      }
+      this.forceUpdate();
+    });
+  };
 
-function manage_tenant() {
-    const ele =
+  render() {
+    return (
       <div>
-        <TenantInfo />
+        <table className="table">
+          <tbody>
+            <tr>
+              <th style={{ width: "25%" }}>Property Name</th>
+              <th style={{ width: "25%" }}>Property Address</th>
+              <th style={{ width: "25%" }}>Property Type</th>
+              <th style={{ width: "10%" }}>Meters</th>
+            </tr>
+            {this.res}
+          </tbody>
+        </table>
+        <AddProperty className="display_item display" user_id={this.state.user_id} info={this} />
       </div>
-    window.location = "/PropManaAfterSign/TenantInfo"
-    return (ReactDOM.render(ele, document.getElementById('root')));
+    );
   }
-  
-  function manage_property() {
-    const ele =
-    <div>
-      <PropertyInfo />
-    </div>
-    window.location = "/PropManaAfterSign/PropertyInfo"
-    return (ReactDOM.render(ele, document.getElementById('root')));
-  }
-  
-function edit_profile() {
-    const ele =
-        <div>
-
-        </div>
-    return (ReactDOM.render(ele, document.getElementById('root')));
 }
 
-function manage_utility() {
-    const ele =
-        <div>
-
-        </div>
-    return (ReactDOM.render(ele, document.getElementById('root')));
-}
-
-function manage_invoice() {
-    const ele =
-        <div>
-
-        </div>
-    return (ReactDOM.render(ele, document.getElementById('root')));
-}
-
-function generate_invoice() {
-    const ele =
-        <div>
-
-        </div>
-    return (ReactDOM.render(ele, document.getElementById('root')));
-}
-
-function log_out() {
-    const ele =
-        <div>
-            <div className="Admin_menu" id="logout">
-                <header className="RegProcess-header">
-                    <h1>You have successfully logout</h1>
-                    <button className="button" onClick={homepage}>OK</button>
-                </header>
-            </div>
-        </div>
-    return (ReactDOM.render(ele, document.getElementById('root')));
-}
-
-function homepage() {
-    window.location = "/"
-    return (ReactDOM.render(<HomePage />, document.getElementById('root')));
-}
-
-function back() {
-    return (ReactDOM.render(<PropManaAfterSign />, document.getElementById('root')));
-}
-
-function confirm_win() {
-    window.confirm("Sure?");
-}
-
-function addNewProperty(sub, user_id, new_property){
-
-    //call add_new_property function here to add to database
-
-
+function manage_tenants(info) {
+  var infos = JSON.parse(info);
+  sessionStorage.setItem("property_name", infos.property_name);
+  window.location = `/PropMana/${sessionStorage.getItem("sub")}/property/${infos.property_id}`;
 }
 
 export default PropertyInfo;

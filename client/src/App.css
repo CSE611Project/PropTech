@@ -1,5 +1,7 @@
 .App {
   text-align: center;
+  background-color: #282c30;
+  min-height: 100vh;
 }
 
 .App-header {
@@ -81,8 +83,6 @@ li {
   color: white;
 }
 
-
-
 .SignUpPage {
   text-align: center;
 }
@@ -97,29 +97,43 @@ li {
   color: white;
 }
 
-.AdminAfterSign{
+.PropManaAfterSign {
   text-align: center;
 }
 
-.Admin_menu{
+.Page_Name {
+  height: 60px;
+  text-align: center;
+  background-color: #282c30;
+  color: white;
+}
+
+.Info_Page_Split {
+  background-color: #282c30;
+  display: flex;
+}
+
+.PropMana_menu {
   background-color: #282c30;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   color: white;
-  
 }
 
-.display_item{
-  position: absolute;
-  top: 150px;
-  right: 10px;
-  width: auto;
-  border-spacing: 50px 0;
-  margin-top: auto;
-  margin-bottom: 0px;
+.display_item {
+  padding: 20px;
+  color: white;
 }
 
+.display {
+  flex-basis: 80%;
+}
+
+.table {
+  color: white;
+  width: 100%;
+}
 
 .buttonUL {
   list-style-type: none;
@@ -139,13 +153,13 @@ li {
   margin: 10px;
 }
 
-.Admin_option{
+.PropMana_option {
   width: 150px;
   height: 35px;
   margin-top: 5px;
   margin-bottom: 5px;
-  top :50%;
-  left : 0;
+  top: 50%;
+  left: 0;
   display: block;
 }
 
