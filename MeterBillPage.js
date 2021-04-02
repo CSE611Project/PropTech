@@ -24,16 +24,16 @@ class MeterBillPage extends React.Component{
             checked: false,  /*for check box status*/
             setCheck:false, /*for check box status*/
 
-            meter_code: "",
+            meter_id: "",
             begin: "",
             end: "",
             KWH_usage: "",
-            bill:"",
+            amount:"",
             user_id: this.props.user_id,
 
             /*second bill info */
             sec_KWH_usage:"",
-            sec_bill:"",
+            sec_bill_amount:"",
             
         }    
         this.handleClickOpen = this.handleClickOpen.bind(this)
@@ -42,11 +42,11 @@ class MeterBillPage extends React.Component{
         this.changeBegin = this.changeBegin.bind(this)
         this.changeEnd = this.changeEnd.bind(this)
         this.changeKWH = this.changeKWH.bind(this)
-        this.changeBill = this.changeBill.bind(this)
+        this.changeAmount = this.changeAmount.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
         /*second bill handlers */
         this.change_sec_KWH = this.change_sec_KWH.bind(this)
-        this.change_sec_bill = this.change_sec_bill.bind(this)
+        this.change_sec_bill_amount = this.change_sec_bill_amount.bind(this)
 
         /*handle check box change event*/
         this.changeCheckBox = this.changeCheckBox.bind(this)
@@ -67,7 +67,7 @@ class MeterBillPage extends React.Component{
 
     changeMeter(event){
         this.setState({
-            meter_code:event.target.value
+            meter_id:event.target.value
         })
     }
 
@@ -89,9 +89,9 @@ class MeterBillPage extends React.Component{
         })
     }
 
-    changeBill(event){
+    changeAmount(event){
         this.setState({
-            bill: event.target.value
+            amount: event.target.value
         })
     }
 
@@ -101,9 +101,9 @@ class MeterBillPage extends React.Component{
         })
     }
 
-    change_sec_bill(event){
+    change_sec_bill_amount(event){
         this.setState({
-            sec_bill: event.target.value
+            sec_bill_amount: event.target.value
         })
     }
 
@@ -114,7 +114,7 @@ class MeterBillPage extends React.Component{
     }
     
 
-    addBill(bill_info) {
+    updateAmount(meter_id,bill_id) {
     /*    axios.post("/bill", { bill_info: bill_info }).then((response) => {
           this.props.info.generateTableBill();
         });
@@ -128,18 +128,20 @@ class MeterBillPage extends React.Component{
             open: false,
         })
 
+        /*
         var bill_info = {
-            meter_code: this.state.meter_code,
+            meter_id: this.state.meter_id,
             begin: this.state.begin,
             end: this.state.end,
             KWH_usage: this.state.KWH_usage,
             bill: this.state.bill,
-
             /*second bill info */
-            sec_KWH_usage: this.state.sec_KWH_usage,
-            sec_bill: this.state.sec_bill,
-        }
-        this.addBill(bill_info);
+        /*    sec_KWH_usage: this.state.sec_KWH_usage,*/
+       /*     sec_bill: this.state.sec_bill,*/
+       /* }*/ 
+        /**/
+        this.updateBill(this.state.meter_id, this.state.meter);
+        console.log(this.state.meter)
     }
 
     render() {
