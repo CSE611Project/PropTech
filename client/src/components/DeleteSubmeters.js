@@ -24,9 +24,12 @@ class DeleteSubmeters extends React.Component {
       submeter_list: this.props.submeter_list,
       submeter: this.props.submeter,
       property_id: this.props.property_id,
+      submeter_id: this.props.submeter_id,
+      meter_id: this.props.meter_id,
     };
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.deleteSubmeter = this.deleteSubmeter.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
   componentDidUpdate() {
@@ -40,6 +43,8 @@ class DeleteSubmeters extends React.Component {
         submeter_list: this.props.submeter_list,
         submeter: this.props.submeter,
         property_id: this.props.property_id,
+        submeter_id: this.props.submeter_id,
+        meter_id: this.props.meter_id,
       });
     }
   }
@@ -68,6 +73,7 @@ class DeleteSubmeters extends React.Component {
       open: false,
     });
     this.deleteSubmeter();
+    console.log(this.state.submeter);
   }
   render() {
     return (
@@ -75,19 +81,10 @@ class DeleteSubmeters extends React.Component {
         <Button onClick={this.handleClickOpen} color="primary">
           Delete
         </Button>
-        <Dialog
-          open={this.state.open}
-          onClose={this.handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            {"Use Google's location service?"}
-          </DialogTitle>
+        <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+          <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
           <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Are you sure you want to delete this submeter?
-            </DialogContentText>
+            <DialogContentText id="alert-dialog-description">Are you sure you want to delete this submeter?</DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">

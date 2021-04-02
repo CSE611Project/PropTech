@@ -20,7 +20,7 @@ class EditTenant extends React.Component {
       tenant_id: this.props.tenant_id,
       email: this.props.email,
       address: this.props.address,
-      property_share: this.props.property_share,
+      phone_number: this.props.phone_number,
       submeter: this.props.submeter,
       property_id: this.props.property_id,
     };
@@ -30,7 +30,7 @@ class EditTenant extends React.Component {
     this.changeName = this.changeName.bind(this);
     this.changeEmail = this.changeEmail.bind(this);
     this.changeAddress = this.changeAddress.bind(this);
-    this.changePropertyShare = this.changePropertyShare.bind(this);
+    this.changePhoneNumber = this.changePhoneNumber.bind(this);
     this.changeSubmeter = this.changeSubmeter.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
@@ -41,13 +41,12 @@ class EditTenant extends React.Component {
         tenant_id: this.props.tenant_id,
         email: this.props.email,
         address: this.props.address,
-        property_share: this.props.property_share,
+        phone_number: this.props.phone_number,
         submeter: this.props.submeter,
         property_id: this.props.property_id,
       });
     }
   }
-
   updateTenantInfo(tenant_id, tenant_info) {
     axios.patch("/tenant", { tenant_id: tenant_id, tenant_info: tenant_info }).then((response) => {
       this.props.info.generateTableData();
@@ -84,9 +83,9 @@ class EditTenant extends React.Component {
     });
   }
 
-  changePropertyShare(event) {
+  changePhoneNumber(event) {
     this.setState({
-      property_share: event.target.value,
+      phone_number: event.target.value,
     });
   }
 
@@ -105,7 +104,7 @@ class EditTenant extends React.Component {
       name: this.state.name,
       email: this.state.email,
       address: this.state.address,
-      property_share: this.state.property_share,
+      phone_number: this.state.phone_number,
       submeter: this.state.submeter,
       property_id: this.state.property_id,
     };
@@ -124,8 +123,7 @@ class EditTenant extends React.Component {
             <TextField autoFocus margin="dense" id="name" label="Name" type="text" value={this.state.name} onChange={this.changeName} fullWidth />
             <TextField autoFocus margin="dense" id="email" label="Email Address" type="email" value={this.state.email} onChange={this.changeEmail} fullWidth />
             <TextField autoFocus margin="dense" id="address" label="Address" type="text" value={this.state.address} onChange={this.changeAddress} fullWidth />
-            <TextField autoFocus margin="dense" id="property_share" label="Property Share" type="text" value={this.state.property_share} onChange={this.changePropertyShare} fullWidth />
-            <TextField autoFocus margin="dense" id="submeter" label="Submeter" type="text" value={this.state.submeter} onChange={this.changeSubmeter} fullWidth />
+            <TextField autoFocus margin="dense" id="phone_number" label="Landlord Phone Number" type="text" value={this.state.phone_number} onChange={this.changePhoneNumber} fullWidth />
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">

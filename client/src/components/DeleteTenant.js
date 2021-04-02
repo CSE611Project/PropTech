@@ -58,7 +58,7 @@ class DeleteTenant extends React.Component {
       <div>
         <Button onClick={this.handleClickOpen}>Delete</Button>
         <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
-          <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">{"Delete"}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">Are you sure you want to delete the chosen tenant?</DialogContentText>
           </DialogContent>

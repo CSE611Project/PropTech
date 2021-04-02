@@ -8,7 +8,6 @@ import HomePage from "./HomePage.js";
 import TenantInfo from "./TenantInfo.js";
 import PropertyInfo from "./PropertyInfo.js";
 import SideMenu from "./SideMenu.js";
-import Cookies from "js-cookie";
 
 class PropManaAfterSign extends Component {
   constructor(props) {
