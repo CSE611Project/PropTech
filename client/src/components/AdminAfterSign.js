@@ -21,10 +21,7 @@ class PropManaAfterSign extends React.Component {
               <button className="PropMana_option" onClick={view_managers}>
                 Building Managers Information
               </button>
-              <button
-                className="PropMana_option"
-                onClick={view_account_application}
-              >
+              <button className="PropMana_option" onClick={view_account_application}>
                 Account Application Status
               </button>
               <button className="PropMana_option" onClick={log_out}>
