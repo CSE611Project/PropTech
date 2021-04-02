@@ -1,8 +1,8 @@
 import React from "react";
 import { Component } from "react";
 import ReactDOM from "react-dom";
-import PropManaAfterSign from "./PropManaAfterSign.js";
 import "./../App.css";
+import Cookies from "js-cookie";
 
 class SideMenu extends Component {
   constructor(props) {
@@ -63,19 +63,12 @@ function generate_invoice() {
 }
 
 function log_out() {
-  //   const ele = (
-  //     <div>
-  //       <div className="PropMana_menu" id="logout">
-  //         <header className="RegProcess-header">
-  //           <h1>You have successfully logout</h1>
-  //           <button className="button" onClick={homepage}>
-  //             OK
-  //           </button>
-  //         </header>
-  //       </div>
-  //     </div>
-  //   );
-  //   return ReactDOM.render(ele, document.getElementById("root"));
+  sessionStorage.removeItem("sub");
+  sessionStorage.removeItem("username");
+  sessionStorage.removeItem("property_id");
+  sessionStorage.removeItem("property_name");
+  Cookies.remove("authCookie", { path: "/" });
+  window.location = "/";
 }
 
 function homepage() {
