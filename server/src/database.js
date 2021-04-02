@@ -327,7 +327,6 @@ function insertSubmeter(submeter_info, callback) {
   let tenant_id = submeter_info.tenant_id;
   let meter_id = submeter_info.meter_id;
   let multiplier = submeter_info.multiplier;
-  console.log(submeter_info);
   let sql = `INSERT INTO submeter(submeter_id, tenant_id, meter_id, multiplier) VALUES(?,?,?,?)`;
   let inserts = [submeter_id, tenant_id, meter_id, multiplier];
   connection.query(sql, inserts, function (err, result) {

@@ -27,7 +27,7 @@ class Navigation extends React.Component {
       <div>
         <AppBar position="absolute">
           <Toolbar>
-            <Grid justify="space-between" container spacing={10}>
+            <Grid justify="space-between" container spacing={0}>
               <Grid item>
                 <Typography component="h1" variant="h4" color="inherit" noWrap>
                   PropTech
