@@ -17,6 +17,7 @@ class DeleteTenant extends React.Component {
     this.state = {
       open: false,
       tenant_id: this.props.tenant_id,
+      property_id: sessionStorage.getItem("property_id"),
     };
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -30,6 +31,7 @@ class DeleteTenant extends React.Component {
       });
     }
   }
+
   deleteTenant() {
     axios.delete("/tenant", { data: { tenant_id: this.state.tenant_id, property_id: this.state.property_id } }).then((response) => {
       this.props.info.generateTableData();

@@ -359,7 +359,6 @@ router.post("/tenant", (req, res) => {
       });
       return;
     }
-    console.log("my tenantinfo:", req.body.tenant_info);
     db.insertTenant(req.body.property_id, req.body.tenant_info, (result) => {
       res.json(result);
     });
@@ -428,6 +427,71 @@ router.post("/add_submeter", (req, res) => {
     }
 
     db.insertSubmeter(req.body.submeter_info, (result) => {
+      res.json(result);
+    });
+  });
+});
+
+router.get("/meter/:property_id?", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.body.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+    db.selectAllMeters(req.params.property_id, (results) => {
+      res.json(JSON.parse(JSON.stringify(results)));
+    });
+  });
+});
+
+router.post("/meter", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.body.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+
+    db.insertMeter(req.body.meter_id, req.body.property_id, (result) => {
+      res.json(result);
+    });
+  });
+});
+
+router.delete("/meter", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.body.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+
+    db.deleteMeter(req.body.meter_id, req.body.property_id, (result) => {
       res.json(result);
     });
   });

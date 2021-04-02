@@ -116,15 +116,7 @@ class AddTenant extends React.Component {
       landlord_phone: this.state.landlord_phone,
       rubs: this.state.rubs,
     };
-    console.log(tenant_info);
-    var property_id = this.state.property_id;
     this.addTenant(tenant_info);
-  }
-
-  getAssociatedMeter(meters) {
-    this.setState({
-        meter: meters
-    })
   }
 
   render() {
