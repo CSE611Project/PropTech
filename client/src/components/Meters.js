@@ -20,6 +20,7 @@ class Meters extends React.Component {
     this.state = {
       open: false,
       meter_list: [],
+      info: this.props.info,
     };
 
     this.handleClickOpen = this.handleClickOpen.bind(this);

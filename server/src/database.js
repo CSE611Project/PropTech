@@ -397,7 +397,7 @@ function deleteSubmeter(tenant_id, submeter_id, callback) {
 
 // return a list of JSON contains Submeter list of a tenant
 function selectAllSubmeters(tenant_id, callback) {
-  let sql = `SELECT submeter_id FROM submeter WHERE tenant_id = ?`;
+  let sql = `SELECT * FROM submeter WHERE tenant_id = ?`;
   let inserts = [tenant_id];
   connection.query(sql, inserts, function (err, submeterList) {
     if (err) {

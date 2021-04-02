@@ -22,7 +22,7 @@ class TenantInfo extends Component {
       property_id: sessionStorage.getItem("property_id"),
       property_name: sessionStorage.getItem("property_name"),
       tenant_list: [],
-      meter_list: this.props.meter_list,
+      meter_list: [],
     };
     this.generateTableData();
   }
@@ -96,7 +96,7 @@ class TenantInfo extends Component {
           </tbody>
         </table>
         <AddTenant className="display_item" property_id={this.state.property_id} info={this} />
-        <Meters className="display_item" />
+        <Meters className="display_item" info={this} />
       </div>
     );
   }

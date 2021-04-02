@@ -359,7 +359,6 @@ router.post("/tenant", (req, res) => {
       });
       return;
     }
-
     db.insertTenant(req.body.property_id, req.body.tenant_info, (result) => {
       res.json(result);
     });

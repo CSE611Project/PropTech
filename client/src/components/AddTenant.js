@@ -113,8 +113,7 @@ class AddTenant extends React.Component {
       landlord_phone: this.state.landlord_phone,
       rubs: this.state.rubs,
     };
-    var property_id = this.state.property_id;
-    this.addTenant(property_id, tenant_info);
+    this.addTenant(tenant_info);
   }
 
   render() {
