@@ -35,6 +35,7 @@ class AddTenant extends React.Component {
       multiplier: "",
       meter: "",
       meter_list: [],
+      total_footage: this.props.total_footage
     };
 
     this.handleClickOpen = this.handleClickOpen.bind(this);
@@ -90,9 +91,9 @@ class AddTenant extends React.Component {
     });
   }
 
-  changeRubs(event) {
+  changeRubs(rubs) {
     this.setState({
-      rubs: event.target.value,
+      rubs: rubs
     });
   }
 
@@ -109,6 +110,7 @@ class AddTenant extends React.Component {
     this.setState({
       open: false,
     });
+    
     var tenant_info = {
       name: this.state.name,
       email: this.state.email,
@@ -116,7 +118,7 @@ class AddTenant extends React.Component {
       landlord_phone: this.state.landlord_phone,
       rubs: this.state.rubs,
     };
-    console.log(tenant_info);
+    console.log("add tenant rubs:", this.state.rubs);
     var property_id = this.state.property_id;
     this.addTenant(tenant_info);
   }
@@ -128,6 +130,7 @@ class AddTenant extends React.Component {
   }
 
   render() {
+    {console.log("add tenant:", this.state.total_footage)}
     return (
       <div>
         <Button color="primary" onClick={this.handleClickOpen}>
@@ -151,7 +154,9 @@ class AddTenant extends React.Component {
             <WhatIsMultiplier />
             <DialogContent></DialogContent>
             <DialogContent></DialogContent>
-            <RUBS />
+            <RUBS 
+            total_footage={this.state.total_footage}
+            methodfromparent={this.changeRubs}/>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">
