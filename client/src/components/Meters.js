@@ -83,7 +83,7 @@ class Meters extends React.Component {
               <DeleteMeters meter_id={this.state.meter_list[i].meter_id} property_id={this.state.property_id} info={this} />
             </TableCell>
             <TableCell>
-              <MeterBillPage />
+                <MeterBillPage meter_id={this.state.meter_list[i].meter_id}/>
             </TableCell>
           </TableRow>
         );

@@ -500,4 +500,28 @@ router.delete("/meter", (req, res) => {
     });
   });
 });
+
+router.post("/bill", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.body.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+    console.log(req.body.bill_info);
+    db.insertBill(req.body.bill_info, (result) => {
+      res.json(result);
+    });
+  });
+});
+//add a new rubs bill to databse
+
 module.exports = router;
