@@ -21,7 +21,7 @@ class MeterCheckBox extends React.Component {
       meter_list: this.props.meter_list,
       meter_id: "",
       property_id: this.props.property_id,
-      onlyOption: this.props.onlyOption
+      onlyOption: this.props.onlyOption,
     };
     this.onChangeOnlyOption = this.onChangeOnlyOption.bind(this);
     this.onChangeMultiOption = this.onChangeMultiOption.bind(this);
@@ -64,13 +64,15 @@ class MeterCheckBox extends React.Component {
       var tableData = this.state.meter_list;
       if (this.state.onlyOption === true) {
         for (var i = 0; i < tableData.length; i++) {
-          res.push(<FormControlLabel name={tableData[i].meter_id} value={tableData[i].meter_id} control={<Radio />} label={tableData[i].meter_id} />);
+          res.push(<FormControlLabel key={tableData[i].meter_id} name={tableData[i].meter_id} value={tableData[i].meter_id} control={<Radio />} label={tableData[i].meter_id} />);
         }
         this.res = res;
         this.forceUpdate();
       } else {
         for (var i = 0; i < tableData.length; i++) {
-          res.push(<FormControlLabel control={<Checkbox onChange={this.onChangeMultiOption} name={tableData[i].meter_id} color="primary" />} label={tableData[i].meter_id} />);
+          res.push(
+            <FormControlLabel key={tableData[i].meter_id} control={<Checkbox onChange={this.onChangeMultiOption} name={tableData[i].meter_id} color="primary" />} label={tableData[i].meter_id} />
+          );
         }
         this.res = res;
         this.forceUpdate();

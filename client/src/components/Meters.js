@@ -13,13 +13,13 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import axios from "axios";
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
 
 class Meters extends React.Component {
   constructor(props) {
@@ -82,6 +82,9 @@ class Meters extends React.Component {
             <TableCell>
               <DeleteMeters meter_id={this.state.meter_list[i].meter_id} property_id={this.state.property_id} info={this} />
             </TableCell>
+            <TableCell>
+              <MeterBillPage />
+            </TableCell>
           </TableRow>
         );
       }
@@ -97,7 +100,9 @@ class Meters extends React.Component {
   render() {
     return (
       <div>
-        <Button color="primary" onClick={this.handleClickOpen}>Meters</Button>
+        <Button color="primary" onClick={this.handleClickOpen}>
+          Meters
+        </Button>
         <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Manage Meters</DialogTitle>
           <TableContainer component={Paper}>
@@ -106,10 +111,8 @@ class Meters extends React.Component {
                 <TableRow>
                   <TableCell>Meters</TableCell>
                 </TableRow>
-                <TableBody>
-                  {this.res}
-                </TableBody>
               </TableHead>
+              <TableBody>{this.res}</TableBody>
             </Table>
           </TableContainer>
           <DialogContent>

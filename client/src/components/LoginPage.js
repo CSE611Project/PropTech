@@ -8,23 +8,23 @@ import ResetPassword from "./ResetPassword.js";
 import axios from "axios";
 import { cognito, userPool } from "./UserPool";
 
-import { makeStyles } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import Box from '@material-ui/core/Box';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Link from '@material-ui/core/Link';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
+import { makeStyles } from "@material-ui/core/styles";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Drawer from "@material-ui/core/Drawer";
+import Box from "@material-ui/core/Box";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import List from "@material-ui/core/List";
+import Typography from "@material-ui/core/Typography";
+import Divider from "@material-ui/core/Divider";
+import IconButton from "@material-ui/core/IconButton";
+import Badge from "@material-ui/core/Badge";
+import Container from "@material-ui/core/Container";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Link from "@material-ui/core/Link";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
 
 class LoginPage extends React.Component {
   constructor() {
@@ -96,32 +96,16 @@ class LoginPage extends React.Component {
         <div className="LoginPage">
           <form onSubmit={this.onSubmit}>
             <header className="Login-header">
-            <Typography component="h1" variant="h1" color="primary" >
-              PropTech
-            </Typography>
+              <Typography component="h1" variant="h1" color="primary">
+                PropTech
+              </Typography>
 
               {/*<label className="EmailLabel">Email</label>
               <input type="text" placeholder="Email" onChange={this.changeEmail} value={this.state.email} required />*/}
-              <TextField
-                            autoFocus
-                            margin="dense"
-                            id="email"
-                            label="Enter your email"
-                            type="text"
-                            onChange={this.changeEmail}
-                            value={this.state.email}           
-              />
+              <TextField autoFocus margin="dense" id="email" label="Enter your email" type="text" onChange={this.changeEmail} value={this.state.email} />
               {/*<label className="PasswordLabel">Password</label>
               <input type="password" placeholder="Password" onChange={this.changePassword} value={this.state.password} required />*/}
-              <TextField
-                            autoFocus
-                            margin="dense"
-                            id="password"
-                            label="Password"
-                            type="text"
-                            onChange={this.changePassword}
-                            value={this.state.password}           
-              />
+              <TextField autoFocus margin="dense" id="password" label="Password" type="password" onChange={this.changePassword} value={this.state.password} />
               <Divider />
               <Divider />
               <Divider />

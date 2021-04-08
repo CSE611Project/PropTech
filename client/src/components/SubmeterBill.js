@@ -116,7 +116,7 @@ class SubmeterBill extends React.Component {
                             label="Submeter"
                             type="text"
                             //value will be current submeter value
-                            value={this.props.submeter}
+                            value={this.props.submeter_id}
                             fullWidth
                         />
                         <DialogContent></DialogContent>
@@ -148,7 +148,7 @@ class SubmeterBill extends React.Component {
                             onChange={this.changeAmountDue}
                             fullWidth
                         />
-                        <Button color="primary" onClic  k={this.calculate}>Calculate</Button>
+                        <Button color="primary" onClick={this.calculate}>Calculate</Button>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">
