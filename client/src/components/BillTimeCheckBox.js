@@ -24,21 +24,17 @@ class BillTimeCheckBox extends React.Component {
       submeter_id: "",
       bill_id: "",
       unit_charge: "",
-      bill_list: [
-         {
-            from_date: "2021-04-04",
-            to_date: "2021-05-06",
-            bill_id: "6",
-            unit_charge: "0.199107"
-        },{
+      bill_list: 
+      [
+        {
             from_date: "2021-05-04",
             to_date: "2021-06-06",
             bill_id: "7",
             unit_charge: "0.2"
-        }
+        },
       ],
       meter_id: this.props.meter_id,
-      onlyOption: this.props.onlyOption,
+      onlyOption: true,
     };
     this.onChangeOnlyOption = this.onChangeOnlyOption.bind(this);
     this.getBillList = this.getBillList.bind(this);
@@ -47,18 +43,16 @@ class BillTimeCheckBox extends React.Component {
 
   getBillList() {
       //use meter_id to find all meter bills
+      console.log(this.state.meter_id);
     return new Promise((resolve, reject) => {
-    //   axios.get(`/meter/${this.state.property_id}`).then((response) => {
-        this.setState({
-            // bill_list: {
-            //     from_date: "2021-04-04",
-            //     to_date: "2021-05-06",
-            //     bill_id: "6"
-            // }
-         }, () => {
+       axios.get(`/meterbill_list/${this.state.meter_id}`).then((response) => {
+         console.log("response from database: ",response.data);
+         this.setState({ bill_list: response.data }, () => {
+           console.log("bill list",this.state.bill_list);
           resolve();
         });
-    //   });
+       });
+      //  console.log("bill list:", this.state.bill_list);
     });
 
 
@@ -95,7 +89,10 @@ class BillTimeCheckBox extends React.Component {
       this.props.changeFromDate(this.state.from_date);
       this.props.changeTodate(this.state.to_date);
       this.props.changeUnitCharge(this.state.unit_charge);
+      
     });
+
+
   }
 
 
@@ -104,21 +101,20 @@ class BillTimeCheckBox extends React.Component {
     console.log(this.state.bill_list);
     this.getBillList().then(() => {
       var tableData = this.state.bill_list;
-      if (this.state.onlyOption === true) {
+      console.log(tableData.length);
         for (var i = 0; i < tableData.length; i++) {
-            console.log(tableData[i].from_date)
+            console.log("from date",tableData[i].from_date)
           res.push(<FormControlLabel
-                                        key={tableData[i].bill_id} 
-                                        name={tableData[i].bill_id} 
-                                        value={tableData[i].bill_id
-                                        }
-                                 
+                                        key={String(tableData[i].bill_id)}
+                                        // name={Number(tableData[i].bill_id)}
+                                        value={String(tableData[i].bill_id)}
+                                        
                                         control={<Radio />} 
-                                        label={tableData[i].from_date +" to "+ tableData[i].to_date} />);
+                                        label={String(tableData[i].from_date +" to "+ tableData[i].to_date)} />);
         }
         this.res = res;
+        console.log(this.res);
         this.forceUpdate();
-      }
     });
   }
 

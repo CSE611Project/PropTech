@@ -187,7 +187,7 @@ class Submeters extends React.Component {
                 // address={tableData[i].address}
                 // phone_number={tableData[i].phone_number}
                 info={this}
-    
+                meter_id = {tableData[i].meter_id}
                 submeter_id={tableData[i].submeter_id}
                 property_id={this.state.property_id}
                 multiplier={tableData[i].multiplier}

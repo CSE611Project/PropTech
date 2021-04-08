@@ -53,10 +53,10 @@ class SubmeterBill extends React.Component {
                 property_id: this.props.property_id});
         }*/}
     }
-    updateBill(submeter_id, bill_id) {
-        {/*axios.patch('/tenant', {tenant_id: tenant_id, tenant_info: tenant_info}).then(response => {
+    submit_submeterbill(submeter_bill_info) {
+        axios.post('/submeter_bill', {submeter_bill_info: submeter_bill_info}).then(response => {
             this.props.info.generateTableData();
-        })*/}
+        })
     }
 
     changeBillId(bill_id){
@@ -147,8 +147,8 @@ class SubmeterBill extends React.Component {
         // let cur_amt = submeter_bill_info.s_kwh_usage;
         // let amt_with_multiplier = submeter_bill_info.amt_with_multiplier;
         // let amt_due = submeter_bill_info.amt_due;
-        {/* updateBill not so sure about parameter */ }
-        //this.updateBill(this.state.submeter_id, this.state.submeter);
+        {/* submit_submeterbill not so sure about parameter */ }
+        this.submit_submeterbill(submeter_bill_info);
         console.log(submeter_bill_info)
     }
 
@@ -175,6 +175,7 @@ class SubmeterBill extends React.Component {
                             fullWidth
                         />
                         <DialogContent></DialogContent>
+                        {console.log("submeter bill: meter id",this.state.meter_id)}
                         <BillTimeCheckBox meter_id={this.state.meter_id} 
                                         changeBillId = {this.changeBillId.bind(this)}
                                         changeFromDate = {this.changeFromDate.bind(this)}

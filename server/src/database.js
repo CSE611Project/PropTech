@@ -510,7 +510,7 @@ function deleteBill(bill_id, callback) {
 // filter is a JSON with an list of filter wants to apply when query bill table
 // return a list of JSON contains bill list
 function selectBill(filter, callback) {
-  let sql = `SELECT * FROM bill WHERE`;
+  let sql = `SELECT * FROM bill WHERE `;
   let keys = Object.keys(filter);
   keys.forEach(function(key, index) {
     if (index + 1 == keys.length){
@@ -519,6 +519,7 @@ function selectBill(filter, callback) {
       sql += `${key} = ${filter[key]} AND`
     }
   })
+  console.log("sql:", sql);
   connection.query(sql, function (err, billList) {
     if (err) {
       console.log(`not able to select billList of ${filter} from database`);
@@ -526,6 +527,7 @@ function selectBill(filter, callback) {
     } else {
       console.log(`${filter} billList returned`);
       callback(billList);
+      console.log("SSSSS:",billList);
     }
   });
 }
