@@ -509,6 +509,29 @@ function deleteBill(bill_id, callback){
   });
 }
 
+// filter is a JSON with an list of filter wants to apply when query bill table
+// return a list of JSON contains bill list
+function selectBill(filter, callback) {
+  let sql = `SELECT * FROM bill WHERE`;
+  let keys = Object.keys(filter);
+  keys.forEach(function(key, index) {
+    if (index + 1 == keys.length){
+      sql += `${key} = ${filter[key]}`
+    } else {
+      sql += `${key} = ${filter[key]} AND`
+    }
+  })
+  connection.query(sql, function (err, billList) {
+    if (err) {
+      console.log(`not able to select billList of ${filter} from database`);
+      callback(false);
+    } else {
+      console.log(`${filter} billList returned`);
+      callback(billList);
+    }
+  });
+}
+
 // insert submeter_bill
 // submeter_bill_info is a JSON contains bill_id, submeter_id, prior_read, cur_read, from_date, to_date, cur_amt, amt_with_multiplier, amt_due
 // return true if insert successfully
@@ -842,6 +865,7 @@ exports.deleteSubmeter = deleteSubmeter;
 exports.insertBill = insertBill;
 exports.updateBill = updateBill;
 exports.deleteBill = deleteBill;
+exports.selectBill = selectBill;
 
 exports.insertSubmeterBill = insertSubmeterBill;
 exports.updateSubmeterBill = updateSubmeterBill;
