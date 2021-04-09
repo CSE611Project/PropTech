@@ -128,14 +128,11 @@ class AddTenant extends React.Component {
       rubs: this.state.rubs,
     };
     console.log("add tenant rubs:", this.state.rubs);
-    var property_id = this.state.property_id;
     this.addTenant(tenant_info);
   }
 
-  getAssociatedMeter(meters) {
-    this.setState({
-      meter: meters,
-    });
+  getAssociatedMeter(key, value) {
+    this.setState({});
   }
 
   changeRUBS(event) {

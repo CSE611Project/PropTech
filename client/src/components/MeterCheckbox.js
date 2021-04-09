@@ -55,7 +55,7 @@ class MeterCheckBox extends React.Component {
     this.setState({
       [event.target.name]: event.target.checked,
     });
-    this.props.methodfromparent(this.state.meter);
+    this.props.methodfromparent();
   }
 
   generateTable() {

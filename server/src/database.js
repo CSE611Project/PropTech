@@ -946,7 +946,6 @@ exports.deleteMeter = deleteMeter;
 
 exports.associateMeterWithTenant = associateMeterWithTenant;
 exports.deleteMeterTenantRelation = deleteMeterTenantRelation;
-// exports.selectMeterTenantListByProperty = selectMeterTenantListByProperty;
 
 exports.selectAllSubmeters = selectAllSubmeters;
 exports.insertSubmeter = insertSubmeter;

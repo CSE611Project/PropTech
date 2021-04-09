@@ -563,13 +563,17 @@ router.post("/meterbill_list/", (req, res) => {
       return;
     }
     db.selectAllMetersSubmetersByProperty(Number(req.body.property_id), (result) => {
-      db.selectBillWithProperty({ property_id: Number(req.body.property_id) }, (result3) => {
-        db.selectMeterSubmeterBillByProperty(Number(req.body.property_id), req.body.from_date, req.body.to_date, (result2) => {
-          db.selectBillInfoAssociateWithTenant({ property_id: Number(req.body.property_id) }, (result4) => {
-            var final_result = { metersubmeter_list: result, meter_bill_list: result3, submeter_bill_list: result2, tenant_list: result4 };
-            console.log("final result:", final_result.submeter_bill_list);
-            // res.json(result);
-            // console.log(result);
+      db.selectBillWithProperty({ property_id: Number(req.body.property_id) }, (result2) => {
+        db.selectMeterSubmeterBillByProperty(Number(req.body.property_id), req.body.from_date, req.body.to_date, (result3) => {
+          db.selectMeterTenantListByProperty(Number(req.body.property_id), (result4) => {
+            var final_result = {
+              meter_submeter_list: JSON.parse(JSON.stringify(result)),
+              meter_bill_list: JSON.parse(JSON.stringify(result2)),
+              submeter_bill_list: JSON.parse(JSON.stringify(result3)),
+              meter_tenant_list: JSON.parse(JSON.stringify(result4)),
+            };
+            console.log("final result:", final_result);
+            res.json(final_result);
           });
         });
       });

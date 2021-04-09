@@ -65,11 +65,8 @@ class GenerateInvoice extends Component {
     });
   }
   invoice_generator() {
-    console.log(this.state.property_id);
-    console.log(this.state.from_date);
-    console.log(this.state.to_date);
     axios.post("/meterbill_list", { property_id: this.state.property_id, from_date: this.state.from_date, to_date: this.state.to_date }).then((response) => {
-      console.log("response body:", response.body);
+      console.log("response body:", response.data);
     });
   }
   onSubmit(event) {
