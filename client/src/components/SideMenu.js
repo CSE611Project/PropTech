@@ -1,9 +1,13 @@
+
 import React from "react";
 import { Component } from "react";
 import ReactDOM from "react-dom";
 import "./../App.css";
-import UtilityBillMeter from "./UtilityBillMeter"
 import Cookies from "js-cookie";
+import TenantInfo from "./TenantInfo"
+import BillingHistory from "./BillingHistory"
+import UtilityBillMeter from "./UtilityBillMeter"
+import UtilityBillSubmeter from "./UtilityBillSubmeter"
 
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -33,7 +37,7 @@ import axios from "axios";
 class SideMenu extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { display_more_options: this.props.display_more_options };
   }
 
   render() {
@@ -47,15 +51,19 @@ class SideMenu extends Component {
             <a href="#" onClick={edit_profile}>
               Edit Profile Info
             </a>
-            <a href="#" onClick={manage_utility}>
-              Manage Utility Bill
-            </a>
-            <a href="#" onClick={manage_invoice}>
-              Manage Invoice History
-            </a>
-            <a href="#" onClick={generate_invoice}>
-              Generate Invoice
-            </a>
+            {this.state.display_more_options ? (
+              <div>
+                <a href="#" onClick={manage_utility}>
+                  Manage Utility Bill
+                </a>
+                <a href="#" onClick={manage_invoice}>
+                  Manage Invoice History
+                </a>
+                <a href="#" onClick={generate_invoice}>
+                  Generate Invoice
+                </a>
+              </div>
+            ) : null}
             <a href="#" onClick={log_out}>
               Log Out
             </a>
@@ -76,7 +84,7 @@ function edit_profile() {
 }
 
 function manage_utility() {
-  const ele = <UtilityBillMeter />;
+  const ele = <div></div>
   return ReactDOM.render(ele, document.getElementById("root"));
 }
 
@@ -87,7 +95,7 @@ function manage_invoice() {
 
 function generate_invoice() {
   const ele = <div></div>;
-  return ReactDOM.render(ele, document.getElementById("root"));
+  window.location = `/PropMana/${sessionStorage.getItem("sub")}/invoice`;
 }
 
 function log_out() {

@@ -30,12 +30,17 @@ class UtilityBillSubmeter extends React.Component {
         super(props);
         this.state = {
             meter_list: this.props.meter_list,
-            meter_id: "",
+            meter_id: this.props.meter_id,
             property_id: this.props.property_id,
             tenant_id: [],
             tenant_list: this.props.tenant_list,
             submeter_list: []
+
+
         }
+        this.generateTable = this.generateTable.bind(this);
+        this.getSubmeterList = this.getSubmeterList.bind(this);
+        this.getTenantList = this.getTenantList.bind(this);
     }
 
     componentDidMount() {
@@ -79,7 +84,14 @@ class UtilityBillSubmeter extends React.Component {
                                 <TableCell>{tableDataSub[j].multiplier}</TableCell>
                                 <TableCell>{tableDataSub[j].meter_id}</TableCell>
                                 <TableCell>
-                                    <SubmeterBill submeter_id={tableDataSub[j].submeter_id}/>
+                                    <SubmeterBill
+                                        submeter_id={tableDataSub[j].submeter_id}
+                                        tenant_id={tableDataSub[j].tenant_id}
+                                        info={this}
+                                        meter_id={tableDataSub[j].meter_id}
+                                        property_id={this.state.property_id}
+                                        multiplier={tableDataSub[j].multiplier}
+                                    />
                                 </TableCell>
                             </TableRow>
                         );

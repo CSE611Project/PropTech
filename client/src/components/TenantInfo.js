@@ -28,6 +28,12 @@ import Paper from "@material-ui/core/Paper";
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import Collapse from '@material-ui/core/Collapse';
+import IconButton from '@material-ui/core/IconButton';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import Box from '@material-ui/core/Box';
+import Typography from '@material-ui/core/Typography';
 
 class TenantInfo extends Component {
   constructor(props) {
@@ -41,7 +47,9 @@ class TenantInfo extends Component {
       meter_list: [],
     };
     this.toManageUtilityBillPage = this.toManageUtilityBillPage.bind(this)
+    this.getSubmeterList = this.getSubmeterList.bind(this)
     this.generateTableData();
+
   }
 
   getTenantList() {
@@ -54,6 +62,16 @@ class TenantInfo extends Component {
     });
   }
 
+  getSubmeterList() {
+    return new Promise((resolve, reject) => {
+      axios.get(`/submeter/${this.state.tenant_id}`).then((response) => {
+        this.setState({ submeter_list: response.data });
+        resolve();
+      });
+    });
+  }
+
+
   generateTableData() {
     this.getTenantList().then(() => {
       this.res = [];
@@ -61,7 +79,6 @@ class TenantInfo extends Component {
         this.res.push(
 
           <TableRow key={i} id={i}>
-            <CollapseSubmeter />
             <TableCell>{this.state.tenant_list[i].name}</TableCell>
             <TableCell>{this.state.tenant_list[i].email}</TableCell>
             <TableCell>{this.state.tenant_list[i].address}</TableCell>
@@ -94,6 +111,11 @@ class TenantInfo extends Component {
                 info={this}
               />
             </TableCell>
+            <CollapseSubmeter
+              tenant_id={this.state.tenant_list[i].tenant_id}
+              property_id={this.state.property_id}
+              info={this}
+            />
           </TableRow>
         );
       }
@@ -120,9 +142,14 @@ class TenantInfo extends Component {
     const ele = <React.Fragment>
       <Container maxWidth="lg" className={useStyles.container}>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={8} lg={9}>
+          <Grid item xs={12} md={20} lg={9}>
             <Paper>
-              <BillingHistory />
+              <BillingHistory
+                className="display_item"
+                property_id={this.state.property_id}
+                tenant_list={this.state.tenant_list}
+                info={this}
+              />
             </Paper>
           </Grid>
           <Grid item xs={12} md={8} lg={9}>
@@ -180,8 +207,9 @@ class TenantInfo extends Component {
             <TableCell component={Paper}>
               <AddTenant className="display_item" property_id={this.state.property_id} total_footage={this.state.total_footage} info={this} />
             </TableCell>
+            <TableCell />
             <TableCell component={Paper}>
-              <Button onClick={this.toManageUtilityBillPage}>Manage Utility Bill</Button>
+              <Button color="primary" onClick={this.toManageUtilityBillPage}>Manage Utility Bill</Button>
             </TableCell>
           </Table>
 
@@ -190,7 +218,6 @@ class TenantInfo extends Component {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell />
                 <TableCell>Name</TableCell>
                 <TableCell>Email</TableCell>
                 <TableCell>Address</TableCell>
@@ -201,6 +228,7 @@ class TenantInfo extends Component {
                 </TableCell>
                 <TableCell>
                 </TableCell>
+                <TableCell />
               </TableRow>
             </TableHead>
             <TableBody>{this.res}</TableBody>
@@ -209,6 +237,54 @@ class TenantInfo extends Component {
       </div>
     );
   }
+}
+
+const useRowStyles = makeStyles({
+  root: {
+    '& > *': {
+      borderBottom: 'unset',
+    },
+  },
+});
+
+function CollapseRow(props) {
+  const { row } = props;
+  const [open, setOpen] = React.useState(false);
+  const classes = useRowStyles();
+  return (
+    <React.Fragment>
+      <TableRow className={classes.root}>
+        <TableCell>
+          <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box margin={1}>
+              <Typography variant="h6" gutterBottom component="div">
+                Submeters
+              </Typography>
+              <Table size="small" aria-label="purchases">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Submeter</TableCell>
+                    <TableCell>Multiplier</TableCell>
+                    <TableCell>Associated Meter</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </React.Fragment>
+  );
 }
 
 export default TenantInfo;

@@ -60,7 +60,7 @@ class UtilityBillMeter extends React.Component {
                         <TableCell></TableCell>
                         <TableCell></TableCell>
                         <TableCell>
-                            <MeterBillPage />
+                            <MeterBillPage meter_id={this.state.meter_list[i].meter_id}/>
                         </TableCell>
                     </TableRow>
                 );

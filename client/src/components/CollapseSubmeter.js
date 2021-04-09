@@ -13,6 +13,7 @@ import Meters from "./Meters";
 import { Component } from "react";
 import axios from "axios";
 
+import { makeStyles } from '@material-ui/core/styles';
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -26,13 +27,13 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
 import { DialogContent, DialogContentText, Tab } from "@material-ui/core";
 
 class CollapseSubmeter extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            open: false,
             name: this.props.name,
             tenant_id: this.props.tenant_id,
             email: this.props.email,
@@ -48,28 +49,7 @@ class CollapseSubmeter extends React.Component {
             meter: ""
         }
         this.getSubmeterList = this.getSubmeterList.bind(this);
-        this.onOpen = this.onOpen.bind(this);
-        this.generateTable = this.generateTable.bind(this);
-    }
-
-    componentDidUpdate() {
-        if (this.props.tenant_id !== this.state.tenant_id) {
-            this.setState({
-                name: this.props.name,
-                tenant_id: this.props.tenant_id,
-                email: this.props.email,
-                address: this.props.address,
-                phone_number: this.props.phone_number,
-                submeter_list: [],
-                submeter: "",
-                multiplier_list: [],
-                multiplier: "",
-                property_id: this.props.property_id,
-                meter_id: this.props.meter_id,
-                meter_list: [],
-                meter: "",
-            });
-        }
+        this.generateTable();
     }
 
     getSubmeterList() {
@@ -81,25 +61,18 @@ class CollapseSubmeter extends React.Component {
         });
     }
 
-    onOpen(event) {
-        this.setState({
-            open: !this.open
-        })
-        this.generateTable();
-    }
 
     generateTable() {
         //call updateTable everytime when we need to generate a list of submeter and multiplier
         // see hardcode below in render() function
+        var res = [];
         this.getSubmeterList().then(() => {
-            var res = [];
             let tableData = this.state.submeter_list;
+            console.log(this.state.submeter_list)
             for (var i = 0; i < tableData.length; i++) {
                 res.push(
                     <TableRow key={i} id={i}>
                         <TableCell>{tableData[i].submeter_id}</TableCell>
-                        <TableCell>{tableData[i].multiplier}</TableCell>
-                        <TableCell>{tableData[i].meter_id}</TableCell>
                     </TableRow>
                 );
             }
@@ -110,38 +83,55 @@ class CollapseSubmeter extends React.Component {
 
     render() {
         return (
-           <div>
-                <TableCell>
-                    <IconButton aria-label="expand row" size="large" onClick={this.onOpen}>
-                        {this.open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                    </IconButton>
-                </TableCell>
-                <TableRow>
-                    <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                        <Collapse in={this.open} timeout="auto" unmountOnExit>
-                            <Box margin={1}>
-                                <Typography variant="h6" gutterBottom component="div">
-                                    Submeters
-                                </Typography>
-                                <Table size="small" aria-label="purchases">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell>Submeter</TableCell>
-                                            <TableCell>Multiplier</TableCell>
-                                            <TableCell>Associated Meter</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {this.res}
-                                    </TableBody>
-                                </Table>
-                            </Box>
-                        </Collapse>
-                    </TableCell>
-                </TableRow>
-                </div>
+            <div>
+                <CollapseRow res={this.res}/>
+            </div>
         );
     }
+}
+
+const useRowStyles = makeStyles({
+    root: {
+        '& > *': {
+            borderBottom: 'unset',
+        },
+    },
+});
+
+function CollapseRow(props) {
+    const { row } = props;
+    const [open, setOpen] = React.useState(false);
+    const classes = useRowStyles();
+    const res = props.res;
+    return (
+        <React.Fragment>
+            <TableRow className={classes.root}>
+                <TableCell>
+                    <IconButton aria-label="expand row" size="big" onClick={() => setOpen(!open)}>
+                        {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                    </IconButton>
+                </TableCell>
+            </TableRow>
+            <TableRow>
+                <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+                    <Collapse in={open} timeout="auto" unmountOnExit>
+                        <Box margin={1}>
+                            <Table size="small" aria-label="submeter">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Submeter</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {res}
+                                </TableBody>
+                            </Table>
+                        </Box>
+                    </Collapse>
+                </TableCell>
+            </TableRow>
+        </React.Fragment>
+    );
 }
 
 export default CollapseSubmeter;

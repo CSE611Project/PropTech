@@ -172,10 +172,25 @@ class Submeters extends React.Component {
                 // email={tableData[i].email}
                 // address={tableData[i].address}
                 // phone_number={tableData[i].phone_number}
+                multiplier={tableData[i].multiplier}
                 info={this}
                 meter={tableData[i].meter_id}
                 submeter_id={tableData[i].submeter_id}
                 property_id={this.state.property_id}
+              />
+            </TableCell>
+            <TableCell>
+              <SubmeterBill
+                tenant_id={tableData[i].tenant_id}
+                // name={tableData[i].name}
+                // email={tableData[i].email}
+                // address={tableData[i].address}
+                // phone_number={tableData[i].phone_number}
+                info={this}
+                meter_id = {tableData[i].meter_id}
+                submeter_id={tableData[i].submeter_id}
+                property_id={this.state.property_id}
+                multiplier={tableData[i].multiplier}
               />
             </TableCell>
           </TableRow>
