@@ -112,7 +112,12 @@ class LoginPage extends React.Component {
               {/*<label className="PasswordLabel">Password</label>
               <input type="password" placeholder="Password" onChange={this.changePassword} value={this.state.password} required />*/}
               <TextField autoFocus margin="dense" id="password" label="Password" type="password" onChange={this.changePassword} value={this.state.password} />
-
+              <Divider />
+              <Divider />
+              <Divider />
+              <Divider />
+              <Divider />
+              <Divider />
               <Button color="primary" type="submit" value="submit">
                 Login
               </Button>

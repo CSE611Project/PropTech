@@ -24,15 +24,7 @@ class BillTimeCheckBox extends React.Component {
       submeter_id: "",
       bill_id: "",
       unit_charge: "",
-      bill_list: 
-      [
-        {
-            from_date: "2021-05-04",
-            to_date: "2021-06-06",
-            bill_id: "7",
-            unit_charge: "0.2"
-        },
-      ],
+      bill_list: [],
       meter_id: this.props.meter_id,
       onlyOption: true,
     };

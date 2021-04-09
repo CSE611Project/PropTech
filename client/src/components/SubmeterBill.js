@@ -11,40 +11,39 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import axios from "axios";
-import BillTimeCheckBox from "./BillTimeCheckBox";
+import BillTimeCheckBox from './BillTimeCheckBox';
 class SubmeterBill extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      open: false,
-      submeter_bill_id: "",
-      bill_id: "",
-      submeter_id: this.props.submeter_id,
-      prior_read: "",
-      current_read: "",
-      from_date: "",
-      to_date: "",
-      amt_due: "",
-      meter_id: this.props.meter_id,
-      multiplier: this.props.multiplier,
-      unit_charge: "",
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            open: false,
+            submeter_bill_id: '',
+            bill_id: '',
+            submeter_id: this.props.submeter_id,
+            prior_read: '',
+            current_read: '',
+            from_date: '',
+            to_date: '',
+            amt_due: '',
+            meter_id: this.props.meter_id,
+            multiplier: this.props.multiplier,
+            unit_charge: ''
+        }
 
-    this.handleClickOpen = this.handleClickOpen.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.changePriorRead = this.changePriorRead.bind(this);
-    this.changeCurrentRead = this.changeCurrentRead.bind(this);
-    this.changeAmountDue = this.changeAmountDue.bind(this);
-    this.calculate = this.calculate.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
-    this.changeBillId = this.changeBillId.bind(this);
-    this.changeFromDate = this.changeFromDate.bind(this);
-    this.changeTodate = this.changeTodate.bind(this);
-    this.changeUnitCharge = this.changeUnitCharge.bind(this);
-  }
-  componentDidUpdate() {
-    {
-      /*if (this.props.tenant_id !== this.state.tenant_id) {
+        this.handleClickOpen = this.handleClickOpen.bind(this)
+        this.handleClose = this.handleClose.bind(this)
+        this.changePriorRead = this.changePriorRead.bind(this)
+        this.changeCurrentRead = this.changeCurrentRead.bind(this)
+        this.changeAmountDue = this.changeAmountDue.bind(this)
+        this.calculate = this.calculate.bind(this)
+        this.onSubmit = this.onSubmit.bind(this)
+        this.changeBillId = this.changeBillId.bind(this)
+        this.changeFromDate = this.changeFromDate.bind(this)
+        this.changeTodate = this.changeTodate.bind(this)
+        this.changeUnitCharge = this.changeUnitCharge.bind(this)
+    }
+    componentDidUpdate() {
+        {/*if (this.props.tenant_id !== this.state.tenant_id) {
             this.setState({name: this.props.name,
                 tenant_id: this.props.tenant_id,
                 email: this.props.email,
