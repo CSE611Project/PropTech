@@ -31,9 +31,7 @@ class GenerateInvoice extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      display: this.props.display,
-      property_id: sessionStorage.getItem("property_id"),
-      property_name: sessionStorage.getItem("property_name"),
+      property_id: this.props.property_id,
       begin: "",
       end: "",
       open: false,

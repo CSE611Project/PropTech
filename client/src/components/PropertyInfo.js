@@ -113,7 +113,6 @@ function manage_tenants(info) {
   var infos = JSON.parse(info);
   sessionStorage.setItem("property_name", infos.property_name);
   sessionStorage.setItem("property_id", infos.property_id);
-  sessionStorage.setItem("total_footage", infos.total_footage);
   window.location = `/PropMana/${sessionStorage.getItem("sub")}/property/${infos.property_id}`;
 }
 
