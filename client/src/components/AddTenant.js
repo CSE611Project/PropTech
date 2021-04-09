@@ -128,6 +128,10 @@ class AddTenant extends React.Component {
       rubs: this.state.rubs,
     };
     console.log("add tenant rubs:", this.state.rubs);
+<<<<<<< HEAD
+=======
+    var property_id = this.state.property_id;
+>>>>>>> origin/Front-end
     this.addTenant(tenant_info);
   }
 
@@ -138,8 +142,21 @@ class AddTenant extends React.Component {
   changeRUBS(event) {
     event.preventDefault();
     this.setState({
+<<<<<<< HEAD
       rubs: event.target.value,
     });
+=======
+      meter: meters,
+    });
+  }
+
+  changeRUBS(event) {
+    event.preventDefault();
+    this.setState({
+      rubs: event.target.value,
+    });
+
+>>>>>>> origin/Front-end
   }
 
   changeTenantFt(event) {
@@ -153,11 +170,20 @@ class AddTenant extends React.Component {
     {
       var totalBuildingFt = this.state.total_footage;
       var tenantft = this.state.tenantFt;
+<<<<<<< HEAD
+=======
+      console.log(this.state.total_footage);
+      console.log(this.state.tenantFt);
+>>>>>>> origin/Front-end
       if (tenantft != "") {
         var rubs = tenantft / totalBuildingFt;
         this.setState({
           rubs: rubs,
+<<<<<<< HEAD
         });
+=======
+        })
+>>>>>>> origin/Front-end
       }
       /* should specify a way to calculate rubs based on tenantFt and then save into rubs variable*/
       console.log(tenantft / totalBuildingFt);
@@ -182,6 +208,10 @@ class AddTenant extends React.Component {
   }
 
   render() {
+<<<<<<< HEAD
+=======
+    { console.log("add tenant:", this.state.total_footage) }
+>>>>>>> origin/Front-end
     const isYes = this.state.yes;
     const isNo = this.state.no;
     return (
@@ -203,10 +233,19 @@ class AddTenant extends React.Component {
             <MeterCheckBox property_id={this.state.property_id} onlyOption={false} methodfromparent={this.getAssociatedMeter} />
             <TextField autoFocus margin="dense" id="multiplier" label="Is there a multiplier?" type="text" onChange={this.changeMultiplier} fullWidth />
             <WhatIsMultiplier />
+<<<<<<< HEAD
             <FormControl>
               <FormLabel>
                 Is there a RUBS?
                 <WhatIsProRataShare />
+=======
+            <DialogContent></DialogContent>
+            <DialogContent></DialogContent>
+            <FormControl>
+              <FormLabel>
+                Is there a RUBS?
+            <WhatIsProRataShare />
+>>>>>>> origin/Front-end
               </FormLabel>
               <FormGroup row>
                 <FormControlLabel control={<Checkbox checked={this.state.yes} onChange={this.onChangeYes} name="yes" color="primary" />} label="yes" />
@@ -225,7 +264,11 @@ class AddTenant extends React.Component {
                     <TextField autoFocus margin="dense" id="tenantFt" label="Enter tenant square footage" type="text" onChange={this.changeTenantFt} fullWidth />
                     <Button onClick={this.calculate} color="primary">
                       Calculate
+<<<<<<< HEAD
                     </Button>
+=======
+                </Button>
+>>>>>>> origin/Front-end
                   </div>
                 ) : null}
               </div>

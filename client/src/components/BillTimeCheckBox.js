@@ -24,6 +24,7 @@ class BillTimeCheckBox extends React.Component {
       submeter_id: "",
       bill_id: "",
       unit_charge: "",
+<<<<<<< HEAD
       bill_list: 
       [
         {
@@ -33,6 +34,9 @@ class BillTimeCheckBox extends React.Component {
             unit_charge: "0.2"
         },
       ],
+=======
+      bill_list: [],
+>>>>>>> origin/Front-end
       meter_id: this.props.meter_id,
       onlyOption: true,
     };
