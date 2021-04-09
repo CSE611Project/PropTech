@@ -33,7 +33,7 @@ import axios from "axios";
 class SideMenu extends Component {
   constructor(props) {
     super(props);
-    this.state = { display_more_options: this.props.display_more_options };
+    this.state = { display_more_options: this.props.display_more_options, property_id: this.props.property_id };
   }
 
   render() {
@@ -55,7 +55,7 @@ class SideMenu extends Component {
                 <a href="#" onClick={manage_invoice}>
                   Manage Invoice History
                 </a>
-                <GenerateInvoice />
+                <GenerateInvoice property_id={this.state.property_id} />
               </div>
             ) : null}
             <a href="#" onClick={log_out}>
@@ -85,11 +85,6 @@ function manage_utility() {
 function manage_invoice() {
   const ele = <div></div>;
   return ReactDOM.render(ele, document.getElementById("root"));
-}
-
-function generate_invoice() {
-  const ele = <div></div>;
-  window.location = `/PropMana/${sessionStorage.getItem("sub")}/invoice`;
 }
 
 function log_out() {

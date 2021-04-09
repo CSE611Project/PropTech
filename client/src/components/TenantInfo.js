@@ -68,7 +68,7 @@ class TenantInfo extends Component {
               />
             </TableCell>
             <TableCell>
-              <DeleteTenant tenant_id={this.state.tenant_list[i].tenant_id} info={this} />
+              <DeleteTenant tenant_id={this.state.tenant_list[i].tenant_id} info={this} property_id={this.state.property_id} />
             </TableCell>
             <TableCell>
               <Submeters
