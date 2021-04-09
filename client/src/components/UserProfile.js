@@ -15,7 +15,7 @@ class UserProfile extends Component {
     this.state = {
       open: false,
       success: true,
-      email: sessionStorage.getItem("username"),
+      username: sessionStorage.getItem("username"),
       "custom:company_name": sessionStorage.getItem("custom:company_name"),
       "custom:street_name": sessionStorage.getItem("custom:street_name"),
       "custom:suite_number": sessionStorage.getItem("custom:suite_number"),
@@ -47,9 +47,9 @@ class UserProfile extends Component {
     });
   }
 
-  changeEmail = (event) => {
+  changeUsername = (event) => {
     this.setState({
-      email: event.target.value,
+      username: event.target.value,
     });
   };
 
@@ -116,10 +116,10 @@ class UserProfile extends Component {
             <TableRow>
               <TableCell>email</TableCell>
               <TableCell>
-                <TextField type="text" value={this.state.email} onChange={this.changeEmail} fullWidth />
+                <TextField type="text" value={this.state.username} onChange={this.changeUsername} fullWidth />
               </TableCell>
               <TableCell>
-                <Button onClick={() => this.edit_attributes("email")}>Change</Button>
+                <Button onClick={() => this.edit_attributes("username")}>Change</Button>
               </TableCell>
             </TableRow>
             <TableRow>
