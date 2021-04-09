@@ -10,8 +10,15 @@ import DeleteProperty from "./DeleteProperty";
 import TenantInfo from "./TenantInfo";
 import { Component } from "react";
 import Button from "@material-ui/core/Button";
-import { TableBody } from "@material-ui/core";
 import axios from "axios";
+
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
 
 class PropertyInfo extends Component {
   constructor(props) {
@@ -37,35 +44,38 @@ class PropertyInfo extends Component {
       this.res = [];
       for (var i = 0; i < this.state.property_list.length; i++) {
         this.res.push(
-          <tr key={i} id={i}>
-            <td>{this.state.property_list[i].name}</td>
-            <td>{this.state.property_list[i].address}</td>
-            <td>{this.state.property_list[i].property_type}</td>
-            <td>{this.state.property_list[i].meters}</td>
-            <td>
+          <TableRow key={i} id={i}>
+            <TableCell>{this.state.property_list[i].name}</TableCell>
+            <TableCell>{this.state.property_list[i].address}</TableCell>
+            <TableCell>{this.state.property_list[i].property_type}</TableCell>
+            <TableCell>{this.state.property_list[i].total_footage}</TableCell>
+            <TableCell>{this.state.property_list[i].landlord_phone}</TableCell>
+            <TableCell>
               <Button
-                value={`{"property_id":"${this.state.property_list[i].property_id}", "property_name":"${this.state.property_list[i].name}"}`}
+                value={`{"property_id":"${this.state.property_list[i].property_id}",
+                 "property_name":"${this.state.property_list[i].name}",
+                  "total_footage":"${this.state.property_list[i].total_footage}"}`}
                 onClick={(e) => manage_tenants(e.currentTarget.value)}
-                color="inherit"
+                color="primary"
               >
-                View Tenants
+                View Details
               </Button>
-            </td>
-            <td>
+            </TableCell>
+            <TableCell>
               <EditProperty
                 property_id={this.state.property_list[i].property_id}
                 name={this.state.property_list[i].name}
                 address={this.state.property_list[i].address}
                 property_type={this.state.property_list[i].property_type}
-                meters={this.state.property_list[i].meters}
-                user_id={this.state.user_id}
+                total_footage={this.state.property_list[i].total_footage}
+                landlord_phone={this.state.property_list[i].landlord_phone}
                 info={this}
               />
-            </td>
-            <td>
+            </TableCell>
+            <TableCell>
               <DeleteProperty property_id={this.state.property_list[i].property_id} info={this} />
-            </td>
-          </tr>
+            </TableCell>
+          </TableRow>
         );
       }
       this.forceUpdate();
@@ -74,19 +84,26 @@ class PropertyInfo extends Component {
 
   render() {
     return (
-      <div>
-        <table className="table">
-          <tbody>
-            <tr>
-              <th style={{ width: "25%" }}>Property Name</th>
-              <th style={{ width: "25%" }}>Property Address</th>
-              <th style={{ width: "25%" }}>Property Type</th>
-              <th style={{ width: "10%" }}>Meters</th>
-            </tr>
-            {this.res}
-          </tbody>
-        </table>
-        <AddProperty className="display_item display" user_id={this.state.user_id} info={this} />
+      <div className="main">
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Property Name</TableCell>
+                <TableCell>Property Address</TableCell>
+                <TableCell>Property Type</TableCell>
+                <TableCell>Total Footage</TableCell>
+                <TableCell>Landlord Phone</TableCell>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TableCell>
+                  <AddProperty className="display_item" info={this} />
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>{this.res}</TableBody>
+          </Table>
+        </TableContainer>
       </div>
     );
   }

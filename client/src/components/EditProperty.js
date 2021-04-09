@@ -16,12 +16,12 @@ class EditProperty extends React.Component {
     super(props);
     this.state = {
       open: false,
-      name: this.props.name,
       property_id: this.props.property_id,
+      name: this.props.name,
       address: this.props.address,
       property_type: this.props.property_type,
-      meters: this.props.meters,
-      user_id: this.props.user_id,
+      total_footage: this.props.total_footage,
+      landlord_phone: this.props.landlord_phone,
     };
 
     this.handleClickOpen = this.handleClickOpen.bind(this);
@@ -29,18 +29,19 @@ class EditProperty extends React.Component {
     this.changeName = this.changeName.bind(this);
     this.changeAddress = this.changeAddress.bind(this);
     this.changePropertyType = this.changePropertyType.bind(this);
-    this.changeMeters = this.changeMeters.bind(this);
+    this.changeTotalFootage = this.changeTotalFootage.bind(this);
+    this.changeLandlordPhone = this.changeLandlordPhone.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
   componentDidUpdate() {
     if (this.props.property_id !== this.state.property_id) {
       this.setState({
-        name: this.props.name,
         property_id: this.props.property_id,
+        name: this.props.name,
         address: this.props.address,
         property_type: this.props.property_type,
-        meters: this.props.meters,
-        user_id: this.props.user_id,
+        total_footage: this.props.total_footage,
+        landlord_phone: this.props.landlord_phone,
       });
     }
   }
@@ -62,6 +63,7 @@ class EditProperty extends React.Component {
       open: false,
     });
   }
+
   changeName(event) {
     this.setState({
       name: event.target.value,
@@ -80,9 +82,15 @@ class EditProperty extends React.Component {
     });
   }
 
-  changeMeters(event) {
+  changeTotalFootage(event) {
     this.setState({
-      meters: event.target.value,
+      total_footage: event.target.value,
+    });
+  }
+
+  changeLandlordPhone(event) {
+    this.setState({
+      landlord_phone: event.target.value,
     });
   }
 
@@ -96,6 +104,8 @@ class EditProperty extends React.Component {
       name: this.state.name,
       address: this.state.address,
       property_type: this.state.property_type,
+      total_footage: this.state.total_footage,
+      landlord_phone: this.state.landlord_phone,
     };
     this.updatePropertyInfo(property_info);
   }
@@ -103,7 +113,7 @@ class EditProperty extends React.Component {
   render() {
     return (
       <div>
-        <Button onClick={this.handleClickOpen}>Edit</Button>
+        <Button color="primary" onClick={this.handleClickOpen}>Edit</Button>
         <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Edit Property Info</DialogTitle>
           <DialogContent>
@@ -111,7 +121,8 @@ class EditProperty extends React.Component {
             <TextField autoFocus margin="dense" id="name" label="Property Name" type="text" value={this.state.name} onChange={this.changeName} fullWidth />
             <TextField autoFocus margin="dense" id="address" label="Property Address" type="text" value={this.state.address} onChange={this.changeAddress} fullWidth />
             <TextField autoFocus margin="dense" id="property_type" label="Property Type" type="text" value={this.state.property_type} onChange={this.changePropertyType} fullWidth />
-            <TextField autoFocus margin="dense" id="meters" label="Meter List" type="text" value={this.state.meters} onChange={this.changeMeters} fullWidth />
+            <TextField autoFocus margin="dense" id="total_footage" label="Total Footage" type="text" value={this.state.total_footage} onChange={this.changeTotalFootage} fullWidth />
+            <TextField autoFocus margin="dense" id="landlord_phone" label="Landlord Phone" type="text" value={this.state.landlord_phone} onChange={this.changeLandlordPhone} fullWidth />
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="secondary">

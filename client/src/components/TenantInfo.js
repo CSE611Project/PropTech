@@ -9,18 +9,28 @@ import EditTenant from "./EditTenant";
 import AddTenant from "./AddTenant";
 import DeleteTenant from "./DeleteTenant";
 import Submeters from "./Submeters";
+import Meters from "./Meters";
 import { Component } from "react";
-import { TableBody } from "@material-ui/core";
 import axios from "axios";
+
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
 
 class TenantInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
       display: this.props.display,
-      property_id: this.props.property_id,
+      property_id: sessionStorage.getItem("property_id"),
       property_name: sessionStorage.getItem("property_name"),
+      total_footage: sessionStorage.getItem("total_footage"),
       tenant_list: [],
+      meter_list: [],
     };
     this.generateTableData();
   }
@@ -36,54 +46,73 @@ class TenantInfo extends Component {
 
   generateTableData() {
     this.getTenantList().then(() => {
-      var res = [];
-      let tableData = this.state.tenant_list;
-      for (var i = 0; i < tableData.length; i++) {
-        res.push(
-          <tr key={i} id={i}>
-            <td>{tableData[i].name}</td>
-            <td>{tableData[i].email}</td>
-            <td>{tableData[i].address}</td>
-            <td>{tableData[i].property_share}</td>
-            <td>{tableData[i].submeter}</td>
-            <td>
+      this.res = [];
+      for (var i = 0; i < this.state.tenant_list.length; i++) {
+        this.res.push(
+          <TableRow key={i} id={i}>
+            <TableCell>{this.state.tenant_list[i].name}</TableCell>
+            <TableCell>{this.state.tenant_list[i].email}</TableCell>
+            <TableCell>{this.state.tenant_list[i].address}</TableCell>
+            <TableCell>{this.state.tenant_list[i].landlord_phone}</TableCell>
+            <TableCell>{this.state.tenant_list[i].rubs}</TableCell>
+            <TableCell>
               <EditTenant
-                tenant_id={tableData[i].tenant_id}
-                name={tableData[i].name}
-                email={tableData[i].email}
-                address={tableData[i].address}
-                property_share={tableData[i].property_share}
-                submeter={tableData[i].submeter}
+                tenant_id={this.state.tenant_list[i].tenant_id}
+                name={this.state.tenant_list[i].name}
+                email={this.state.tenant_list[i].email}
+                address={this.state.tenant_list[i].address}
+                landlord_phone={this.state.tenant_list[i].landlord_phone}
+                rubs={this.state.tenant_list[i].rubs}
                 property_id={this.state.property_id}
                 info={this}
               />
-            </td>
-            <td>
-              <DeleteTenant tenant_id={tableData[i].tenant_id} info={this} />
-            </td>
-          </tr>
+            </TableCell>
+            <TableCell>
+              <DeleteTenant tenant_id={this.state.tenant_list[i].tenant_id} info={this} property_id={this.state.property_id} />
+            </TableCell>
+            <TableCell>
+              <Submeters
+                tenant_id={this.state.tenant_list[i].tenant_id}
+                name={this.state.tenant_list[i].name}
+                email={this.state.tenant_list[i].email}
+                address={this.state.tenant_list[i].address}
+                rented_area={this.state.tenant_list[i].rented_area}
+                submeter={this.state.tenant_list[i].submeter}
+                property_id={this.state.property_id}
+                info={this}
+              />
+            </TableCell>
+          </TableRow>
         );
       }
-      this.res = res;
       this.forceUpdate();
     });
   }
 
   render() {
     return (
-      <div>
-        <table className="table">
-          <tbody>
-            <tr>
-              <th style={{ width: "25%" }}>Name</th>
-              <th style={{ width: "25%" }}>Email</th>
-              <th style={{ width: "25%" }}>Address</th>
-              <th style={{ width: "10%" }}>Property Share</th>
-            </tr>
-            {this.res}
-          </tbody>
-        </table>
-        <AddTenant className="display_item" property_id={this.state.property_id} info={this} />
+      <div className="main">
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Address</TableCell>
+                <TableCell>Landlord Phone</TableCell>
+                <TableCell>RUBS</TableCell>
+                <TableCell />
+                <TableCell>
+                  <Meters className="display_item" property_id={this.state.property_id} info={this} />
+                </TableCell>
+                <TableCell>
+                  <AddTenant className="display_item" property_id={this.state.property_id} total_footage={this.state.total_footage} info={this} />
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>{this.res}</TableBody>
+          </Table>
+        </TableContainer>
       </div>
     );
   }

@@ -1,8 +1,10 @@
+import { Typography } from "@material-ui/core";
 import React from "react";
 import ReactDOM from 'react-dom';
 import "./../App.css";
 import HomePage from "./HomePage.js";
 import Navigation from "./Navigation.js"
+import Button from '@material-ui/core/Button';
 
 class RegProcess extends React.Component {
   render() {
@@ -10,8 +12,10 @@ class RegProcess extends React.Component {
       <div>
         <div className="RegProcess">
           <header className="RegProcess-header">
-            <h1>Thank you, you will recieve an email about your registration result shortly.</h1>
-            <button className="button" onClick={back}>Ok</button>
+          <Typography component="h1" variant="h5" color="primary" >Thank you, you will recieve an email about your registration result shortly.
+          </Typography>
+          
+            <Button color="primary" onClick={back}>Ok</Button>
           </header>
         </div>
       </div>

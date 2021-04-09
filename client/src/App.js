@@ -17,6 +17,7 @@ import ManaInfo from "./components/ManaInfo";
 import EditUserAccount from "./components/EditUserAccount";
 import TenantInfo from "./components/TenantInfo";
 import PropertyInfo from "./components/PropertyInfo";
+import BillTimeCheckBox from "./components/BillTimeCheckBox";
 
 function App() {
   return (

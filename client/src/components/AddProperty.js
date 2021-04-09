@@ -19,7 +19,8 @@ class AddProperty extends React.Component {
       name: "",
       address: "",
       property_type: "",
-      meters: "",
+      total_footage: "",
+      landlord_phone: "",
     };
 
     this.handleClickOpen = this.handleClickOpen.bind(this);
@@ -27,8 +28,9 @@ class AddProperty extends React.Component {
     this.changeName = this.changeName.bind(this);
     this.changeAddress = this.changeAddress.bind(this);
     this.changePropertyType = this.changePropertyType.bind(this);
-    this.changeMeters = this.changeMeters.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.changeTotal_footage = this.changeTotal_footage.bind(this);
+    this.changeLandlord_phone = this.changeLandlord_phone.bind(this);
   }
   addProperty(property_info) {
     axios.post("/property", { property_info: property_info }).then((response) => {
@@ -64,12 +66,22 @@ class AddProperty extends React.Component {
     });
   }
 
-  changeMeters(event) {
+  changeTotalFootage(event) {
     this.setState({
-      meters: event.target.value,
+      total_footage: event.target.value,
+    });
+  }
+  changeTotal_footage(event) {
+    this.setState({
+      total_footage: event.target.value,
     });
   }
 
+  changeLandlord_phone(event) {
+    this.setState({
+      landlord_phone: event.target.value,
+    });
+  }
   onSubmit(event) {
     event.preventDefault();
     this.setState({
@@ -80,6 +92,8 @@ class AddProperty extends React.Component {
       name: this.state.name,
       address: this.state.address,
       property_type: this.state.property_type,
+      total_footage: this.state.total_footage,
+      landlord_phone: this.state.landlord_phone,
     };
 
     this.addProperty(property_info);
@@ -88,7 +102,9 @@ class AddProperty extends React.Component {
   render() {
     return (
       <div>
-        <Button onClick={this.handleClickOpen}>Add Property</Button>
+        <Button color="primary" onClick={this.handleClickOpen}>
+          Add Property
+        </Button>
         <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Enter Property Info</DialogTitle>
           <DialogContent>
@@ -96,7 +112,8 @@ class AddProperty extends React.Component {
             <TextField autoFocus margin="dense" id="name" label="Name" type="text" onChange={this.changeName} fullWidth />
             <TextField autoFocus margin="dense" id="address" label="Address" type="text" onChange={this.changeAddress} fullWidth />
             <TextField autoFocus margin="dense" id="property_type" label="Property Type" type="text" onChange={this.changePropertyType} fullWidth />
-            <TextField autoFocus margin="dense" id="meters" label="Meter List" type="text" onChange={this.changeMeters} fullWidth />
+            <TextField autoFocus margin="dense" id="totalfootage" label="Total Building Square Footage" type="text" onChange={this.changeTotal_footage} fullWidth />
+            <TextField autoFocus margin="dense" id="landlord_phone" label="Landlord Phone Number" type="text" onChange={this.changeLandlord_phone} fullWidth />
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">
