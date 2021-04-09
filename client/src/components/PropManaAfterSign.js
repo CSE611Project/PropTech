@@ -37,31 +37,41 @@ import { DialogContent } from "@material-ui/core";
 class PropManaAfterSign extends Component {
   constructor(props) {
     super(props);
+    var page;
+    if (matchPath(this.props.location.pathname, { path: "/PropMana/:sub/property", exact: true, strict: false })) {
+      page = "property";
+    } else if (matchPath(this.props.location.pathname, { path: "/PropMana/:sub/property/:propertyId", exact: true, strict: false })) {
+      page = "tenant";
+    }
     this.state = {
       sub: this.props.match.params.sub,
-      page: null,
-      page_name: null,
+      page: (() => {
+        switch (page) {
+          case "property":
+            return <PropertyInfo display={this} />;
+          case "tenant":
+            return <TenantInfo display={this} />;
+        }
+      })(),
+      page_name: (() => {
+        switch (page) {
+          case "property":
+            return sessionStorage.getItem("username") + " Properties";
+          case "tenant":
+            return sessionStorage.getItem("property_name") + " Information";
+        }
+      })(),
       pathname: this.props.location.pathname,
+      menu_display_more_options: (() => {
+        switch (page) {
+          case "property":
+            return false;
+          case "tenant":
+            return true;
+        }
+      })(),
     };
   }
-
-  componentDidMount() {
-    if (matchPath(this.state.pathname, { path: "/PropMana/:sub/property", exact: true, strict: false })) {
-      this.setState({ page_name: sessionStorage.getItem("username") + " Properties" });
-      this.manage_property();
-    } else if (matchPath(this.state.pathname, { path: "/PropMana/:sub/property/:propertyId", exact: true, strict: false })) {
-      this.setState({ page_name: sessionStorage.getItem("property_name") + " Information" });
-      this.manage_tenant(this.props.match.params.propertyId);
-    }
-  }
-
-  manage_property = () => {
-    this.setState({ page: <PropertyInfo display={this} /> });
-  };
-
-  manage_tenant = (property_id) => {
-    this.setState({ page: <TenantInfo display={this} property_id={property_id} /> });
-  };
 
   render() {
     return (
@@ -71,7 +81,7 @@ class PropManaAfterSign extends Component {
         </Typography>
         <DialogContent />
         <div className="Info_Page_Split">
-          <SideMenu page={this} />
+          <SideMenu page={this} display_more_options={this.state.menu_display_more_options} />
           <div className="display">{this.state.page}</div>
         </div>
       </div>
