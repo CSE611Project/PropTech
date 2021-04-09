@@ -34,14 +34,15 @@ class GenerateInvoice extends Component {
       display: this.props.display,
       property_id: sessionStorage.getItem("property_id"),
       property_name: sessionStorage.getItem("property_name"),
-      begin: "",
-      end: "",
+      from_date: "",
+      to_date: "",
       open: false,
     };
-    this.generateTableData();
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.changeFromDate = this.changeFromDate.bind(this);
+    this.changeTodate = this.changeTodate.bind(this);
   }
 
   handleClickOpen() {
@@ -49,43 +50,37 @@ class GenerateInvoice extends Component {
       open: true,
     });
   }
+  changeFromDate(date){
+    this.setState({
+      from_date: date
+    })
+  }
+  changeTodate(date){
+    this.setState({
+      to_date: date
+    })
+  }
 
   handleClose() {
     this.setState({
       open: false,
     });
   }
-
+  invoice_generator() {
+    console.log(this.state.property_id);
+    console.log(this.state.from_date);
+    console.log(this.state.to_date);
+    axios.post("/meterbill_list", { property_id: this.state.property_id, from_date: this.state.from_date, to_date: this.state.to_date }).then((response) => {
+      console.log("response body:",response.body);
+    });
+  }
   onSubmit(event) {
     //* not sure about what kind of information should be transmitted.
+    this.invoice_generator();
+
   }
 
-  getTenantList() {
-    return new Promise((resolve, reject) => {
-      axios.get(`/tenant/${this.state.property_id}`).then((response) => {
-        this.setState({ tenant_list: response.data });
-        resolve();
-      });
-    });
-  }
 
-  generateTableData() {
-    this.getTenantList().then(() => {
-      this.res = [];
-      for (var i = 0; i < this.state.tenant_list.length; i++) {
-        this.res.push(
-          <TableRow key={i} id={i}>
-            <TableCell>{this.state.property_id}</TableCell>
-            <TableCell>{this.state.tenant_list[i].name}</TableCell>
-            <TableCell>{this.state.tenant_list[i].email}</TableCell>
-            <TableCell>{this.state.tenant_list[i].address}</TableCell>
-            <TableCell>{this.state.tenant_list[i].landlord_phone}</TableCell>
-          </TableRow>
-        );
-      }
-      this.forceUpdate();
-    });
-  }
 
   render() {
     return (
@@ -99,13 +94,12 @@ class GenerateInvoice extends Component {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Property ID</TableCell>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Address</TableCell>
-                  <TableCell>Landlord Phone</TableCell>
+                  <TableCell>Property ID: {this.state.property_id}</TableCell>
                   <TableCell>
-                    <DatePicker />
+                    <DatePicker 
+                      from_date = {this.changeFromDate.bind(this)}
+                      to_date = {this.changeTodate.bind(this)}
+                    />
                   </TableCell>
 
                   <TableCell>
