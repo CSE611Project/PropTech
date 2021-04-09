@@ -2,12 +2,19 @@ import { Component } from "react";
 import axios from "axios";
 import { userPool, cognito, region } from "./UserPool";
 import { Table, TableBody, TableCell, TableRow, TextField, Button } from "@material-ui/core";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 const aws = require("aws-sdk");
 
 class UserProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      open: false,
+      success: true,
       email: sessionStorage.getItem("username"),
       "custom:company_name": sessionStorage.getItem("custom:company_name"),
       "custom:street_name": sessionStorage.getItem("custom:street_name"),
@@ -30,8 +37,13 @@ class UserProfile extends Component {
     };
     var cognitoidentityserviceprovider = new aws.CognitoIdentityServiceProvider({ region: region });
     cognitoidentityserviceprovider.updateUserAttributes(params, (err, data) => {
-      if (err) console.log(err);
-      else sessionStorage.setItem(attribute_name, this.state[attribute_name]);
+      if (err) {
+        console.log(err);
+        this.setState({ success: false, open: true });
+      } else {
+        sessionStorage.setItem(attribute_name, this.state[attribute_name]);
+        this.setState({ success: true, open: true });
+      }
     });
   }
 
@@ -77,6 +89,25 @@ class UserProfile extends Component {
     });
   };
 
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+
+  dialog_text = () => {
+    if (this.state.success) {
+      return "Your change was successful.";
+    } else {
+      return "Your change was unsuccessful.";
+    }
+  };
+
+  dialog_title = () => {
+    if (this.state.success) {
+      return "Update Succeeded";
+    } else {
+      return "Update Failed";
+    }
+  };
   render() {
     return (
       <div>
@@ -147,6 +178,17 @@ class UserProfile extends Component {
             </TableRow>
           </TableBody>
         </Table>
+        <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+          <DialogTitle id="alert-dialog-title">{this.dialog_title()}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">{this.dialog_text()}</DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="primary">
+              Ok
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }
