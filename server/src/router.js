@@ -563,17 +563,20 @@ router.post("/meterbill_list/", (req, res) => {
       return;
     }
     db.selectAllMetersSubmetersByProperty(Number(req.body.property_id), (result) => {
-      db.selectBillWithProperty({ property_id: Number(req.body.property_id) }, (result2) => {
+      db.selectBillWithProperty({ property_id: Number(req.body.property_id), from_date: req.body.from_date, to_date: req.body.to_date }, (result2) => {
         db.selectMeterSubmeterBillByProperty(Number(req.body.property_id), req.body.from_date, req.body.to_date, (result3) => {
           db.selectMeterTenantListByProperty(Number(req.body.property_id), (result4) => {
+            db.selectAllTenants(Number(req.body.property_id), (result5) => {
             var final_result = {
               meter_submeter_list: JSON.parse(JSON.stringify(result)),
               meter_bill_list: JSON.parse(JSON.stringify(result2)),
               submeter_bill_list: JSON.parse(JSON.stringify(result3)),
               meter_tenant_list: JSON.parse(JSON.stringify(result4)),
+              all_tenant_list: JSON.parse(JSON.stringify(result5)),
             };
             console.log("final result:", final_result);
             res.json(final_result);
+           });
           });
         });
       });

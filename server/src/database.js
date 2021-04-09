@@ -950,11 +950,12 @@ function selectBillWithProperty(filter, callback) {
   let keys = Object.keys(filter);
   keys.forEach(function (key, index) {
     if (index + 1 == keys.length) {
-      sql += `${key} = ${filter[key]}`;
+      sql += `${key} = "${filter[key]}"`;
     } else {
-      sql += `${key} = ${filter[key]} AND `;
+      sql += `${key} = "${filter[key]}" AND `;
     }
   });
+  console.log(sql);
   connection.query(sql, function (err, invoiceList) {
     if (err) {
       console.log(`not able to select billList of ${filter} from database`);
@@ -962,6 +963,7 @@ function selectBillWithProperty(filter, callback) {
     } else {
       console.log(`${filter} billList returned`);
       callback(invoiceList);
+      console.log("invoiceList",invoiceList);
     }
   });
 }
