@@ -27,6 +27,7 @@ import FormLabel from "@material-ui/core/FormLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import GenerateInvoice from "./GenerateInvoice";
 import axios from "axios";
 
 class SideMenu extends Component {
@@ -54,9 +55,7 @@ class SideMenu extends Component {
                 <a href="#" onClick={manage_invoice}>
                   Manage Invoice History
                 </a>
-                <a href="#" onClick={generate_invoice}>
-                  Generate Invoice
-                </a>
+                <GenerateInvoice />
               </div>
             ) : null}
             <a href="#" onClick={log_out}>

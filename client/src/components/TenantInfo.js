@@ -36,7 +36,6 @@ class TenantInfo extends Component {
   }
 
   getTenantList() {
-    console.log("tenantinfo: ", this.state.total_footage);
     return new Promise((resolve, reject) => {
       axios.get(`/tenant/${this.state.property_id}`).then((response) => {
         this.setState({ tenant_list: response.data });

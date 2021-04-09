@@ -143,7 +143,6 @@ class AddTenant extends React.Component {
     this.setState({
       rubs: event.target.value,
     });
-
   }
 
   changeTenantFt(event) {
@@ -157,13 +156,11 @@ class AddTenant extends React.Component {
     {
       var totalBuildingFt = this.state.total_footage;
       var tenantft = this.state.tenantFt;
-      console.log(this.state.total_footage);
-      console.log(this.state.tenantFt);
       if (tenantft != "") {
         var rubs = tenantft / totalBuildingFt;
         this.setState({
           rubs: rubs,
-        })
+        });
       }
       /* should specify a way to calculate rubs based on tenantFt and then save into rubs variable*/
       console.log(tenantft / totalBuildingFt);
@@ -188,7 +185,6 @@ class AddTenant extends React.Component {
   }
 
   render() {
-    { console.log("add tenant:", this.state.total_footage) }
     const isYes = this.state.yes;
     const isNo = this.state.no;
     return (
@@ -217,7 +213,7 @@ class AddTenant extends React.Component {
             <FormControl>
               <FormLabel>
                 Is there a RUBS?
-            <WhatIsProRataShare />
+                <WhatIsProRataShare />
               </FormLabel>
               <FormGroup row>
                 <FormControlLabel control={<Checkbox checked={this.state.yes} onChange={this.onChangeYes} name="yes" color="primary" />} label="yes" />
@@ -236,7 +232,7 @@ class AddTenant extends React.Component {
                     <TextField autoFocus margin="dense" id="tenantFt" label="Enter tenant square footage" type="text" onChange={this.changeTenantFt} fullWidth />
                     <Button onClick={this.calculate} color="primary">
                       Calculate
-                </Button>
+                    </Button>
                   </div>
                 ) : null}
               </div>
