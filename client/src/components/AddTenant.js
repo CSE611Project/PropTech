@@ -138,7 +138,7 @@ class AddTenant extends React.Component {
   changeRUBS(event) {
     event.preventDefault();
     this.setState({
-      meter: meters,
+      // meter: meters,
     });
   }
 

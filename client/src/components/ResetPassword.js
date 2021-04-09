@@ -13,82 +13,68 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
 import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
-import Badge from "@material-ui/core/Badge";
-import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import Link from "@material-ui/core/Link";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import { DialogContent, FormControl } from "@material-ui/core";
+import Dialog from "@material-ui/core/Dialog";
 
 class ResetPassword extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: "",
+      dialog_open: false,
+      dialog_text: "An email has been sent with a verification code",
+    };
+  }
+
+  changeUsername = (event) => {
+    this.setState({ username: event.target.value });
+  };
+  handleDialogClose = () => {
+    window.location = "/ResetProcess";
+  };
+
+  resetPassword = () => {
+    var cognitoUser = new cognito.CognitoUser({
+      Username: this.state.username,
+      Pool: userPool,
+    });
+    console.log(this.state.username);
+
+    cognitoUser.forgotPassword({
+      onSuccess: function (result) {},
+      onFailure: function (err) {},
+    });
+    this.setState({ dialog_open: true });
+  };
+
   render() {
     return (
-      <div>
-        <div className="ResetPassword">
-          <header className="Login-header">
-            <Typography component="h1" variant="h4" color="primary">
-              Reset Password
-            </Typography>
-            {/*<label>Enter your old password:</label>
-            <input type="password" />
-            <label>Enter your new password:</label>
-            <input type="password" />
-            <label>Confirm your new password:</label>
-            <input type="password" />*/}
-            <TextField autoFocus margin="dense" label="Enter your old password" type="password" />
-            <TextField autoFocus margin="dense" label="Enter your new password" type="password" />
-            <TextField autoFocus margin="dense" label="Confirm new password" type="password" />
-            <Button color="primary" onClick={reset}>
-              Reset
-            </Button>
-          </header>
-        </div>
+      <div className="ResetPassword">
+        <header className="Login-header">
+          <Typography component="h1" variant="h4" color="primary">
+            Reset Password
+          </Typography>
+          <TextField autoFocus margin="dense" id="username" label="Enter your username" onChange={this.changeUsername} value={this.state.username} />
+          <Button color="primary" onClick={this.resetPassword}>
+            Reset
+          </Button>
+          <Dialog open={this.state.dialog_open} onClose={this.handleDialogClose} aria-labelledby="form-dialog-title">
+            <DialogContent>
+              <DialogContentText></DialogContentText>
+              {this.state.dialog_text}
+              <Button onClick={this.handleDialogClose} color="primary">
+                OK
+              </Button>
+            </DialogContent>
+          </Dialog>
+        </header>
       </div>
     );
   }
-}
-
-function reset() {
-  window.location = "/ResetProcess";
-  return ReactDOM.render(<ResetProcess />, document.getElementById("root"));
-}
-
-function resetPassword(username) {
-  var cognitoUser = new cognito.CognitoUser({
-    Username: username,
-    Pool: userPool,
-  });
-
-  cognitoUser.forgotPassword({
-    onSuccess: function (result) {
-      console.log("call result: " + result);
-    },
-    onFailure: function (err) {
-      alert(err);
-    },
-  });
-}
-
-function confirmPassword(username, verificationCode, newPassword) {
-  var cognitoUser = new cognito.CognitoUser({
-    Username: username,
-    Pool: userPool,
-  });
-
-  return new Promise((resolve, reject) => {
-    cognitoUser.confirmPassword(verificationCode, newPassword, {
-      onFailure(err) {
-        reject(err);
-      },
-      onSuccess() {
-        resolve();
-      },
-    });
-  });
 }
 
 export default ResetPassword;
