@@ -35,6 +35,7 @@ function App() {
           <Route exact path="/PropMana/:sub" component={PropManaAfterSign} />
           <Route exact path="/PropMana/:sub/property" component={PropManaAfterSign} />
           <Route exact path="/PropMana/:sub/property/:propertyId" component={PropManaAfterSign} />
+          <Route exact path="/PropMana/:sub/invoiceHistory" component={PropManaAfterSign} />
           <Route path="/RegProcess" component={RegProcess} />
           <Route path="/ResetProcess" component={ResetProcess} />
           <Route path="/ApplicationStatus" component={ApplicationStatus} />

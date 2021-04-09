@@ -26,9 +26,8 @@ class TenantInfo extends Component {
     super(props);
     this.state = {
       display: this.props.display,
-      property_id: sessionStorage.getItem("property_id"),
+      property_id: this.props.property_id,
       property_name: sessionStorage.getItem("property_name"),
-      total_footage: sessionStorage.getItem("total_footage"),
       tenant_list: [],
       meter_list: [],
     };

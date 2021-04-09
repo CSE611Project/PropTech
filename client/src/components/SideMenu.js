@@ -83,8 +83,7 @@ function manage_utility() {
 }
 
 function manage_invoice() {
-  const ele = <div></div>;
-  return ReactDOM.render(ele, document.getElementById("root"));
+  window.location = `/PropMana/${sessionStorage.getItem("sub")}/invoiceHistory`;
 }
 
 function log_out() {
