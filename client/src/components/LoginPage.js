@@ -79,7 +79,7 @@ class LoginPage extends React.Component {
               sessionStorage.setItem("sub", response.data.accessData.sub);
               sessionStorage.setItem("accessToken", JSON.stringify(result.accessToken));
               sessionStorage.setItem("custom:company_name", result.idToken.payload["custom:company_name"]);
-              sessionStorage.setItem("custom:street_address", result.idToken.payload["custom:street_address"]);
+              sessionStorage.setItem("custom:street_name", result.idToken.payload["custom:street_name"]);
               sessionStorage.setItem("custom:suite_number", result.idToken.payload["custom:suite_number"]);
               sessionStorage.setItem("custom:city", result.idToken.payload["custom:city"]);
               sessionStorage.setItem("custom:state", result.idToken.payload["custom:state"]);
