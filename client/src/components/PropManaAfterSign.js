@@ -11,13 +11,15 @@ import SideMenu from "./SideMenu.js";
 import Typography from "@material-ui/core/Typography";
 import { DialogContent } from "@material-ui/core";
 import InvoiceHistory from "./InvoiceHistory";
-import InvoiceHistory_m from "./InvoiceHistory_m";
+import UserProfile from "./UserProfile";
 
 class PropManaAfterSign extends Component {
   constructor(props) {
     super(props);
     var page;
-    if (matchPath(this.props.location.pathname, { path: "/PropMana/:sub/property", exact: true, strict: false })) {
+    if (matchPath(this.props.location.pathname, { path: "/PropMana/:sub/user_info", exact: true, strict: false })) {
+      page = "user_info";
+    } else if (matchPath(this.props.location.pathname, { path: "/PropMana/:sub/property", exact: true, strict: false })) {
       page = "property";
     } else if (matchPath(this.props.location.pathname, { path: "/PropMana/:sub/property/:propertyId", exact: true, strict: false })) {
       page = "tenant";
@@ -28,6 +30,8 @@ class PropManaAfterSign extends Component {
       sub: this.props.match.params.sub,
       page: (() => {
         switch (page) {
+          case "user_info":
+            return <UserProfile display={this} />;
           case "property":
             return <PropertyInfo display={this} />;
           case "tenant":
@@ -38,6 +42,8 @@ class PropManaAfterSign extends Component {
       })(),
       page_name: (() => {
         switch (page) {
+          case "user_info":
+            return sessionStorage.getItem("username") + " Profile";
           case "property":
             return sessionStorage.getItem("username") + " Properties";
           case "tenant":
@@ -49,6 +55,8 @@ class PropManaAfterSign extends Component {
       pathname: this.props.location.pathname,
       menu_display_more_options: (() => {
         switch (page) {
+          case "user_info":
+            return false;
           case "property":
             return false;
           case "tenant":

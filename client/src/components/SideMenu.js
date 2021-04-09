@@ -73,8 +73,7 @@ function manage_property() {
 }
 
 function edit_profile() {
-  const ele = <div></div>;
-  return ReactDOM.render(ele, document.getElementById("root"));
+  window.location = `/PropMana/${sessionStorage.getItem("sub")}/user_info`;
 }
 
 function manage_utility() {
