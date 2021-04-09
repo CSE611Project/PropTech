@@ -30,7 +30,7 @@ class UserProfile extends Component {
       AccessToken: JSON.parse(sessionStorage.getItem("accessToken")).jwtToken,
       UserAttributes: [
         {
-          Name: attribute_name,
+          Name: attribute_name == "username" ? "email" : attribute_name,
           Value: this.state[attribute_name],
         },
       ],
