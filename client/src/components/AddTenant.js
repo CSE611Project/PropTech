@@ -200,16 +200,12 @@ class AddTenant extends React.Component {
             <TextField autoFocus margin="dense" id="email" label="Email Address" type="email" onChange={this.changeEmail} fullWidth />
             <TextField autoFocus margin="dense" id="address" label="Address" type="text" onChange={this.changeAddress} fullWidth />
             <TextField autoFocus margin="dense" id="landlord_phone" label="Landlord Phone" type="text" onChange={this.changeLandlordPhone} fullWidth />
-            <DialogContent></DialogContent>
-            <DialogContent></DialogContent>
             {/* 
                             After import meter_list, assign meter_list to the MeterCheckBox variable
                         */}
             <MeterCheckBox property_id={this.state.property_id} onlyOption={false} methodfromparent={this.getAssociatedMeter} />
             <TextField autoFocus margin="dense" id="multiplier" label="Is there a multiplier?" type="text" onChange={this.changeMultiplier} fullWidth />
             <WhatIsMultiplier />
-            <DialogContent></DialogContent>
-            <DialogContent></DialogContent>
             <FormControl>
               <FormLabel>
                 Is there a RUBS?

@@ -70,6 +70,7 @@ class PropManaAfterSign extends Component {
             return true;
         }
       })(),
+      property_id: sessionStorage.getItem("property_id"),
     };
   }
 
@@ -81,7 +82,7 @@ class PropManaAfterSign extends Component {
         </Typography>
         <DialogContent />
         <div className="Info_Page_Split">
-          <SideMenu page={this} display_more_options={this.state.menu_display_more_options} />
+          <SideMenu page={this} display_more_options={this.state.menu_display_more_options} property_id={this.state.property_id} />
           <div className="display">{this.state.page}</div>
         </div>
       </div>

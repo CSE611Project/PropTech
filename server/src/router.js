@@ -562,23 +562,41 @@ router.post("/meterbill_list/", (req, res) => {
       });
       return;
     }
-    console.log(req.body.property_id);
     db.selectAllMetersSubmetersByProperty(Number(req.body.property_id), (result) => {
-      db.selectBillWithProperty({property_id: Number(req.body.property_id)}, (result3) => {
-
-
-        db.selectMeterSubmeterBillByProperty(req.body.property_id, req.body.from_date, req.body.to_date, (result2) =>{
-           db.selectBillInfoAssociateWithTenant({property_id: Number(req.body.property_id), from_date: req.body.from_date, to_date: req.body.to_date}, (result4)=>{
-            var final_result= {metersubmeter_list :result, meter_bill_list: result3, submeter_bill_list: result2, tenant_list: result4};
-            console.log("final result:", final_result);
+      db.selectBillWithProperty({ property_id: Number(req.body.property_id) }, (result3) => {
+        db.selectMeterSubmeterBillByProperty(Number(req.body.property_id), req.body.from_date, req.body.to_date, (result2) => {
+          db.selectBillInfoAssociateWithTenant({ property_id: Number(req.body.property_id) }, (result4) => {
+            var final_result = { metersubmeter_list: result, meter_bill_list: result3, submeter_bill_list: result2, tenant_list: result4 };
+            console.log("final result:", final_result.submeter_bill_list);
             // res.json(result);
             // console.log(result);
-           });
+          });
         });
-
       });
     });
   });
 });
-
+//get meter bills list by filter
+router.get("/meterbill_list/:meter_id?", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.body.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+    var filter = { meter_id: Number(req.params.meter_id) };
+    db.selectBill(filter, (result) => {
+      console.log(result);
+      res.json(result);
+    });
+  });
+});
 module.exports = router;

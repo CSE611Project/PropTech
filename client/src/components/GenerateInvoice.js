@@ -48,15 +48,15 @@ class GenerateInvoice extends Component {
       open: true,
     });
   }
-  changeFromDate(date){
+  changeFromDate(date) {
     this.setState({
-      from_date: date
-    })
+      from_date: date,
+    });
   }
-  changeTodate(date){
+  changeTodate(date) {
     this.setState({
-      to_date: date
-    })
+      to_date: date,
+    });
   }
 
   handleClose() {
@@ -69,16 +69,13 @@ class GenerateInvoice extends Component {
     console.log(this.state.from_date);
     console.log(this.state.to_date);
     axios.post("/meterbill_list", { property_id: this.state.property_id, from_date: this.state.from_date, to_date: this.state.to_date }).then((response) => {
-      console.log("response body:",response.body);
+      console.log("response body:", response.body);
     });
   }
   onSubmit(event) {
     //* not sure about what kind of information should be transmitted.
     this.invoice_generator();
-
   }
-
-
 
   render() {
     return (
@@ -94,10 +91,7 @@ class GenerateInvoice extends Component {
                 <TableRow>
                   <TableCell>Property ID: {this.state.property_id}</TableCell>
                   <TableCell>
-                    <DatePicker 
-                      from_date = {this.changeFromDate.bind(this)}
-                      to_date = {this.changeTodate.bind(this)}
-                    />
+                    <DatePicker from_date={this.changeFromDate.bind(this)} to_date={this.changeTodate.bind(this)} />
                   </TableCell>
 
                   <TableCell>
