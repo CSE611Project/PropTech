@@ -28,6 +28,7 @@ class TenantInfo extends Component {
       display: this.props.display,
       property_id: sessionStorage.getItem("property_id"),
       property_name: sessionStorage.getItem("property_name"),
+      total_footage: sessionStorage.getItem("total_footage"),
       tenant_list: [],
       meter_list: [],
     };
@@ -35,6 +36,7 @@ class TenantInfo extends Component {
   }
 
   getTenantList() {
+    console.log("tenantinfo: ", this.state.total_footage);
     return new Promise((resolve, reject) => {
       axios.get(`/tenant/${this.state.property_id}`).then((response) => {
         this.setState({ tenant_list: response.data });
@@ -105,7 +107,7 @@ class TenantInfo extends Component {
                   <Meters className="display_item" property_id={this.state.property_id} info={this} />
                 </TableCell>
                 <TableCell>
-                  <AddTenant className="display_item" property_id={this.state.property_id} info={this} />
+                  <AddTenant className="display_item" property_id={this.state.property_id} total_footage={this.state.total_footage} info={this} />
                 </TableCell>
               </TableRow>
             </TableHead>

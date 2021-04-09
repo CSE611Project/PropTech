@@ -108,4 +108,35 @@ router.use(cors());
 //     });
 // })
 
+// testing selectMeterTenantListByProperty
+// router.post('/testSelectMeterTenantListByProperty',(req,res)=>{
+//     const {property_id} = req.body;
+//     console.log(`property_id: ${property_id}`);
+//     let sql = `
+//         select
+//             ??,
+//             ??
+//         from
+//             ?? inner join ?? on ?? = ??
+//         where ?? = ?
+//         order by ??`;
+//     let inserts = [
+//         "meter.meter_id",
+//         "meter_tenant.tenant_id",
+//         "meter", "meter_tenant", "meter.meter_id", "meter_tenant.meter_id",
+//         "meter.property_id", property_id,
+//         "meter.meter_id"];
+//     database.connection.query(sql,inserts, function(err, result){
+//         // check error type later
+//         if(err) {
+//             console.log('error found');
+//             res.status(500).send('Sorry, we cannot found that!');
+//         } else {
+//             console.log('ok');
+//             console.log(result);
+//             res.send('returned');
+//         }
+//     });
+// })
+
 module.exports = router;

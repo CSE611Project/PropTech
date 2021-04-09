@@ -500,4 +500,75 @@ router.delete("/meter", (req, res) => {
     });
   });
 });
+//add a new rubs bill to databse
+router.post("/bill", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.body.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+    console.log(req.body.bill_info);
+    db.insertBill(req.body.bill_info, (result) => {
+      res.json(result);
+    });
+  });
+});
+
+//add new submeter bill to database
+router.post("/submeter_bill", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.body.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+    console.log(req.body.submeter_bill_info);
+    db.insertSubmeterBill(req.body.submeter_bill_info, (result) => {
+      res.json(result);
+    });
+  });
+});
+
+//get meter bills list by filter
+router.get("/meterbill_list/:meter_id?", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.body.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+    var filter = {"meter_id": Number(req.params.meter_id)};
+    db.selectBill(filter, (result) => {
+      console.log(result);
+      res.json(result);
+    });
+
+  });
+});
+
 module.exports = router;

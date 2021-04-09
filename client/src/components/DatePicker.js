@@ -18,13 +18,16 @@ class DatePicker extends React.Component {
   handleFromDateChange(event) {
     this.setState({
       from_date: event.target.value,
+    }, function (){
+      this.props.from_date(this.state.from_date);
     });
-    console.log(event.target.value);
   }
 
   handleToDateChange(event) {
     this.setState({
       to_date: event.target.value,
+    }, function (){
+      this.props.to_date(this.state.to_date);
     });
     console.log(event.target.value);
   }
@@ -33,35 +36,39 @@ class DatePicker extends React.Component {
     return (
       <form noValidate>
         <table>
-          <td>
-            <TextField
-              id="from_date"
-              label="From"
-              type="date"
-              defaultValue={this.state.from_date}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              onChange={this.handleFromDateChange}
-            />
-          </td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td>
-            <TextField
-              id="to_date"
-              label="To"
-              type="date"
-              defaultValue={this.state.to_date}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              onChange={this.handleToDateChange}
-            />
-          </td>
+          <tbody>
+            <tr>
+              <td>
+                <TextField
+                  id="from_date"
+                  label="From"
+                  type="date"
+                  defaultValue={this.state.from_date}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  onChange={this.handleFromDateChange}
+                />
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>
+                <TextField
+                  id="to_date"
+                  label="To"
+                  type="date"
+                  defaultValue={this.state.to_date}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  onChange={this.handleToDateChange}
+                />
+              </td>
+            </tr>
+          </tbody>
         </table>
       </form>
     );

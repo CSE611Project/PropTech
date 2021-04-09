@@ -52,7 +52,9 @@ class PropertyInfo extends Component {
             <TableCell>{this.state.property_list[i].landlord_phone}</TableCell>
             <TableCell>
               <Button
-                value={`{"property_id":"${this.state.property_list[i].property_id}", "property_name":"${this.state.property_list[i].name}"}`}
+                value={`{"property_id":"${this.state.property_list[i].property_id}",
+                 "property_name":"${this.state.property_list[i].name}",
+                  "total_footage":"${this.state.property_list[i].total_footage}"}`}
                 onClick={(e) => manage_tenants(e.currentTarget.value)}
                 color="primary"
               >
@@ -111,6 +113,7 @@ function manage_tenants(info) {
   var infos = JSON.parse(info);
   sessionStorage.setItem("property_name", infos.property_name);
   sessionStorage.setItem("property_id", infos.property_id);
+  sessionStorage.setItem("total_footage", infos.total_footage);
   window.location = `/PropMana/${sessionStorage.getItem("sub")}/property/${infos.property_id}`;
 }
 
