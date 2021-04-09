@@ -55,9 +55,7 @@ class SubmeterBill extends React.Component {
     }
   }
   submit_submeterbill(submeter_bill_info) {
-    axios.post("/submeter_bill", { submeter_bill_info: submeter_bill_info }).then((response) => {
-      //   this.props.info.generateTableData();
-    });
+    axios.post("/submeter_bill", { submeter_bill_info: submeter_bill_info }).then((response) => {});
   }
 
   changeBillId(bill_id) {
@@ -111,7 +109,28 @@ class SubmeterBill extends React.Component {
     });
   }
 
-  calculate() {}
+  calculate() {
+    console.log("unit charge: ", this.state.unit_charge);
+    var tmp_s_kwh_usage = this.state.current_read - this.state.prior_read;
+    console.log("kwh usage: ", tmp_s_kwh_usage);
+    var tmp_amt_with_multiplier = tmp_s_kwh_usage * Number(this.state.multiplier);
+    console.log("kwh usage with multiplier: ", tmp_amt_with_multiplier);
+    console.log("multiplier: ", this.state.multiplier);
+
+    var xbill_id = this.state.bill_id;
+    var xsubmeter_id = this.state.submeter_id;
+    var xprior_read = this.state.prior_read;
+    var xcur_read = this.state.current_read;
+    var xfrom_date = this.state.from_date;
+    var xto_date = this.state.to_date;
+    var xs_kwh_usage = tmp_s_kwh_usage;
+    var xamt_with_multiplier = tmp_amt_with_multiplier;
+    var xamt_due = tmp_amt_with_multiplier * Number(this.state.unit_charge);
+
+    this.setState({
+      amt_due: xamt_due,
+    });
+  }
 
   onSubmit(event) {
     event.preventDefault();
@@ -183,7 +202,7 @@ class SubmeterBill extends React.Component {
             />
             <TextField autoFocus margin="dense" id="prior_read" label="Prior read" type="number" onChange={this.changePriorRead} fullWidth />
             <TextField autoFocus margin="dense" id="current_read" label="Current read" type="number" onChange={this.changeCurrentRead} fullWidth />
-            <TextField autoFocus margin="dense" id="amt_due" label="Amount due" type="number" onChange={this.changeAmountDue} fullWidth />
+            <TextField autoFocus margin="dense" id="amt_due" label="Amount due" type="number" onChange={this.changeAmountDue} value={this.state.amt_due} fullWidth />
             <Button color="primary" onClick={this.calculate}>
               Calculate
             </Button>

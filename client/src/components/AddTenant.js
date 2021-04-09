@@ -193,7 +193,9 @@ class AddTenant extends React.Component {
   }
 
   render() {
-    { console.log("add tenant:", this.state.total_footage) }
+    {
+      console.log("add tenant:", this.state.total_footage);
+    }
     const isYes = this.state.yes;
     const isNo = this.state.no;
     return (
