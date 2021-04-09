@@ -160,6 +160,27 @@ function deleteTenant(property_id, tenant_id, callback) {
   });
 }
 
+function selectTenant(filter, callback){
+  let sql = `SELECT * FROM tenant WHERE `;
+  let keys = Object.keys(filter);
+  keys.forEach(function(key, index) {
+    if (index + 1 == keys.length){
+      sql += `${key} = ${filter[key]}`
+    } else {
+      sql += `${key} = ${filter[key]} AND `
+    }
+  })
+  connection.query(sql, function (err, tenantList) {
+    if (err) {
+      console.log(`not able to select tenantList of ${filter} from database`);
+      callback(false);
+    } else {
+      console.log(`${filter} tenantList returned`);
+      callback(tenantList);
+    }
+  });
+}
+
 // return a list of JSON contains all of the properties owned by user
 function selectAllProperties(user_id, callback) {
   let sql = `SELECT * FROM property WHERE user_id = ?`;
@@ -406,6 +427,29 @@ function selectAllSubmeters(tenant_id, callback) {
     } else {
       console.log(`tenant_id: ${tenant_id} meter list returned`);
       callback(submeterList);
+    }
+  });
+}
+
+// // filter is a JSON with an list of filter wants to apply when query submeter table
+// // return a list of JSON
+function selectSubmeter(filter, callback){
+  let sql = `SELECT * FROM submeter WHERE `;
+  let keys = Object.keys(filter);
+  keys.forEach(function(key, index) {
+    if (index + 1 == keys.length){
+      sql += `${key} = ${filter[key]}`
+    } else {
+      sql += `${key} = ${filter[key]} AND `
+    }
+  })
+  connection.query(sql, function (err, result) {
+    if (err) {
+      console.log(`not able to select list of ${filter} from database`);
+      callback(false);
+    } else {
+      console.log(`${filter} List returned`);
+      callback(result);
     }
   });
 }
@@ -854,14 +898,13 @@ function selectMeterSubmeterBillByProperty(property_id, from_date, to_date, call
   });
 }
 
-// this function will return a list of tenant_id, rubs, property_id, meter_id, submeter_id, bill_id, submeter_bill_id, from_date, to_date
+// this function will return a list of property_id, meter_id, submeter_id, bill_id, submeter_bill_id, from_date, to_date
 // filter is a Json
-function selectBillInfoAssociateWithTenant(filter,callback){
+function selectBillInfoAssociateWithProperty(filter,callback){
   let sql = `
       with prepared_table as (
-             select t.tenant_id, t.rubs, t.property_id, m.meter_id, s.submeter_id, b.bill_id, s.submeter_bill_id, b.from_date, b.to_date
-             from 
-             (((tenant t left join meter m on m.property_id=t.property_id) left join bill b on b.meter_id=m.meter_id) left join submeter_bill s on s.bill_id=b.bill_id)
+        select m.property_id, m.meter_id, s.submeter_id, b.bill_id, s.submeter_bill_id, b.from_date, b.to_date
+        from ((meter m left join bill b on b.meter_id=m.meter_id) left join submeter_bill s on s.bill_id=b.bill_id)
       )
       select * from prepared_table where `;
   let keys = Object.keys(filter);
@@ -872,13 +915,13 @@ function selectBillInfoAssociateWithTenant(filter,callback){
       sql += `${key} = ${filter[key]} AND `
     }
   })
-  connection.query(sql, function (err, tenantList) {
+  connection.query(sql, function (err, result) {
     if (err) {
-      console.log(`not able to select tenantList of ${filter} from database`);
+      console.log(`not able to select List of ${filter} from database`);
       callback(false);
     } else {
-      console.log(`${filter} tenantList returned`);
-      callback(tenantList);
+      console.log(`${filter} List returned`);
+      callback(result);
     }
   });
 }
@@ -936,6 +979,7 @@ exports.selectAllTenants = selectAllTenants;
 exports.insertTenant = insertTenant;
 exports.updateTenant = updateTenant;
 exports.deleteTenant = deleteTenant;
+exports.selectTenant = selectTenant;
 
 exports.selectAllProperties = selectAllProperties;
 exports.insertProperty = insertProperty;
@@ -954,6 +998,7 @@ exports.selectAllSubmeters = selectAllSubmeters;
 exports.insertSubmeter = insertSubmeter;
 exports.updateSubmeter = updateSubmeter;
 exports.deleteSubmeter = deleteSubmeter;
+exports.selectSubmeter = selectSubmeter;
 
 exports.insertBill = insertBill;
 exports.updateBill = updateBill;
@@ -973,5 +1018,5 @@ exports.selectInvoice = selectInvoice;
 exports.selectMeterTenantListByProperty = selectMeterTenantListByProperty;
 exports.selectMeterSubmeterBillByProperty = selectMeterSubmeterBillByProperty;
 exports.selectAllMetersSubmetersByProperty = selectAllMetersSubmetersByProperty;
-exports.selectBillInfoAssociateWithTenant = selectBillInfoAssociateWithTenant;
+exports.selectBillInfoAssociateWithProperty = selectBillInfoAssociateWithProperty;
 exports.selectBillWithProperty = selectBillWithProperty;
