@@ -883,7 +883,6 @@ function selectBillInfoAssociateWithTenant(filter,callback){
   });
 }
 
-
 // this function will return a list of meter_id and submeter_id associate with given property
 function selectAllMetersSubmetersByProperty(property_id, callback){
   let sql = `
@@ -901,6 +900,28 @@ function selectAllMetersSubmetersByProperty(property_id, callback){
     } else {
       console.log(`property_id: ${property_id} meterSubmeterList returned`);
       callback(meterSubmeterList);
+    }
+  });
+}
+
+// this function will allow to filter bill by property_id and all fields in bill
+function selectBillWithProperty(filter, callback){
+  let sql = `select * from meter left join bill on meter.meter_id = bill.meter_id WHERE `
+  let keys = Object.keys(filter);
+  keys.forEach(function(key, index) {
+    if (index + 1 == keys.length){
+      sql += `${key} = ${filter[key]}`
+    } else {
+      sql += `${key} = ${filter[key]} AND `
+    }
+  })
+  connection.query(sql, function (err, invoiceList) {
+    if (err) {
+      console.log(`not able to select billList of ${filter} from database`);
+      callback(false);
+    } else {
+      console.log(`${filter} billList returned`);
+      callback(invoiceList);
     }
   });
 }
@@ -953,3 +974,4 @@ exports.selectMeterTenantListByProperty = selectMeterTenantListByProperty;
 exports.selectMeterSubmeterBillByProperty = selectMeterSubmeterBillByProperty;
 exports.selectAllMetersSubmetersByProperty = selectAllMetersSubmetersByProperty;
 exports.selectBillInfoAssociateWithTenant = selectBillInfoAssociateWithTenant;
+exports.selectBillWithProperty = selectBillWithProperty;
