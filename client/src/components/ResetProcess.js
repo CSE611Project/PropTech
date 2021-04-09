@@ -43,7 +43,10 @@ class ResetProcess extends React.Component {
       Pool: userPool,
     });
     if (this.state.newPassword1 == this.state.newPassword2) {
-      cognitoUser.confirmPassword(this.state.verificationCode, this.state.newPassword1, this);
+      cognitoUser.confirmPassword(this.state.verificationCode, this.state.newPassword1, {
+        onSuccess: function (result) {},
+        onFailure: function (err) {},
+      });
       this.setState({ dialog_open: true, dialog_text: "success" });
     } else {
       this.setState({ dialog_open: true, dialog_text: "Passwords do not match" });
@@ -52,7 +55,7 @@ class ResetProcess extends React.Component {
 
   handleDialogClose = () => {
     this.setState({ dialog_open: false });
-    window.location = "/ResetProcess";
+    window.location = "/";
   };
 
   render() {
