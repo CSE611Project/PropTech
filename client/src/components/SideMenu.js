@@ -72,8 +72,9 @@ function log_out() {
   sessionStorage.removeItem("custom:street_name");
   sessionStorage.removeItem("custom:suite_number");
   sessionStorage.removeItem("accessToken");
-  axios.post("/logout");
-  window.location = "/";
+  axios.post("/logout").then((response) => {
+    window.location = "/";
+  });
 }
 
 function homepage() {

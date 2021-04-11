@@ -85,6 +85,30 @@ router.post("/signup", (req, res) => {
   });
 });
 
+router.get("/users", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    if (accessData["cognito:groups"][0] == "Admin") {
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+
+    var params = { UserPoolId: config.cognito.userPoolId };
+
+    cognito.listUsers(params, (err, data) => {
+      if (err) {
+        res.json(err);
+      } else {
+        res.json(data);
+      }
+    });
+  });
+});
+
 // req json needs email, sub
 // req cookie needs admin group
 router.post("/activate", (req, res) => {

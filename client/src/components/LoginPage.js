@@ -86,6 +86,7 @@ class LoginPage extends React.Component {
               sessionStorage.setItem("custom:zipcode", result.idToken.payload["custom:zipcode"]);
               propmanaaftersign();
             } else if (userType == "Admin") {
+              sessionStorage.setItem("accessToken", JSON.stringify(result.accessToken));
               adminaftersign();
             }
           });

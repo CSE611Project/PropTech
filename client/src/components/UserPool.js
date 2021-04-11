@@ -6,4 +6,4 @@ const poolData = {
 };
 const userPool = new cognito.CognitoUserPool(poolData);
 const region = "us-east-2";
-export { cognito, userPool, region };
+export { cognito, userPool, region, poolData };

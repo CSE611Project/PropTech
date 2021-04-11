@@ -1,6 +1,6 @@
 import { Component } from "react";
 import axios from "axios";
-import { userPool, cognito, region } from "./UserPool";
+import { userPool, cognito, region, poolData } from "./UserPool";
 import { Table, TableBody, TableCell, TableRow, TextField, Button } from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
