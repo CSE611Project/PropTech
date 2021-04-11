@@ -21,8 +21,7 @@ class AdminManageUsers extends Component {
   getUserList = () => {
     return new Promise((resolve, reject) => {
       axios.get(`/users`).then((response) => {
-        console.log(response.data);
-        this.setState({ user_list: response.data });
+        this.setState({ user_list: response.data.Users });
         resolve();
       });
     });
@@ -32,20 +31,44 @@ class AdminManageUsers extends Component {
     this.getUserList().then(() => {
       this.res = [];
       for (var i = 0; i < this.state.user_list.length; i++) {
+        var attributes = this.state.user_list[i].Attributes.reduce((att, item) => Object.assign(att, { [item.Name]: item.Value }), {});
+        console.log(attributes);
         this.res.push(
           <TableRow key={i} id={i}>
-            <TableCell>{this.state.user_list[i].name}</TableCell>
-            <TableCell>{this.state.user_list[i].email}</TableCell>
-            <TableCell>{this.state.user_list[i].address}</TableCell>
-            <TableCell>{this.state.user_list[i].landlord_phone}</TableCell>
-            <TableCell>{this.state.user_list[i].rubs}</TableCell>
+            <TableCell>{attributes["sub"]}</TableCell>
+            <TableCell>{attributes["email"]}</TableCell>
+            <TableCell>{attributes["custom:company_name"]}</TableCell>
+            <TableCell>{attributes["custom:street_name"]}</TableCell>
+            <TableCell>{attributes["custom:suite_number"]}</TableCell>
+            <TableCell>{attributes["custom:city"]}</TableCell>
+            <TableCell>{attributes["custom:state"]}</TableCell>
+            <TableCell>{attributes["custom:zipcode"]}</TableCell>
           </TableRow>
         );
       }
+      this.forceUpdate();
     });
   };
   render() {
-    return <div></div>;
+    return (
+      <div>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>UserId</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Company Name</TableCell>
+              <TableCell>Street Name</TableCell>
+              <TableCell>Suite Number</TableCell>
+              <TableCell>City</TableCell>
+              <TableCell>State</TableCell>
+              <TableCell>Zipcode</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>{this.res}</TableBody>
+        </Table>
+      </div>
+    );
   }
 }
 
