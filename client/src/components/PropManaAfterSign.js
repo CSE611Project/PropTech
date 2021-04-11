@@ -18,12 +18,17 @@ class PropManaAfterSign extends Component {
     super(props);
     var page;
     if (matchPath(this.props.location.pathname, { path: "/PropMana/:sub/user_info", exact: true, strict: false })) {
+      sessionStorage.setItem("sub", this.props.match.params.sub);
       page = "user_info";
     } else if (matchPath(this.props.location.pathname, { path: "/PropMana/:sub/property", exact: true, strict: false })) {
+      sessionStorage.setItem("sub", this.props.match.params.sub);
       page = "property";
     } else if (matchPath(this.props.location.pathname, { path: "/PropMana/:sub/property/:propertyId", exact: true, strict: false })) {
+      sessionStorage.setItem("property_id", this.props.match.params.propertyId);
+      sessionStorage.setItem("sub", this.props.match.params.sub);
       page = "tenant";
     } else if (matchPath(this.props.location.pathname, { path: "/PropMana/:sub/invoiceHistory", exact: true, strict: false })) {
+      sessionStorage.setItem("sub", this.props.match.params.sub);
       page = "invoice";
     }
     this.state = {

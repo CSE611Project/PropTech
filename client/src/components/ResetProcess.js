@@ -47,7 +47,7 @@ class ResetProcess extends React.Component {
         onSuccess: function (result) {},
         onFailure: function (err) {},
       });
-      this.setState({ dialog_open: true, dialog_text: "success" });
+      this.setState({ dialog_open: true, dialog_text: "Success" });
     } else {
       this.setState({ dialog_open: true, dialog_text: "Passwords do not match" });
     }

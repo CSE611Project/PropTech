@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import "./../App.css";
 import Navigation from "./Navigation.js";
-import AdminAfterSign from "./AdminAfterSign.js";
+import AdminAfterSign from "./Admin/AdminAfterSign.js";
 import PropManaAfterSign from "./PropManaAfterSign.js";
 import ResetPassword from "./ResetPassword.js";
 import axios from "axios";
@@ -128,7 +128,7 @@ class LoginPage extends React.Component {
 }
 
 function adminaftersign() {
-  window.location = "/AdminAfterSign";
+  window.location = `/Admin`;
 }
 
 function propmanaaftersign() {
