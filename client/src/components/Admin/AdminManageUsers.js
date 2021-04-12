@@ -7,6 +7,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import { userPool, cognito, region, poolData } from "./../UserPool";
 import axios from "axios";
+import { Button } from "@material-ui/core";
 const aws = require("aws-sdk");
 
 class AdminManageUsers extends Component {
@@ -29,22 +30,39 @@ class AdminManageUsers extends Component {
 
   generateTableData = () => {
     this.getUserList().then(() => {
-      this.res = [];
+      this.res1 = [];
+      this.res2 = [];
       for (var i = 0; i < this.state.user_list.length; i++) {
         var attributes = this.state.user_list[i].Attributes.reduce((att, item) => Object.assign(att, { [item.Name]: item.Value }), {});
-        console.log(attributes);
-        this.res.push(
-          <TableRow key={i} id={i}>
-            <TableCell>{attributes["sub"]}</TableCell>
-            <TableCell>{attributes["email"]}</TableCell>
-            <TableCell>{attributes["custom:company_name"]}</TableCell>
-            <TableCell>{attributes["custom:street_name"]}</TableCell>
-            <TableCell>{attributes["custom:suite_number"]}</TableCell>
-            <TableCell>{attributes["custom:city"]}</TableCell>
-            <TableCell>{attributes["custom:state"]}</TableCell>
-            <TableCell>{attributes["custom:zipcode"]}</TableCell>
-          </TableRow>
-        );
+        if (attributes["custom:is_activated"] == "True") {
+          this.res2.push(
+            <TableRow key={i} id={i}>
+              <TableCell>{attributes["sub"]}</TableCell>
+              <TableCell>{attributes["email"]}</TableCell>
+              <TableCell>{attributes["custom:company_name"]}</TableCell>
+              <TableCell>{attributes["custom:street_name"]}</TableCell>
+              <TableCell>{attributes["custom:suite_number"]}</TableCell>
+              <TableCell>{attributes["custom:city"]}</TableCell>
+              <TableCell>{attributes["custom:state"]}</TableCell>
+              <TableCell>{attributes["custom:zipcode"]}</TableCell>
+            </TableRow>
+          );
+        } else {
+          this.res1.push(
+            <TableRow key={i} id={i}>
+              <TableCell>{attributes["sub"]}</TableCell>
+              <TableCell>{attributes["email"]}</TableCell>
+              <TableCell>{attributes["custom:company_name"]}</TableCell>
+              <TableCell>{attributes["custom:street_name"]}</TableCell>
+              <TableCell>{attributes["custom:suite_number"]}</TableCell>
+              <TableCell>{attributes["custom:city"]}</TableCell>
+              <TableCell>{attributes["custom:state"]}</TableCell>
+              <TableCell>{attributes["custom:zipcode"]}</TableCell>
+              <AcceptButton generateTableData={this.generateTableData} sub={attributes["sub"]} email={attributes["email"]} />
+              <RejectButton generateTableData={this.generateTableData} sub={attributes["sub"]} email={attributes["email"]} />
+            </TableRow>
+          );
+        }
       }
       this.forceUpdate();
     });
@@ -65,11 +83,59 @@ class AdminManageUsers extends Component {
               <TableCell>Zipcode</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>{this.res}</TableBody>
+          <TableBody>{this.res1}</TableBody>
+          <TableBody>{this.res2}</TableBody>
         </Table>
       </div>
     );
   }
 }
+class RejectButton extends Component {
+  decline_app = (user_id, email) => {
+    axios.delete(`/reject`, { sub: user_id, email: email }).then((response) => {
+      console.log(response.data);
+      this.props.generateTableData();
+    });
+  };
 
+  render() {
+    return (
+      <TableCell>
+        <Button
+          color="primary"
+          onClick={() => {
+            this.decline_app(this.props.sub, this.props.email);
+          }}
+        >
+          Reject Application
+        </Button>
+      </TableCell>
+    );
+  }
+}
+
+class AcceptButton extends Component {
+  accept_app = (user_id, email) => {
+    console.log(user_id);
+    axios.post(`/activate`, { sub: user_id, email: email }).then((response) => {
+      console.log(response.data);
+      this.props.generateTableData();
+    });
+  };
+
+  render() {
+    return (
+      <TableCell>
+        <Button
+          color="primary"
+          onClick={() => {
+            this.accept_app(this.props.sub, this.props.email);
+          }}
+        >
+          Accept Application
+        </Button>
+      </TableCell>
+    );
+  }
+}
 export default AdminManageUsers;

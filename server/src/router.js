@@ -147,9 +147,10 @@ router.post("/activate", (req, res) => {
           if (err2) {
             res.json(err2);
           } else {
-            db.insertUserId(req.body.sub);
-            emailer.sentEmail(req.body.email, `The PropTech Web App Account associated with ${req.body.email} email has been approved`);
-            res.json(data);
+            db.insertUserId(req.body.sub, (results) => {
+              emailer.sentEmail(req.body.email, `The PropTech Web App Account associated with ${req.body.email} email has been approved`);
+              res.json(data);
+            });
           }
         });
       }
