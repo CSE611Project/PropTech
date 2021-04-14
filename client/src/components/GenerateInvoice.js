@@ -78,6 +78,10 @@ class GenerateInvoice extends Component {
       axios.post("/invoice_history", { property_id: this.state.property_id, from_date: this.state.from_date, to_date: this.state.to_date }).then((response) => {
         console.log("invoice history response:",response.data);
         resolve();
+        if(response.data.invoice_list == false || response.data.invoice_list.length === 0){
+          alert("no invoice in selecting time peirod, make sure  generate invoice first using {Generate Invoice} on the side bar");
+          return;
+        }
       });
     });
   }
