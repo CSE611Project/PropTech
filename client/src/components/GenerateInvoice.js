@@ -74,6 +74,15 @@ class GenerateInvoice extends Component {
   uploadInvoiceToDataBase(final_invoice_list){
     return new Promise((resolve, reject) => {
       axios.post("/upload_invoice", {final_invoice_list: final_invoice_list}).then((response) => {
+        console.log("response",response.data);
+        if(response.data.length > 0){
+          alert("this month invoices were generated previously, please checkout invoice history");
+          return;
+        }
+        // if(response.data = []){
+        //   alert("this month invoices were generated previously, please checkout invoice history");
+        //   return;
+        // }
       });
 
 

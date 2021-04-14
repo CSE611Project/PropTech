@@ -627,76 +627,100 @@ router.post("/upload_invoice", (req, res) => {
     console.log("receive by server: ",req.body);
     var final_invoice_list = req.body.final_invoice_list;
     console.log("length: ", final_invoice_list.length);
-    for(var i = 0; i < final_invoice_list.length; i++){
-      var invoice = final_invoice_list[i];
-      var has_submeter = invoice.has_submeter;
-      //for each tenant 
-      for(var j = 0; j < final_invoice_list[i].charge_list.length; j++){
-        //for each sub invoice
-        if(invoice.rubs != 0){
-          console.log("has submeter:", has_submeter);
-          var sub_invoice = final_invoice_list[i].charge_list[j];
-          var invoice_info = {
-            tenant_id: invoice.tenant_id,
-            from_date: invoice.from_date,
-            to_date: invoice.to_date,
-            total_charge: invoice.total_charge,
-            has_submeter: "n",
-            rubs: invoice.rubs,
-            
-            submeter_id: "",
-            prior_read : 0,
-            cur_read : 0,
-            unit_charge: 0,
-            submeter_charge: 0,
-            multiplier: 0,
 
-            meter_amt_due: sub_invoice.meter_amt_due,
-            meter_id: sub_invoice.meter_id,
-
+    //check if the invoice has been generated previously
+    var filter = {
+      tenant_id: req.body.final_invoice_list[0].tenant_id,
+      from_date: req.body.final_invoice_list[0].from_date.split("T")[0],
+      to_date: req.body.final_invoice_list[0].to_date.split("T")[0],
+    }
+    
+    db.selectInvoice(filter, (results) => {
+      console.log("result=",results);
+      if(results.length != 0){
+        console.log("hhhhh");
+        res.json(JSON.parse(JSON.stringify(results)));
+      }else {
+        console.log("add to table");
+        for(var i = 0; i < final_invoice_list.length; i++){
+          var invoice = final_invoice_list[i];
+          var has_submeter = invoice.has_submeter;
+          //for each tenant 
+          
+          for(var j = 0; j < final_invoice_list[i].charge_list.length; j++){
+            //for each sub invoice
+            if(invoice.rubs != 0){
+              console.log("has submeter:", has_submeter);
+              var sub_invoice = final_invoice_list[i].charge_list[j];
+              var invoice_info = {
+                tenant_id: invoice.tenant_id,
+                from_date: invoice.from_date,
+                to_date: invoice.to_date,
+                total_charge: invoice.total_charge,
+                has_submeter: "n",
+                rubs: invoice.rubs,
+                
+                submeter_id: "",
+                prior_read : 0,
+                cur_read : 0,
+                unit_charge: 0,
+                submeter_charge: 0,
+                multiplier: 0,
+    
+                meter_amt_due: sub_invoice.meter_amt_due,
+                meter_id: sub_invoice.meter_id,
+    
+        
+              }
+    
+                  db.insertInvoice(invoice_info, (result2) => {
+                    console.log(result2);
+                  });
+    
+          
+            }
+            else{
+    
+              var sub_invoice = final_invoice_list[i].charge_list[j];
+              var invoice_info = {
+                tenant_id: invoice.tenant_id,
+                from_date: invoice.from_date,
+                to_date: invoice.to_date,
+                total_charge: invoice.total_charge,
+                has_submeter: "y",
+                rubs: invoice.rubs,
+                
+                submeter_id: sub_invoice.submeter_id,
+                prior_read : sub_invoice.prior_read,
+                cur_read : sub_invoice.cur_read,
+                unit_charge: sub_invoice.unit_charge,
+                submeter_charge: sub_invoice.amt_due,
+                multiplier: sub_invoice.multiplier,
+    
+                meter_amt_due: 0,
+                meter_id: 0,
+    
+        
+              }
+              db.insertInvoice(invoice_info, (result3) => {
+                console.log(result3);
+              });
+    
+    
+    
+            }
     
           }
-          db.insertInvoice(invoice_info, (result) => {
-            console.log(result);
-          });
-        }
-        else{
-
-          var sub_invoice = final_invoice_list[i].charge_list[j];
-          var invoice_info = {
-            tenant_id: invoice.tenant_id,
-            from_date: invoice.from_date,
-            to_date: invoice.to_date,
-            total_charge: invoice.total_charge,
-            has_submeter: "y",
-            rubs: invoice.rubs,
-            
-            submeter_id: sub_invoice.submeter_id,
-            prior_read : sub_invoice.prior_read,
-            cur_read : sub_invoice.cur_read,
-            unit_charge: sub_invoice.unit_charge,
-            submeter_charge: sub_invoice.amt_due,
-            multiplier: sub_invoice.multiplier,
-
-            meter_amt_due: 0,
-            meter_id: 0,
-
     
-          }
-          db.insertInvoice(invoice_info, (result) => {
-            console.log(result);
-          });
-
-
-
+    
+    
+    
         }
+
 
       }
+    });
 
-
-
-
-    }
   
   });
 });
