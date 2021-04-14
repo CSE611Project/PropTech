@@ -195,6 +195,19 @@ function selectAllProperties(user_id, callback) {
     }
   });
 }
+function selectProperty(property_id, callback) {
+  let sql = `SELECT * FROM property WHERE property_id = ?`;
+  let inserts = [property_id];
+  connection.query(sql, inserts, function (err, propertyList) {
+    if (err) {
+      console.log(`not able to select property of property_id: ${property_id} from database`);
+      callback(false);
+    } else {
+      console.log(`property_id: ${property_id} property list returned`);
+      callback(propertyList);
+    }
+  });
+}
 
 // insert property info
 // property_info is a JSON with name, address, property_type, total_footage, landlord_phone
@@ -998,6 +1011,7 @@ exports.selectAllProperties = selectAllProperties;
 exports.insertProperty = insertProperty;
 exports.updateProperty = updateProperty;
 exports.deleteProperty = deleteProperty;
+exports.selectProperty = selectProperty;
 
 exports.selectAllMeters = selectAllMeters;
 exports.insertMeter = insertMeter;

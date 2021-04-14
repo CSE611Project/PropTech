@@ -744,6 +744,7 @@ router.post("/invoice_history", (req, res) => {
     db.selectAllTenants(req.body.property_id, (results1) => {
       var tenant_list = JSON.parse(JSON.stringify(results1));
       console.log("tenant_list length: ", tenant_list.length);
+      db.selectProperty(req.body.property_id,(results3) => {
       var list = [];
       for(var i = 0; i < tenant_list.length; i++){
         list.push(Number(tenant_list[i].tenant_id));
@@ -758,12 +759,14 @@ router.post("/invoice_history", (req, res) => {
           var output = {
             tenant_list: JSON.parse(JSON.stringify(results1)),
             invoice_list: JSON.parse(JSON.stringify(results2)),
+            property_info: JSON.parse(JSON.stringify(results3)),
           };
           res.json(output);
           // console.log(results);
   
         });
     });
+  });
   });
 });
 
