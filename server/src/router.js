@@ -638,10 +638,10 @@ router.post("/upload_invoice", (req, res) => {
     db.selectInvoice(filter, (results) => {
       console.log("result=",results);
       if(results.length != 0){
-        console.log("hhhhh");
+        // console.log("hhhhh");
         res.json(JSON.parse(JSON.stringify(results)));
       }else {
-        console.log("add to table");
+        // console.log("add to table");
         for(var i = 0; i < final_invoice_list.length; i++){
           var invoice = final_invoice_list[i];
           var has_submeter = invoice.has_submeter;
@@ -724,4 +724,48 @@ router.post("/upload_invoice", (req, res) => {
   
   });
 });
+
+
+router.post("/invoice_history", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.body.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+    db.selectAllTenants(req.body.property_id, (results1) => {
+      var tenant_list = JSON.parse(JSON.stringify(results1));
+      console.log("tenant_list length: ", tenant_list.length);
+      var list = [];
+      for(var i = 0; i < tenant_list.length; i++){
+        list.push(Number(tenant_list[i].tenant_id));
+      }
+        var filter = {
+          tenant_id: list,
+          from_date: req.body.from_date.split("T")[0],
+          to_date: req.body.to_date.split("T")[0],
+        }; 
+        db.selectInvoice(filter, (results2) => {
+          console.log("invoice length",results2.length);
+          var output = {
+            tenant_list: JSON.parse(JSON.stringify(results1)),
+            invoice_list: JSON.parse(JSON.stringify(results2)),
+          };
+          res.json(output);
+          // console.log(results);
+  
+        });
+    });
+  });
+});
+
+
 module.exports = router;

@@ -47,6 +47,7 @@ class GenerateInvoice extends Component {
     this.onSubmit = this.onSubmit.bind(this);
     this.changeFromDate = this.changeFromDate.bind(this);
     this.changeTodate = this.changeTodate.bind(this);
+    this.invoiceHistory = this.invoiceHistory.bind(this);
   }
 
   handleClickOpen() {
@@ -71,18 +72,26 @@ class GenerateInvoice extends Component {
       open: false,
     });
   }
+
+  invoiceHistory(){
+    return new Promise((resolve, reject) => {
+      axios.post("/invoice_history", { property_id: this.state.property_id, from_date: this.state.from_date, to_date: this.state.to_date }).then((response) => {
+        console.log("invoice history response:",response.data);
+        resolve();
+      });
+    });
+  }
+
+
   uploadInvoiceToDataBase(final_invoice_list){
     return new Promise((resolve, reject) => {
       axios.post("/upload_invoice", {final_invoice_list: final_invoice_list}).then((response) => {
         console.log("response",response.data);
         if(response.data.length > 0){
-          alert("this month invoices were generated previously, please checkout invoice history");
+          alert("This month's invoices were generated previously, please checkout invoice history");
           return;
         }
-        // if(response.data = []){
-        //   alert("this month invoices were generated previously, please checkout invoice history");
-        //   return;
-        // }
+
       });
 
 
@@ -111,6 +120,15 @@ class GenerateInvoice extends Component {
       var all_tenant_list = response.data.all_tenant_list;
       var submeter_tenant_list = response.data.meter_submeter_list;
       var aft_meter_bill_list = meter_bill_list;
+
+      if(meter_tenant_list.length != meter_bill_list.length){
+        alert("please input all meter bills for this time period, you can check from {Manage Utility Bill}");
+        return;
+      }
+      else if(submeter_bill_list.length != submeter_tenant_list.length){
+        alert("please input all submeter bills for this time period, you can check from {Manage Utility Bill}");
+        return;
+      }
       for(var i = 0; i < aft_meter_bill_list.length; i++){
         
         //for each meter bill, subtract submeter bill from it 
@@ -247,6 +265,9 @@ class GenerateInvoice extends Component {
                     </Button>
                     <Button onClick={this.handleClose} color="primary">
                       Cancel
+                    </Button>
+                    <Button onClick={this.invoiceHistory} color="primary">
+                      test invoice history
                     </Button>
                   </TableCell>
                 </TableRow>

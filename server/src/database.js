@@ -798,12 +798,17 @@ function selectInvoice(filter, callback) {
   let keys = Object.keys(filter);
   keys.forEach(function (key, index) {
     if (index + 1 == keys.length) {
+
       sql += `${key} = "${filter[key]}"`;
     } else {
+      if(key == "tenant_id"){
+        sql += `${key} in (${filter[key]}) AND `;
+      }else {
       sql += `${key} = "${filter[key]}" AND `;
+      }
     }
   });
-  console.log("sql:",sql);
+  console.log("new sql:",sql);
   connection.query(sql, function (err, invoiceList) {
     if (err) {
       console.log(`not able to select billList of ${filter} from database`);
