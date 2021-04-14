@@ -706,8 +706,16 @@ function insertInvoice(invoice_info, callback) {
   let unit_charge = invoice_info.unit_charge;
   let total_charge = invoice_info.total_charge;
 
-  let sql = `INSERT INTO invoice(tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, total_charge) VALUES(?,?,?,?,?,?,?,?,?,?)`;
-  let inserts = [tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, total_charge];
+  let submeter_charge = invoice_info.submeter_charge;
+  let multiplier = invoice_info.multiplier;
+  let meter_amt_due = invoice_info.meter_amt_due;
+  let meter_id = invoice_info.meter_id;
+
+  let sql = `INSERT INTO invoice(tenant_id, from_date, to_date, prior_read, cur_read, rubs, 
+    has_submeter, submeter_id, unit_charge, total_charge, submeter_charge, multiplier, meter_amt_due, meter_id) 
+    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+  let inserts = [tenant_id, from_date, to_date, prior_read, cur_read, rubs, 
+    has_submeter, submeter_id, unit_charge, total_charge, submeter_charge, multiplier, meter_amt_due, meter_id];
 
   connection.query(sql, inserts, function (err, result) {
     if (err) {

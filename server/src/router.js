@@ -6,6 +6,7 @@ const express = require("express");
 const router = express.Router();
 const aws = require("aws-sdk");
 const verifier = require("cognito-express");
+const { CognitoIdentityServiceProvider } = require("aws-sdk");
 const cognito = new aws.CognitoIdentityServiceProvider({
   region: config.aws_region,
 });
@@ -204,6 +205,7 @@ router.get("/property/:sub?", (req, res) => {
     db.selectAllProperties(sub, (results) => {
       res.json(JSON.parse(JSON.stringify(results)));
     });
+    console.log(res.body);
   });
 });
 
@@ -604,6 +606,98 @@ router.get("/meterbill_list/:meter_id?", (req, res) => {
       console.log(result);
       res.json(result);
     });
+  });
+});
+
+router.post("/upload_invoice", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.body.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+    console.log("receive by server: ",req.body);
+    var final_invoice_list = req.body.final_invoice_list;
+    console.log("length: ", final_invoice_list.length);
+    for(var i = 0; i < final_invoice_list.length; i++){
+      var invoice = final_invoice_list[i];
+      var has_submeter = invoice.has_submeter;
+      //for each tenant 
+      for(var j = 0; j < final_invoice_list[i].charge_list.length; j++){
+        //for each sub invoice
+        if(invoice.rubs != 0){
+          console.log("has submeter:", has_submeter);
+          var sub_invoice = final_invoice_list[i].charge_list[j];
+          var invoice_info = {
+            tenant_id: invoice.tenant_id,
+            from_date: invoice.from_date,
+            to_date: invoice.to_date,
+            total_charge: invoice.total_charge,
+            has_submeter: "n",
+            rubs: invoice.rubs,
+            
+            submeter_id: "",
+            prior_read : 0,
+            cur_read : 0,
+            unit_charge: 0,
+            submeter_charge: 0,
+            multiplier: 0,
+
+            meter_amt_due: sub_invoice.meter_amt_due,
+            meter_id: sub_invoice.meter_id,
+
+    
+          }
+          db.insertInvoice(invoice_info, (result) => {
+            console.log(result);
+          });
+        }
+        else{
+
+          var sub_invoice = final_invoice_list[i].charge_list[j];
+          var invoice_info = {
+            tenant_id: invoice.tenant_id,
+            from_date: invoice.from_date,
+            to_date: invoice.to_date,
+            total_charge: invoice.total_charge,
+            has_submeter: "y",
+            rubs: invoice.rubs,
+            
+            submeter_id: sub_invoice.submeter_id,
+            prior_read : sub_invoice.prior_read,
+            cur_read : sub_invoice.cur_read,
+            unit_charge: sub_invoice.unit_charge,
+            submeter_charge: sub_invoice.amt_due,
+            multiplier: sub_invoice.multiplier,
+
+            meter_amt_due: 0,
+            meter_id: 0,
+
+    
+          }
+          db.insertInvoice(invoice_info, (result) => {
+            console.log(result);
+          });
+
+
+
+        }
+
+      }
+
+
+
+
+    }
+  
   });
 });
 module.exports = router;

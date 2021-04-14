@@ -118,20 +118,24 @@ class GenerateInvoice extends Component {
           console.log(current_tenant.tenant_id, "is rubs");
           var tt = get_all_meterbills_for_tenant(current_tenant.tenant_id, meter_tenant_list, meter_bill_list);
           var sum = 0;
+          var charge_list = [];
           for(var j = 1; j < tt.length; j++){
             sum += Number(current_tenant.rubs)*tt[j].total_charge;
+            charge_list.push({
+                "meter_id" : tt[j].meter_id,
+                "meter_amt_due": tt[j].total_charge*current_tenant.rubs,
+
+            });
           }
           console.log("the rubs tenant bill list is here: ", tt);
+          var email = get_tenant_emailby_tenant_id(current_tenant.tenant_id, all_tenant_list);
           var rubs_invoice = {
-            tenant_name: current_tenant.name,
+            charge_list: charge_list,
+            rubs: current_tenant.rubs,
             tenant_id: current_tenant.tenant_id,
             from_date: meter_bill_list[0].from_date,
             to_date: meter_bill_list[0].to_date,
-            prior_read: "",
-            cur_read: "",
             has_submeter: 0,
-            submeter_id: "",
-            unit_charge: 0,
             total_charge: sum,
           }
 
@@ -150,7 +154,7 @@ class GenerateInvoice extends Component {
             sum += Number(tt[j].amt_due);
             var multiplier = get_multiperby_submeter_id(tt[j].submeter_id, submeter_tenant_list);
             charge_list.push({
-              "submeter_id: ": tt[j].submeter_id,
+              "submeter_id": tt[j].submeter_id,
               "unit_charge": tt[j].unit_charge,
               "prior_read": tt[j].prior_read,
               "cur_read": tt[j].cur_read,
@@ -160,15 +164,15 @@ class GenerateInvoice extends Component {
             });
           }
           console.log("sum: ", sum);
+          var email = get_tenant_emailby_tenant_id(current_tenant.tenant_id, all_tenant_list);
           var sub_invoice = {
             charge_list: charge_list,
-            tenant_name: current_tenant.name,
             tenant_id: current_tenant.tenant_id,
             from_date: meter_bill_list[0].from_date,
             to_date: meter_bill_list[0].to_date,
-            rubs: 0,
             has_submeter: 1,
             total_charge: sum,
+            rubs: current_tenant.rubs
           }
 
           new_bill_list.push(sub_invoice);
@@ -179,13 +183,29 @@ class GenerateInvoice extends Component {
       this.setState({
         final_invoice_list: new_bill_list
 
-      })
+      });
+      this.uploadInvoiceToDataBase(new_bill_list);
     });
   });
   }
+
+  uploadInvoiceToDataBase(final_invoice_list){
+    return new Promise((resolve, reject) => {
+      axios.post("/upload_invoice", { final_invoice_list: final_invoice_list}).then((response) => {
+
+          resolve();
+
+      });
+
+
+    });
+  }
+
   onSubmit(event) {
     //* not sure about what kind of information should be transmitted.
     this.invoice_generator();
+    // this.forceUpdate();
+    // this.uploadInvoiceToDataBase();
   }
 
   render() {
@@ -282,6 +302,14 @@ function get_multiperby_submeter_id(submeter_id, meter_tenant_list){
 
   }
   return 0;
+}
+function get_tenant_emailby_tenant_id(tenant_id, all_tenant_list){
+  for(var i = 0; i < all_tenant_list.length; i++){
+    if(Number(tenant_id) == Number(all_tenant_list[i].tenant_id)){
+      return all_tenant_list[i].email;
+    }
+  }
+  return null;
 }
 export default GenerateInvoice;
 
