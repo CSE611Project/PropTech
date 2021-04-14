@@ -36,6 +36,8 @@ class GenerateInvoice extends Component {
       begin: "",
       end: "",
       open: false,
+      from_date: "",
+      to_date: "",
       meter_bill_list:[],
       submeter_bill_list:[],
       final_invoice_list: [],
@@ -69,11 +71,20 @@ class GenerateInvoice extends Component {
       open: false,
     });
   }
+  uploadInvoiceToDataBase(final_invoice_list){
+    return new Promise((resolve, reject) => {
+      axios.post("/upload_invoice", {final_invoice_list: final_invoice_list}).then((response) => {
+      });
+
+
+    });
+  }
   invoice_generator() {
     return new Promise((resolve, reject) => {
     axios.post("/meterbill_list", { property_id: this.state.property_id, from_date: this.state.from_date, to_date: this.state.to_date }).then((response) => {
       console.log("response body:", response.data);
       console.log("rr:" ,response.data.meter_bill_list);
+      resolve();
       // meter_submeter_list: JSON.parse(JSON.stringify(result)),
       // meter_bill_list: JSON.parse(JSON.stringify(result2)),
       // submeter_bill_list: JSON.parse(JSON.stringify(result3)),
@@ -84,7 +95,6 @@ class GenerateInvoice extends Component {
         submeter_bill_list : response.data.submeter_bill_list,
 
       });
-      resolve();
       //step1, preprocess meter bill and submeter bill;
       var meter_bill_list = response.data.meter_bill_list;
       var submeter_bill_list = response.data.submeter_bill_list;
@@ -180,32 +190,24 @@ class GenerateInvoice extends Component {
 
       }
       console.log("final invoice list:", new_bill_list);
-      this.setState({
-        final_invoice_list: new_bill_list
-
-      });
       this.uploadInvoiceToDataBase(new_bill_list);
     });
   });
   }
 
-  uploadInvoiceToDataBase(final_invoice_list){
-    return new Promise((resolve, reject) => {
-      axios.post("/upload_invoice", { final_invoice_list: final_invoice_list}).then((response) => {
-
-          resolve();
-
-      });
-
-
-    });
-  }
 
   onSubmit(event) {
     //* not sure about what kind of information should be transmitted.
+    event.preventDefault();
+    this.setState({
+      open: false,
+    });
+    if(this.state.from_date == '' || this.state.to_date == ''){
+      alert("please select a time period");
+    }else{
     this.invoice_generator();
-    // this.forceUpdate();
-    // this.uploadInvoiceToDataBase();
+
+    }
   }
 
   render() {
@@ -218,7 +220,9 @@ class GenerateInvoice extends Component {
           <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
             <DialogTitle id="form-dialog-title">
 
-            (please generate invoice after inputting all bills and submeter bills, current function only support 1 month invoice generate)
+            (please generate invoice after inputting all bills and submeter bills,
+            please only generate invoice once per month,
+            current function only support 1 month invoice generate)
             </DialogTitle>
             <Table>
               <TableHead>
@@ -232,9 +236,6 @@ class GenerateInvoice extends Component {
                     <Button onClick={this.onSubmit} color="primary">
                       Generate
                     </Button>
-                  </TableCell>
-
-                  <TableCell>
                     <Button onClick={this.handleClose} color="primary">
                       Cancel
                     </Button>
