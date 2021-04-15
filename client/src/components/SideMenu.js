@@ -9,7 +9,7 @@ import { config } from "aws-sdk";
 class SideMenu extends Component {
   constructor(props) {
     super(props);
-    this.state = { display_more_options: this.props.display_more_options, property_id: this.props.property_id };
+    this.state = { display_more_options: this.props.display_more_options, is_admin: this.props.is_admin, property_id: this.props.property_id };
   }
 
   render() {
@@ -17,64 +17,86 @@ class SideMenu extends Component {
       <div className="sidenav">
         <header>
           <ul>
-            <a href="#" onClick={manage_property}>
+            <a href="#" onClick={this.manage_property}>
               Manage Property Info
             </a>
-            <a href="#" onClick={edit_profile}>
-              Edit Profile Info
-            </a>
+            {this.state.is_admin ? null : (
+              <a href="#" onClick={this.edit_profile}>
+                Edit Profile Info
+              </a>
+            )}
             {this.state.display_more_options ? (
               <div>
-                <a href="#" onClick={manage_utility}>
+                <a href="#" onClick={this.manage_utility}>
                   Manage Utility Bill
                 </a>
-                <a href="#" onClick={manage_invoice}>
+                <a href="#" onClick={this.manage_invoice}>
                   Manage Invoice History
                 </a>
                 <GenerateInvoice property_id={this.state.property_id} />
               </div>
             ) : null}
-            <a href="#" onClick={log_out}>
+            <a href="#" onClick={this.log_out}>
               Log Out
             </a>
+            {this.state.is_admin ? (
+              <a href="#" onClick={this.manage_users}>
+                Manage Users
+              </a>
+            ) : null}
           </ul>
         </header>
       </div>
     );
   }
-}
 
-function manage_property() {
-  window.location = `/PropMana/${sessionStorage.getItem("sub")}/property`;
-}
+  manage_property = () => {
+    if (this.state.is_admin == true) {
+      window.location = `/Admin/PropMana/${sessionStorage.getItem("sub")}/property`;
+    } else {
+      window.location = `/PropMana/${sessionStorage.getItem("sub")}/property`;
+    }
+  };
 
-function edit_profile() {
-  window.location = `/PropMana/${sessionStorage.getItem("sub")}/user_info`;
-}
+  edit_profile = () => {
+    if (this.state.is_admin == true) {
+      window.location = `/Admin/PropMana/${sessionStorage.getItem("sub")}/user_info`;
+    } else {
+      window.location = `/PropMana/${sessionStorage.getItem("sub")}/user_info`;
+    }
+  };
 
-function manage_utility() {
-  const ele = <div></div>;
-  return ReactDOM.render(ele, document.getElementById("root"));
-}
+  manage_utility = () => {
+    //
+  };
 
-function manage_invoice() {
-  window.location = `/PropMana/${sessionStorage.getItem("sub")}/invoiceHistory`;
-}
+  manage_invoice = () => {
+    if (this.state.is_admin == true) {
+      window.location = `/Admin/PropMana/${sessionStorage.getItem("sub")}/invoiceHistory`;
+    } else {
+      window.location = `/PropMana/${sessionStorage.getItem("sub")}/invoiceHistory`;
+    }
+  };
 
-function log_out() {
-  sessionStorage.removeItem("sub");
-  sessionStorage.removeItem("username");
-  sessionStorage.removeItem("property_id");
-  sessionStorage.removeItem("property_name");
-  sessionStorage.removeItem("custom:state");
-  sessionStorage.removeItem("custom:company_name");
-  sessionStorage.removeItem("custom:city");
-  sessionStorage.removeItem("custom:zipcode");
-  sessionStorage.removeItem("custom:street_name");
-  sessionStorage.removeItem("custom:suite_number");
-  sessionStorage.removeItem("accessToken");
-  axios.post("/logout", {}, { withCredentials: true, credentials: "include" }).then((response) => {
-    window.location = "/";
-  });
+  manage_users = () => {
+    window.location = "/Admin/propertyManagers";
+  };
+
+  log_out = () => {
+    sessionStorage.removeItem("sub");
+    sessionStorage.removeItem("username");
+    sessionStorage.removeItem("property_id");
+    sessionStorage.removeItem("property_name");
+    sessionStorage.removeItem("custom:state");
+    sessionStorage.removeItem("custom:company_name");
+    sessionStorage.removeItem("custom:city");
+    sessionStorage.removeItem("custom:zipcode");
+    sessionStorage.removeItem("custom:street_name");
+    sessionStorage.removeItem("custom:suite_number");
+    sessionStorage.removeItem("accessToken");
+    axios.post("/logout", {}, { withCredentials: true, credentials: "include" }).then((response) => {
+      window.location = "/";
+    });
+  };
 }
 export default SideMenu;

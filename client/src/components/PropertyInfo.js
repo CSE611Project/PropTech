@@ -24,7 +24,7 @@ class PropertyInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      display: this.props.display,
+      is_admin: this.props.is_admin,
       property_list: [],
     };
     this.generateTableData();
@@ -32,7 +32,7 @@ class PropertyInfo extends Component {
 
   getPropertyList() {
     return new Promise((resolve, reject) => {
-      axios.get(`/property`).then((response) => {
+      axios.get(`/property/${sessionStorage.getItem("sub")}`).then((response) => {
         this.setState({ property_list: response.data });
         resolve();
       });
@@ -114,7 +114,11 @@ function manage_tenants(info) {
   sessionStorage.setItem("property_name", infos.property_name);
   sessionStorage.setItem("property_id", infos.property_id);
   sessionStorage.setItem("total_footage", infos.total_footage);
-  window.location = `/PropMana/${sessionStorage.getItem("sub")}/property/${infos.property_id}`;
+  if (this.state.is_admin == true) {
+    window.location = `/Admin/PropMana/${sessionStorage.getItem("sub")}/property/${infos.property_id}`;
+  } else {
+    window.location = `/PropMana/${sessionStorage.getItem("sub")}/property/${infos.property_id}`;
+  }
 }
 
 export default PropertyInfo;

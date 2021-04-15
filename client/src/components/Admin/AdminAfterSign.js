@@ -10,7 +10,7 @@ import AdminSideMenu from "./AdminSideMenu";
 
 import TableCell from "@material-ui/core/TableCell";
 
-class PropManaAfterSign extends Component {
+class AdminAfterSign extends Component {
   constructor(props) {
     super(props);
     var page;
@@ -43,7 +43,7 @@ class PropManaAfterSign extends Component {
         </Typography>
         <DialogContent />
         <div className="Info_Page_Split">
-          <AdminSideMenu page={this} display_more_options={this.state.menu_display_more_options} property_id={this.state.property_id} />
+          <AdminSideMenu page={this} property_id={this.state.property_id} />
           <div className="display">{this.state.page}</div>
         </div>
       </div>
@@ -51,4 +51,4 @@ class PropManaAfterSign extends Component {
   }
 }
 
-export default PropManaAfterSign;
+export default AdminAfterSign;

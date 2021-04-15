@@ -35,6 +35,11 @@ function App() {
           <Route exact path="/PropMana/:sub/property/:propertyId" component={PropManaAfterSign} />
           <Route exact path="/PropMana/:sub/invoiceHistory" component={PropManaAfterSign} />
           <Route exact path="/PropMana/:sub/user_info" component={PropManaAfterSign} />
+          <Route exact path="/Admin/PropMana/:sub" component={PropManaAfterSign} />
+          <Route exact path="/Admin/PropMana/:sub/property" component={PropManaAfterSign} />
+          <Route exact path="/Admin/PropMana/:sub/property/:propertyId" component={PropManaAfterSign} />
+          <Route exact path="/Admin/PropMana/:sub/invoiceHistory" component={PropManaAfterSign} />
+          <Route exact path="/Admin/PropMana/:sub/user_info" component={PropManaAfterSign} />
           <Route exact path="/RegProcess" component={RegProcess} />
           <Route exact path="/ResetPassword" component={ResetPassword} />
           <Route exact path="/ResetProcess" component={ResetProcess} />

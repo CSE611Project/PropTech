@@ -45,6 +45,7 @@ class AdminManageUsers extends Component {
               <TableCell>{attributes["custom:city"]}</TableCell>
               <TableCell>{attributes["custom:state"]}</TableCell>
               <TableCell>{attributes["custom:zipcode"]}</TableCell>
+              <ViewPropManager sub={attributes["sub"]} />
             </TableRow>
           );
         } else {
@@ -93,7 +94,6 @@ class AdminManageUsers extends Component {
 class RejectButton extends Component {
   decline_app = (user_id, email) => {
     axios.delete(`/reject`, { sub: user_id, email: email }).then((response) => {
-      console.log(response.data);
       this.props.generateTableData();
     });
   };
@@ -116,9 +116,7 @@ class RejectButton extends Component {
 
 class AcceptButton extends Component {
   accept_app = (user_id, email) => {
-    console.log(user_id);
     axios.post(`/activate`, { sub: user_id, email: email }).then((response) => {
-      console.log(response.data);
       this.props.generateTableData();
     });
   };
@@ -133,6 +131,27 @@ class AcceptButton extends Component {
           }}
         >
           Accept Application
+        </Button>
+      </TableCell>
+    );
+  }
+}
+
+class ViewPropManager extends Component {
+  viewManager = (sub) => {
+    window.location = `/Admin/PropMana/${sub}`;
+  };
+
+  render() {
+    return (
+      <TableCell>
+        <Button
+          color="primary"
+          onClick={() => {
+            this.viewManager(this.props.sub);
+          }}
+        >
+          View User
         </Button>
       </TableCell>
     );
