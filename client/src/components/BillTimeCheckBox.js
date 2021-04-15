@@ -24,15 +24,7 @@ class BillTimeCheckBox extends React.Component {
       submeter_id: "",
       bill_id: "",
       unit_charge: "",
-      bill_list: 
-      [
-        {
-            from_date: "2021-05-04",
-            to_date: "2021-06-06",
-            bill_id: "7",
-            unit_charge: "0.2"
-        },
-      ],
+      bill_list: [],
       meter_id: this.props.meter_id,
       onlyOption: true,
     };
@@ -42,36 +34,31 @@ class BillTimeCheckBox extends React.Component {
   }
 
   getBillList() {
-      //use meter_id to find all meter bills
-      console.log(this.state.meter_id);
+    //use meter_id to find all meter bills
+    console.log(this.state.meter_id);
     return new Promise((resolve, reject) => {
-       axios.get(`/meterbill_list/${this.state.meter_id}`).then((response) => {
-         console.log("response from database: ",response.data);
-         this.setState({ bill_list: response.data }, () => {
-           console.log("bill list",this.state.bill_list);
+      axios.get(`/meterbill_list/${this.state.meter_id}`).then((response) => {
+        console.log("response from database: ", response.data);
+        this.setState({ bill_list: response.data }, () => {
+          console.log("bill list", this.state.bill_list);
           resolve();
         });
-       });
+      });
       //  console.log("bill list:", this.state.bill_list);
     });
-
-
-    
   }
 
-  set_timeperiod(bill_id){
-    for(var i = 0; i < this.state.bill_list.length; i++){
-
-        if(this.state.bill_list[i].bill_id == bill_id){
-            console.log("the match bill_id: ",bill_id)
-            this.setState({
-                unit_charge: this.state.bill_list[i].unit_charge,
-                from_date: this.state.bill_list[i].from_date,
-                to_date: this.state.bill_list[i].to_date,
-            });
-        }
+  set_timeperiod(bill_id) {
+    for (var i = 0; i < this.state.bill_list.length; i++) {
+      if (this.state.bill_list[i].bill_id == bill_id) {
+        console.log("the match bill_id: ", bill_id);
+        this.setState({
+          unit_charge: this.state.bill_list[i].unit_charge,
+          from_date: this.state.bill_list[i].from_date,
+          to_date: this.state.bill_list[i].to_date,
+        });
+      }
     }
-
   }
 
   componentDidMount() {
@@ -82,19 +69,15 @@ class BillTimeCheckBox extends React.Component {
     {
       /* this part should also return the chosen bill id */
     }
-    console.log("checkbox bill_id: ",event.target.value);
-    this.set_timeperiod(event.target.value)
+    console.log("checkbox bill_id: ", event.target.value);
+    this.set_timeperiod(event.target.value);
     this.setState({ bill_id: event.target.value }, function () {
       this.props.changeBillId(this.state.bill_id);
       this.props.changeFromDate(this.state.from_date);
       this.props.changeTodate(this.state.to_date);
       this.props.changeUnitCharge(this.state.unit_charge);
-      
     });
-
-
   }
-
 
   generateTable() {
     var res = [];
@@ -102,19 +85,21 @@ class BillTimeCheckBox extends React.Component {
     this.getBillList().then(() => {
       var tableData = this.state.bill_list;
       console.log(tableData.length);
-        for (var i = 0; i < tableData.length; i++) {
-            console.log("from date",tableData[i].from_date)
-          res.push(<FormControlLabel
-                                        key={String(tableData[i].bill_id)}
-                                        // name={Number(tableData[i].bill_id)}
-                                        value={String(tableData[i].bill_id)}
-                                        
-                                        control={<Radio />} 
-                                        label={String(tableData[i].from_date +" to "+ tableData[i].to_date)} />);
-        }
-        this.res = res;
-        console.log(this.res);
-        this.forceUpdate();
+      for (var i = 0; i < tableData.length; i++) {
+        console.log("from date", tableData[i].from_date);
+        res.push(
+          <FormControlLabel
+            key={String(tableData[i].bill_id)}
+            // name={Number(tableData[i].bill_id)}
+            value={String(tableData[i].bill_id)}
+            control={<Radio />}
+            label={String(tableData[i].from_date + " to " + tableData[i].to_date)}
+          />
+        );
+      }
+      this.res = res;
+      console.log(this.res);
+      this.forceUpdate();
     });
   }
 
@@ -131,12 +116,10 @@ class BillTimeCheckBox extends React.Component {
             </FormControl>
           </div>
         ) : (
-          <div>
-            {/* <FormControl>
+          <div>{/* <FormControl>
               <FormLabel>Which meter number is associated with this tenant?</FormLabel>
               {this.res}
-            </FormControl> */}
-          </div>
+            </FormControl> */}</div>
         )}
       </div>
     );

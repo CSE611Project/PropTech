@@ -8,6 +8,8 @@ import HomePage from "./HomePage.js";
 import TenantInfo from "./TenantInfo.js";
 import PropertyInfo from "./PropertyInfo.js";
 import SideMenu from "./SideMenu.js";
+import InvoiceHistory from "./InvoiceHistory.js"
+import axios from "axios";
 
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -33,6 +35,8 @@ import FormControl from "@material-ui/core/FormControl";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { DialogContent } from "@material-ui/core";
+import UserProfile from "./UserProfile";
+import UtilityBillingHistory from "./UtilityBillingHistory";
 
 class PropManaAfterSign extends Component {
   constructor(props) {
@@ -42,6 +46,10 @@ class PropManaAfterSign extends Component {
       page = "property";
     } else if (matchPath(this.props.location.pathname, { path: "/PropMana/:sub/property/:propertyId", exact: true, strict: false })) {
       page = "tenant";
+    } else if (matchPath(this.props.location.pathname, { path: "/PropMana/:sub/property/:propertyId/invoice_history", exact: true, strict: false })) {
+      page = "invoicehistory";
+    } else if (matchPath(this.props.location.pathname, { path: "/PropMana/:sub/property/:propertyId/utility_bill", exact: true, strict: false })) {
+      page = "utilitybill";
     }
     this.state = {
       sub: this.props.match.params.sub,
@@ -51,6 +59,10 @@ class PropManaAfterSign extends Component {
             return <PropertyInfo display={this} />;
           case "tenant":
             return <TenantInfo display={this} />;
+          case "invoicehistory":
+            return <InvoiceHistory display={this} property_id={sessionStorage.getItem("property_id")} tenant_list={this.tenant_list} />;
+          case "utilitybill":
+            return <UtilityBillingHistory display={this} property_id={sessionStorage.getItem("property_id")} tenant_list={this.tenant_list} />;
         }
       })(),
       page_name: (() => {
@@ -68,10 +80,27 @@ class PropManaAfterSign extends Component {
             return false;
           case "tenant":
             return true;
+          case "invoicehistory":
+            return true;
+          case "utilitybill":
+            return true;
         }
       })(),
-      property_id: sessionStorage.getItem("property_id"),
     };
+
+    this.getTenantList = this.getTenantList.bind(this);
+
+  }
+
+  getTenantList() {
+    let tenant_list = [];
+    return new Promise((resolve, reject) => {
+      axios.get(`/tenant/${this.state.property_id}`).then((response) => {
+        tenant_list = response.data;
+        resolve();
+      });
+      this.tenant_list = tenant_list;
+    });
   }
 
   render() {
@@ -82,7 +111,7 @@ class PropManaAfterSign extends Component {
         </Typography>
         <DialogContent />
         <div className="Info_Page_Split">
-          <SideMenu page={this} display_more_options={this.state.menu_display_more_options} property_id={this.state.property_id} />
+          <SideMenu page={this} display_more_options={this.state.menu_display_more_options} />
           <div className="display">{this.state.page}</div>
         </div>
       </div>

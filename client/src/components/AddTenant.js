@@ -63,10 +63,11 @@ class AddTenant extends React.Component {
     this.changeRUBS = this.changeRUBS.bind(this);
     this.changeTenantFt = this.changeTenantFt.bind(this);
     this.calculate = this.calculate.bind(this);
+    this.changeMeter_List = this.changeMeter_List.bind(this);
   }
 
   addTenant(tenant_info) {
-    axios.post("/tenant", { property_id: this.state.property_id, tenant_info: tenant_info }).then((response) => {
+    axios.post("/tenant", { property_id: this.state.property_id, tenant_info: tenant_info, meter_list: this.state.meter_list }).then((response) => {
       this.props.info.generateTableData();
     });
   }
@@ -87,7 +88,11 @@ class AddTenant extends React.Component {
       name: event.target.value,
     });
   }
-
+  changeMeter_List(meter_list){
+    this.setState({
+      meter_list : meter_list,
+    });
+  }
   changeEmail(event) {
     this.setState({
       email: event.target.value,
@@ -127,19 +132,31 @@ class AddTenant extends React.Component {
       landlord_phone: this.state.landlord_phone,
       rubs: this.state.rubs,
     };
+    console.log("meter_ lsitssss: ", tenant_info);
     console.log("add tenant rubs:", this.state.rubs);
+    var property_id = this.state.property_id;
     this.addTenant(tenant_info);
+    this.setState({
+
+      meter_list : [],
+
+    });
+    // this.forceUpdate();
   }
 
-  getAssociatedMeter(key, value) {
-    this.setState({});
+  getAssociatedMeter(meter_list) {
+    this.setState(prevState => ({
+      meter_list: [meter_list, ...prevState.meter_list]
+    }))
   }
+
 
   changeRUBS(event) {
     event.preventDefault();
     this.setState({
       rubs: event.target.value,
     });
+
   }
 
   changeTenantFt(event) {
@@ -153,11 +170,13 @@ class AddTenant extends React.Component {
     {
       var totalBuildingFt = this.state.total_footage;
       var tenantft = this.state.tenantFt;
+      console.log(this.state.total_footage);
+      console.log(this.state.tenantFt);
       if (tenantft != "") {
         var rubs = tenantft / totalBuildingFt;
         this.setState({
           rubs: rubs,
-        });
+        })
       }
       /* should specify a way to calculate rubs based on tenantFt and then save into rubs variable*/
       console.log(tenantft / totalBuildingFt);
@@ -182,6 +201,9 @@ class AddTenant extends React.Component {
   }
 
   render() {
+    {
+      console.log("add tenant:", this.state.total_footage);
+    }
     const isYes = this.state.yes;
     const isNo = this.state.no;
     return (
@@ -201,12 +223,14 @@ class AddTenant extends React.Component {
                             After import meter_list, assign meter_list to the MeterCheckBox variable
                         */}
             <MeterCheckBox property_id={this.state.property_id} onlyOption={false} methodfromparent={this.getAssociatedMeter} />
-            <TextField autoFocus margin="dense" id="multiplier" label="Is there a multiplier?" type="text" onChange={this.changeMultiplier} fullWidth />
-            <WhatIsMultiplier />
+            {/* <TextField autoFocus margin="dense" id="multiplier" label="Is there a multiplier?" type="text" onChange={this.changeMultiplier} fullWidth />
+            <WhatIsMultiplier /> */}
+            <DialogContent></DialogContent>
+            <DialogContent></DialogContent>
             <FormControl>
               <FormLabel>
                 Is there a RUBS?
-                <WhatIsProRataShare />
+            <WhatIsProRataShare />
               </FormLabel>
               <FormGroup row>
                 <FormControlLabel control={<Checkbox checked={this.state.yes} onChange={this.onChangeYes} name="yes" color="primary" />} label="yes" />
@@ -225,7 +249,7 @@ class AddTenant extends React.Component {
                     <TextField autoFocus margin="dense" id="tenantFt" label="Enter tenant square footage" type="text" onChange={this.changeTenantFt} fullWidth />
                     <Button onClick={this.calculate} color="primary">
                       Calculate
-                    </Button>
+                </Button>
                   </div>
                 ) : null}
               </div>
