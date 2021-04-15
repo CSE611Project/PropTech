@@ -222,6 +222,7 @@ class GenerateInvoice extends Component {
       }
       console.log("final invoice list:", new_bill_list);
       this.uploadInvoiceToDataBase(new_bill_list);
+      alert("Done ! ! !  now you can check invoice in {Manage Invoice History}");
     });
   });
   }

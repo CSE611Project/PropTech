@@ -132,8 +132,22 @@ class AddTenant extends React.Component {
       landlord_phone: this.state.landlord_phone,
       rubs: this.state.rubs,
     };
-    console.log("meter_ lsitssss: ", tenant_info);
-    console.log("add tenant rubs:", this.state.rubs);
+    if(this.state.name == ""){
+      alert("please enter tenant name");
+      return;
+    }
+    if(this.state.rubs = ""){
+      alert("please enter rubs");
+      return;
+    }
+    if(this.state.email = ""){
+      alert("please enter tenant email");
+      return;
+    }
+    if(this.state.meter_list = []){
+      alert("u need to assign at least 1 meter to new tenant !");
+      return;
+    }
     var property_id = this.state.property_id;
     this.addTenant(tenant_info);
     this.setState({
