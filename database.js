@@ -160,6 +160,28 @@ function deleteTenant(property_id, tenant_id, callback) {
   });
 }
 
+function selectTenant(filter, callback){
+  let sql = `SELECT * FROM tenant WHERE `;
+  let keys = Object.keys(filter);
+  keys.forEach(function(key, index) {
+    if (index + 1 == keys.length){
+      sql += `${key} = "${filter[key]}"`
+    } else {
+      sql += `${key} = "${filter[key]}" AND `
+    }
+  })
+  console.log(sql);
+  connection.query(sql, function (err, tenantList) {
+    if (err) {
+      console.log(`not able to select tenantList of ${filter} from database`);
+      callback(false);
+    } else {
+      console.log(`${filter} tenantList returned`);
+      callback(tenantList);
+    }
+  });
+}
+
 // return a list of JSON contains all of the properties owned by user
 function selectAllProperties(user_id, callback) {
   let sql = `SELECT * FROM property WHERE user_id = ?`;
@@ -170,6 +192,19 @@ function selectAllProperties(user_id, callback) {
       callback(false);
     } else {
       console.log(`user_id: ${user_id} property list returned`);
+      callback(propertyList);
+    }
+  });
+}
+function selectProperty(property_id, callback) {
+  let sql = `SELECT * FROM property WHERE property_id = ?`;
+  let inserts = [property_id];
+  connection.query(sql, inserts, function (err, propertyList) {
+    if (err) {
+      console.log(`not able to select property of property_id: ${property_id} from database`);
+      callback(false);
+    } else {
+      console.log(`property_id: ${property_id} property list returned`);
       callback(propertyList);
     }
   });
@@ -409,6 +444,29 @@ function selectAllSubmeters(tenant_id, callback) {
   });
 }
 
+// // filter is a JSON with an list of filter wants to apply when query submeter table
+// // return a list of JSON
+function selectSubmeter(filter, callback){
+  let sql = `SELECT * FROM submeter WHERE `;
+  let keys = Object.keys(filter);
+  keys.forEach(function(key, index) {
+    if (index + 1 == keys.length){
+      sql += `${key} = ${filter[key]}`
+    } else {
+      sql += `${key} = ${filter[key]} AND `
+    }
+  })
+  connection.query(sql, function (err, result) {
+    if (err) {
+      console.log(`not able to select list of ${filter} from database`);
+      callback(false);
+    } else {
+      console.log(`${filter} List returned`);
+      callback(result);
+    }
+  });
+}
+
 // insert new bill
 // bill_info is a json with account_id, meter_id, m_kwh_usage(national grid),
 // from_date, to_date, m_charge(national grid), s_kwh_usage(constellation), s_charge(constellation),
@@ -512,13 +570,13 @@ function deleteBill(bill_id, callback) {
 function selectBill(filter, callback) {
   let sql = `SELECT * FROM bill WHERE `;
   let keys = Object.keys(filter);
-  keys.forEach(function(key, index) {
-    if (index + 1 == keys.length){
-      sql += `${key} = ${filter[key]}`
+  keys.forEach(function (key, index) {
+    if (index + 1 == keys.length) {
+      sql += `${key} = ${filter[key]}`;
     } else {
-      sql += `${key} = ${filter[key]} AND `
+      sql += `${key} = ${filter[key]} AND `;
     }
-  })
+  });
   console.log("sql:", sql);
   connection.query(sql, function (err, billList) {
     if (err) {
@@ -527,7 +585,7 @@ function selectBill(filter, callback) {
     } else {
       console.log(`${filter} billList returned`);
       callback(billList);
-      console.log("SSSSS:",billList);
+      console.log("SSSSS:", billList);
     }
   });
 }
@@ -628,13 +686,13 @@ function deleteSubmeterBill(submeter_bill_id, callback) {
 function selectSubmeterBill(filter, callback) {
   let sql = `SELECT * FROM submeter_bill WHERE `;
   let keys = Object.keys(filter);
-  keys.forEach(function(key, index) {
-    if (index + 1 == keys.length){
-      sql += `${key} = ${filter[key]}`
+  keys.forEach(function (key, index) {
+    if (index + 1 == keys.length) {
+      sql += `${key} = ${filter[key]}`;
     } else {
-      sql += `${key} = ${filter[key]} AND `
+      sql += `${key} = ${filter[key]} AND `;
     }
-  })
+  });
   connection.query(sql, function (err, submeterBillList) {
     if (err) {
       console.log(`not able to select billList of ${filter} from database`);
@@ -662,8 +720,16 @@ function insertInvoice(invoice_info, callback) {
   let unit_charge = invoice_info.unit_charge;
   let total_charge = invoice_info.total_charge;
 
-  let sql = `INSERT INTO invoice(tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, total_charge) VALUES(?,?,?,?,?,?,?,?,?,?)`;
-  let inserts = [tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, total_charge];
+  let submeter_charge = invoice_info.submeter_charge;
+  let multiplier = invoice_info.multiplier;
+  let meter_amt_due = invoice_info.meter_amt_due;
+  let meter_id = invoice_info.meter_id;
+
+  let sql = `INSERT INTO invoice(tenant_id, from_date, to_date, prior_read, cur_read, rubs, 
+    has_submeter, submeter_id, unit_charge, total_charge, submeter_charge, multiplier, meter_amt_due, meter_id) 
+    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+  let inserts = [tenant_id, from_date, to_date, prior_read, cur_read, rubs, 
+    has_submeter, submeter_id, unit_charge, total_charge, submeter_charge, multiplier, meter_amt_due, meter_id];
 
   connection.query(sql, inserts, function (err, result) {
     if (err) {
@@ -744,13 +810,19 @@ function deleteInvoice(invoice_id, callback) {
 function selectInvoice(filter, callback) {
   let sql = `SELECT * FROM invoice WHERE `;
   let keys = Object.keys(filter);
-  keys.forEach(function(key, index) {
-    if (index + 1 == keys.length){
-      sql += `${key} = ${filter[key]}`
+  keys.forEach(function (key, index) {
+    if (index + 1 == keys.length) {
+
+      sql += `${key} = "${filter[key]}"`;
     } else {
-      sql += `${key} = ${filter[key]} AND `
+      if(key == "tenant_id"){
+        sql += `${key} in (${filter[key]}) AND `;
+      }else {
+      sql += `${key} = "${filter[key]}" AND `;
+      }
     }
-  })
+  });
+  console.log("new sql:",sql);
   connection.query(sql, function (err, invoiceList) {
     if (err) {
       console.log(`not able to select billList of ${filter} from database`);
@@ -765,7 +837,7 @@ function selectInvoice(filter, callback) {
 // associate meter with tenant
 // return true if add successfully
 // return false if add failed
-function associateMeterWithTenant(meter_id, tenant_id, callback){
+function associateMeterWithTenant(meter_id, tenant_id, callback) {
   let sql = `INSERT INTO meter_tenant(meter_id, tenant_id) VALUES(?,?)`;
   let inserts = [meter_id, tenant_id];
   connection.query(sql, inserts, function (err, result) {
@@ -782,13 +854,12 @@ function associateMeterWithTenant(meter_id, tenant_id, callback){
       }
     }
   });
-
 }
 
 // delete meter_tenant
 // return true if delete successfully
 // return false if delete failed
-function deleteMeterTenantRelation(meter_id, tenant_id, callback){
+function deleteMeterTenantRelation(meter_id, tenant_id, callback) {
   let sql = `DELETE FROM meter_tenant WHERE meter_id = ? AND tenant_id = ?`;
   let inserts = [meter_id, tenant_id];
   connection.query(sql, inserts, function (err, result) {
@@ -809,7 +880,7 @@ function deleteMeterTenantRelation(meter_id, tenant_id, callback){
 }
 
 // this function will return a list of meter-tenant relations existed in given property_id
-function selectMeterTenantListByProperty(property_id, callback){
+function selectMeterTenantListByProperty(property_id, callback) {
   let sql = `
         select
             meter.meter_id,
@@ -831,7 +902,7 @@ function selectMeterTenantListByProperty(property_id, callback){
 }
 
 // this function will return a list of meter-submeter bill by property_id and given time period
-function selectMeterSubmeterBillByProperty(property_id, from_date, to_date, callback){
+function selectMeterSubmeterBillByProperty(property_id, from_date, to_date, callback) {
   let sql = `
       with meter_list as
         (
@@ -852,37 +923,36 @@ function selectMeterSubmeterBillByProperty(property_id, from_date, to_date, call
   });
 }
 
-// this function will return a list of tenant_id, rubs, property_id, meter_id, submeter_id, bill_id, submeter_bill_id, from_date, to_date
+// this function will return a list of property_id, meter_id, submeter_id, bill_id, submeter_bill_id, from_date, to_date
 // filter is a Json
-function selectBillInfoAssociateWithTenant(filter,callback){
+function selectBillInfoAssociateWithProperty(filter,callback){
   let sql = `
       with prepared_table as (
-             select t.tenant_id, t.rubs, t.property_id, m.meter_id, s.submeter_id, b.bill_id, s.submeter_bill_id, b.from_date, b.to_date
-             from 
-             (((tenant t left join meter m on m.property_id=t.property_id) left join bill b on b.meter_id=m.meter_id) left join submeter_bill s on s.bill_id=b.bill_id)
+        select m.property_id, m.meter_id, s.submeter_id, b.bill_id, s.submeter_bill_id, b.from_date, b.to_date
+        from ((meter m left join bill b on b.meter_id=m.meter_id) left join submeter_bill s on s.bill_id=b.bill_id)
       )
       select * from prepared_table where `;
   let keys = Object.keys(filter);
-  keys.forEach(function(key, index) {
-    if (index + 1 == keys.length){
-      sql += `${key} = ${filter[key]}`
+  keys.forEach(function (key, index) {
+    if (index + 1 == keys.length) {
+      sql += `${key} = ${filter[key]}`;
     } else {
-      sql += `${key} = ${filter[key]} AND `
+      sql += `${key} = ${filter[key]} AND `;
     }
   })
-  connection.query(sql, function (err, tenantList) {
+  connection.query(sql, function (err, result) {
     if (err) {
-      console.log(`not able to select tenantList of ${filter} from database`);
+      console.log(`not able to select List of ${filter} from database`);
       callback(false);
     } else {
-      console.log(`${filter} tenantList returned`);
-      callback(tenantList);
+      console.log(`${filter} List returned`);
+      callback(result);
     }
   });
 }
 
 // this function will return a list of meter_id and submeter_id associate with given property
-function selectAllMetersSubmetersByProperty(property_id, callback){
+function selectAllMetersSubmetersByProperty(property_id, callback) {
   let sql = `
       with meter_list as(
         select meter_id from meter where property_id = ?
@@ -903,17 +973,17 @@ function selectAllMetersSubmetersByProperty(property_id, callback){
 }
 
 // this function will allow to filter bill by property_id and all fields in bill
-function selectBillWithProperty(filter, callback){
-  let sql = `select * from meter left join bill on meter.meter_id = bill.meter_id WHERE `
+function selectBillWithProperty(filter, callback) {
+  let sql = `select * from meter left join bill on meter.meter_id = bill.meter_id WHERE `;
   let keys = Object.keys(filter);
-  keys.forEach(function(key, index) {
-    if (index + 1 == keys.length){
-      sql += `${key} = "${filter[key]}" `
+  keys.forEach(function (key, index) {
+    if (index + 1 == keys.length) {
+      sql += `${key} = "${filter[key]}"`;
     } else {
-      sql += `${key} = "${filter[key]}" AND `
+      sql += `${key} = "${filter[key]}" AND `;
     }
-  })
-  console.log(sql)
+  });
+  console.log(sql);
   connection.query(sql, function (err, invoiceList) {
     if (err) {
       console.log(`not able to select billList of ${filter} from database`);
@@ -921,6 +991,7 @@ function selectBillWithProperty(filter, callback){
     } else {
       console.log(`${filter} billList returned`);
       callback(invoiceList);
+      console.log("invoiceList",invoiceList);
     }
   });
 }
@@ -935,11 +1006,13 @@ exports.selectAllTenants = selectAllTenants;
 exports.insertTenant = insertTenant;
 exports.updateTenant = updateTenant;
 exports.deleteTenant = deleteTenant;
+exports.selectTenant = selectTenant;
 
 exports.selectAllProperties = selectAllProperties;
 exports.insertProperty = insertProperty;
 exports.updateProperty = updateProperty;
 exports.deleteProperty = deleteProperty;
+exports.selectProperty = selectProperty;
 
 exports.selectAllMeters = selectAllMeters;
 exports.insertMeter = insertMeter;
@@ -947,12 +1020,12 @@ exports.deleteMeter = deleteMeter;
 
 exports.associateMeterWithTenant = associateMeterWithTenant;
 exports.deleteMeterTenantRelation = deleteMeterTenantRelation;
-// exports.selectMeterTenantListByProperty = selectMeterTenantListByProperty;
 
 exports.selectAllSubmeters = selectAllSubmeters;
 exports.insertSubmeter = insertSubmeter;
 exports.updateSubmeter = updateSubmeter;
 exports.deleteSubmeter = deleteSubmeter;
+exports.selectSubmeter = selectSubmeter;
 
 exports.insertBill = insertBill;
 exports.updateBill = updateBill;
@@ -972,5 +1045,5 @@ exports.selectInvoice = selectInvoice;
 exports.selectMeterTenantListByProperty = selectMeterTenantListByProperty;
 exports.selectMeterSubmeterBillByProperty = selectMeterSubmeterBillByProperty;
 exports.selectAllMetersSubmetersByProperty = selectAllMetersSubmetersByProperty;
-exports.selectBillInfoAssociateWithTenant = selectBillInfoAssociateWithTenant;
+exports.selectBillInfoAssociateWithProperty = selectBillInfoAssociateWithProperty;
 exports.selectBillWithProperty = selectBillWithProperty;

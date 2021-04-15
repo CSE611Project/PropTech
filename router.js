@@ -6,6 +6,7 @@ const express = require("express");
 const router = express.Router();
 const aws = require("aws-sdk");
 const verifier = require("cognito-express");
+const { CognitoIdentityServiceProvider } = require("aws-sdk");
 const cognito = new aws.CognitoIdentityServiceProvider({
   region: config.aws_region,
 });
@@ -204,6 +205,7 @@ router.get("/property/:sub?", (req, res) => {
     db.selectAllProperties(sub, (results) => {
       res.json(JSON.parse(JSON.stringify(results)));
     });
+    console.log(res.body);
   });
 });
 
@@ -365,7 +367,27 @@ router.post("/tenant", (req, res) => {
     }
     db.insertTenant(req.body.property_id, req.body.tenant_info, (result) => {
       res.json(result);
+      var filter = {
+        name: req.body.tenant_info.name,
+        email: req.body.tenant_info.email,
+        address: req.body.tenant_info.address,
+        landlord_phone: req.body.tenant_info.landlord_phone,
+  
+      }
+      console.log("meter list:", req.body.meter_list);
+      db.selectTenant(filter, (result1) => {
+        console.log("tenant_id",JSON.parse(JSON.stringify(result1[0].tenant_id)));
+        var tenant_id = JSON.parse(JSON.stringify(result1[0].tenant_id));
+        for(var i = 0; i < req.body.meter_list.length; i++){
+          db.associateMeterWithTenant(Number(req.body.meter_list[i]), Number(tenant_id), (result3) => {
+            
+          });
+        }
+  
+      });
     });
+
+
   });
 });
 
@@ -547,6 +569,43 @@ router.post("/submeter_bill", (req, res) => {
 });
 
 //get meter bills list by filter
+router.post("/meterbill_list/", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.body.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+    db.selectAllMetersSubmetersByProperty(Number(req.body.property_id), (result) => {
+      db.selectBillWithProperty({ property_id: Number(req.body.property_id), from_date: req.body.from_date, to_date: req.body.to_date }, (result2) => {
+        db.selectMeterSubmeterBillByProperty(Number(req.body.property_id), req.body.from_date, req.body.to_date, (result3) => {
+          db.selectMeterTenantListByProperty(Number(req.body.property_id), (result4) => {
+            db.selectAllTenants(Number(req.body.property_id), (result5) => {
+            var final_result = {
+              meter_submeter_list: JSON.parse(JSON.stringify(result)),
+              meter_bill_list: JSON.parse(JSON.stringify(result2)),
+              submeter_bill_list: JSON.parse(JSON.stringify(result3)),
+              meter_tenant_list: JSON.parse(JSON.stringify(result4)),
+              all_tenant_list: JSON.parse(JSON.stringify(result5)),
+            };
+            console.log("final result:", final_result);
+            res.json(final_result);
+           });
+          });
+        });
+      });
+    });
+  });
+});
+//get meter bills list by filter
 router.get("/meterbill_list/:meter_id?", (req, res) => {
   verifyClient(req, res, (accessData, idData) => {
     var sub;
@@ -562,15 +621,13 @@ router.get("/meterbill_list/:meter_id?", (req, res) => {
       });
       return;
     }
-    var filter = { "meter_id": Number(req.params.meter_id) };
+    var filter = { meter_id: Number(req.params.meter_id) };
     db.selectBill(filter, (result) => {
       console.log(result);
       res.json(result);
     });
-
   });
 });
-
 
 router.get("/history_meterbill_list/:property_id?/:from_date?/:to_date?", (req, res) => {
   verifyClient(req, res, (accessData, idData) => {
@@ -627,5 +684,213 @@ router.get("/history_submeterbill_list/:property_id?/:from_date?/:to_date?", (re
 
   });
 });
+
+router.post("/upload_invoice", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.body.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+    console.log("receive by server: ",req.body);
+    var final_invoice_list = req.body.final_invoice_list;
+    console.log("length: ", final_invoice_list.length);
+
+    //check if the invoice has been generated previously
+    var filter = {
+      tenant_id: req.body.final_invoice_list[0].tenant_id,
+      from_date: req.body.final_invoice_list[0].from_date.split("T")[0],
+      to_date: req.body.final_invoice_list[0].to_date.split("T")[0],
+    }
+    
+    db.selectInvoice(filter, (results) => {
+      console.log("result=",results);
+      if(results.length != 0){
+        // console.log("hhhhh");
+        res.json(JSON.parse(JSON.stringify(results)));
+      }else {
+        // console.log("add to table");
+        for(var i = 0; i < final_invoice_list.length; i++){
+          var invoice = final_invoice_list[i];
+          var has_submeter = invoice.has_submeter;
+          //for each tenant 
+          
+          for(var j = 0; j < final_invoice_list[i].charge_list.length; j++){
+            //for each sub invoice
+            if(invoice.rubs != 0){
+              console.log("has submeter:", has_submeter);
+              var sub_invoice = final_invoice_list[i].charge_list[j];
+              var invoice_info = {
+                tenant_id: invoice.tenant_id,
+                from_date: invoice.from_date,
+                to_date: invoice.to_date,
+                total_charge: invoice.total_charge,
+                has_submeter: "n",
+                rubs: invoice.rubs,
+                
+                submeter_id: "",
+                prior_read : 0,
+                cur_read : 0,
+                unit_charge: 0,
+                submeter_charge: 0,
+                multiplier: 0,
+    
+                meter_amt_due: sub_invoice.meter_amt_due,
+                meter_id: sub_invoice.meter_id,
+    
+        
+              }
+    
+                  db.insertInvoice(invoice_info, (result2) => {
+                    console.log(result2);
+                  });
+    
+          
+            }
+            else{
+    
+              var sub_invoice = final_invoice_list[i].charge_list[j];
+              var invoice_info = {
+                tenant_id: invoice.tenant_id,
+                from_date: invoice.from_date,
+                to_date: invoice.to_date,
+                total_charge: invoice.total_charge,
+                has_submeter: "y",
+                rubs: invoice.rubs,
+                
+                submeter_id: sub_invoice.submeter_id,
+                prior_read : sub_invoice.prior_read,
+                cur_read : sub_invoice.cur_read,
+                unit_charge: sub_invoice.unit_charge,
+                submeter_charge: sub_invoice.amt_due,
+                multiplier: sub_invoice.multiplier,
+    
+                meter_amt_due: 0,
+                meter_id: 0,
+    
+        
+              }
+              db.insertInvoice(invoice_info, (result3) => {
+                console.log(result3);
+              });
+    
+    
+    
+            }
+    
+          }
+    
+    
+    
+    
+        }
+
+
+      }
+    });
+
+  
+  });
+});
+
+
+router.post("/invoice_history", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.body.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+    db.selectAllTenants(req.body.property_id, (results1) => {
+      var tenant_list = JSON.parse(JSON.stringify(results1));
+      console.log("tenant_list length: ", tenant_list.length);
+      db.selectProperty(req.body.property_id,(results3) => {
+      var list = [];
+      for(var i = 0; i < tenant_list.length; i++){
+        list.push(Number(tenant_list[i].tenant_id));
+      }
+        var filter = {
+          tenant_id: list,
+          from_date: req.body.from_date.split("T")[0],
+          to_date: req.body.to_date.split("T")[0],
+        }; 
+        db.selectInvoice(filter, (results2) => {
+          console.log("invoice length",results2.length);
+          var output = {
+            tenant_list: JSON.parse(JSON.stringify(results1)),
+            invoice_list: JSON.parse(JSON.stringify(results2)),
+            property_info: JSON.parse(JSON.stringify(results3)),
+          };
+          res.json(output);
+          // console.log(results);
+  
+        });
+    });
+  });
+  });
+});
+
+router.get("//history_meterinvoice_list/:property_id?/:from_date?/:to_date?", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.body.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+    db.selectAllTenants(req.body.property_id, (results1) => {
+      var tenant_list = JSON.parse(JSON.stringify(results1));
+      console.log("tenant_list length: ", tenant_list.length);
+      db.selectProperty(req.body.property_id,(results3) => {
+      var list = [];
+      for(var i = 0; i < tenant_list.length; i++){
+        list.push(Number(tenant_list[i].tenant_id));
+      }
+        var filter = {
+          tenant_id: list,
+          from_date: req.body.from_date.split("T")[0],
+          to_date: req.body.to_date.split("T")[0],
+        }; 
+        db.selectInvoice(filter, (results2) => {
+          console.log("invoice length",results2.length);
+          var output = {
+            tenant_list: JSON.parse(JSON.stringify(results1)),
+            invoice_list: JSON.parse(JSON.stringify(results2)),
+            property_info: JSON.parse(JSON.stringify(results3)),
+          };
+          res.json(output);
+          // console.log(results);
+  
+        });
+    });
+  });
+  });
+});
+
+
+
 
 module.exports = router;
