@@ -367,7 +367,27 @@ router.post("/tenant", (req, res) => {
     }
     db.insertTenant(req.body.property_id, req.body.tenant_info, (result) => {
       res.json(result);
+      var filter = {
+        name: req.body.tenant_info.name,
+        email: req.body.tenant_info.email,
+        address: req.body.tenant_info.address,
+        landlord_phone: req.body.tenant_info.landlord_phone,
+  
+      }
+      console.log("meter list:", req.body.meter_list);
+      db.selectTenant(filter, (result1) => {
+        console.log("tenant_id",JSON.parse(JSON.stringify(result1[0].tenant_id)));
+        var tenant_id = JSON.parse(JSON.stringify(result1[0].tenant_id));
+        for(var i = 0; i < req.body.meter_list.length; i++){
+          db.associateMeterWithTenant(Number(req.body.meter_list[i]), Number(tenant_id), (result3) => {
+            
+          });
+        }
+  
+      });
     });
+
+
   });
 });
 

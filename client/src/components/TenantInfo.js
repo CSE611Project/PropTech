@@ -10,10 +10,10 @@ import AddTenant from "./AddTenant";
 import DeleteTenant from "./DeleteTenant";
 import Submeters from "./Submeters";
 import Meters from "./Meters";
-import UtilityBillMeter from "./UtilityBillMeter";
-import UtilityBillSubmeter from "./UtilityBillSubmeter";
-import BillingHistory from "./BillingHistory";
-import CollapseSubmeter from "./CollapseSubmeter";
+import UtilityBillMeter from "./UtilityBillMeter"
+import UtilityBillSubmeter from "./UtilityBillSubmeter"
+import BillingHistory from "./BillingHistory"
+import CollapseSubmeter from "./CollapseSubmeter"
 import { Component } from "react";
 import axios from "axios";
 
@@ -40,14 +40,14 @@ class TenantInfo extends Component {
     super(props);
     this.state = {
       display: this.props.display,
-      property_id: this.props.property_id,
+      property_id: sessionStorage.getItem("property_id"),
       property_name: sessionStorage.getItem("property_name"),
       total_footage: sessionStorage.getItem("total_footage"),
       tenant_list: [],
       meter_list: [],
     };
-    this.toManageUtilityBillPage = this.toManageUtilityBillPage.bind(this);
-    this.getSubmeterList = this.getSubmeterList.bind(this);
+    this.toManageUtilityBillPage = this.toManageUtilityBillPage.bind(this)
+    this.getSubmeterList = this.getSubmeterList.bind(this)
     this.generateTableData();
 
   }
@@ -70,6 +70,7 @@ class TenantInfo extends Component {
       });
     });
   }
+
 
   generateTableData() {
     this.getTenantList().then(() => {
@@ -96,7 +97,7 @@ class TenantInfo extends Component {
               />
             </TableCell>
             <TableCell>
-              <DeleteTenant tenant_id={this.state.tenant_list[i].tenant_id} info={this} property_id={this.state.property_id} />
+              <DeleteTenant tenant_id={this.state.tenant_list[i].tenant_id} info={this} />
             </TableCell>
             <TableCell>
               <Submeters
@@ -110,7 +111,11 @@ class TenantInfo extends Component {
                 info={this}
               />
             </TableCell>
-            <CollapseSubmeter tenant_id={this.state.tenant_list[i].tenant_id} property_id={this.state.property_id} info={this} />
+            <CollapseSubmeter
+              tenant_id={this.state.tenant_list[i].tenant_id}
+              property_id={this.state.property_id}
+              info={this}
+            />
           </TableRow>
         );
       }
@@ -126,37 +131,45 @@ class TenantInfo extends Component {
       },
       paper: {
         padding: theme.spacing(2),
-        display: "flex",
-        overflow: "auto",
-        flexDirection: "column",
+        display: 'flex',
+        overflow: 'auto',
+        flexDirection: 'column',
       },
       fixedHeight: {
         height: 240,
       },
     }));
-    const ele = (
-      <React.Fragment>
-        <Container maxWidth="lg" className={useStyles.container}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={20} lg={9}>
-              <Paper>
-                <BillingHistory className="display_item" property_id={this.state.property_id} tenant_list={this.state.tenant_list} info={this} />
-              </Paper>
-            </Grid>
-            <Grid item xs={12} md={8} lg={9}>
-              <Paper>
-                <UtilityBillMeter className="display_item" property_id={this.state.property_id} info={this} />
-              </Paper>
-            </Grid>
-            <Grid item xs={12} md={8} lg={9}>
-              <Paper>
-                <UtilityBillSubmeter className="display_item" property_id={this.state.property_id} tenant_list={this.state.tenant_list} info={this} />
-              </Paper>
-            </Grid>
+    const ele = <React.Fragment>
+      <Container maxWidth="lg" className={useStyles.container}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={20} lg={9}>
+            <Paper>
+              <BillingHistory
+                className="display_item"
+                property_id={this.state.property_id}
+                tenant_list={this.state.tenant_list}
+                info={this}
+              />
+            </Paper>
           </Grid>
-        </Container>
-      </React.Fragment>
-    );
+          <Grid item xs={12} md={8} lg={9}>
+            <Paper>
+              <UtilityBillMeter className="display_item" property_id={this.state.property_id} info={this} />
+            </Paper>
+          </Grid>
+          <Grid item xs={12} md={8} lg={9}>
+            <Paper>
+              <UtilityBillSubmeter
+                className="display_item"
+                property_id={this.state.property_id}
+                tenant_list={this.state.tenant_list}
+                info={this}
+              />
+            </Paper>
+          </Grid>
+        </Grid>
+      </Container>
+    </React.Fragment>;
     return ReactDOM.render(ele, document.getElementById("root"));
   }
 
@@ -196,11 +209,10 @@ class TenantInfo extends Component {
             </TableCell>
             <TableCell />
             <TableCell component={Paper}>
-              <Button color="primary" onClick={this.toManageUtilityBillPage}>
-                Manage Utility Bill
-              </Button>
+              <Button color="primary" onClick={this.toManageUtilityBillPage}>Manage Utility Bill</Button>
             </TableCell>
           </Table>
+
         </TableContainer>
         <TableContainer component={Paper}>
           <Table>
@@ -229,8 +241,8 @@ class TenantInfo extends Component {
 
 const useRowStyles = makeStyles({
   root: {
-    "& > *": {
-      borderBottom: "unset",
+    '& > *': {
+      borderBottom: 'unset',
     },
   },
 });
@@ -263,7 +275,9 @@ function CollapseRow(props) {
                     <TableCell>Associated Meter</TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody></TableBody>
+                <TableBody>
+
+                </TableBody>
               </Table>
             </Box>
           </Collapse>
