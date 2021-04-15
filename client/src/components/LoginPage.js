@@ -55,7 +55,6 @@ class LoginPage extends React.Component {
 
   onSubmit(event) {
     event.preventDefault();
-    console.log(this);
     const loginDetails = {
       Username: this.state.email,
       Password: this.state.password,
@@ -65,7 +64,7 @@ class LoginPage extends React.Component {
       Username: this.state.email,
       Pool: userPool,
     };
-    const cognitoUser = new cognito.CognitoUser(userDetails);
+    var cognitoUser = new cognito.CognitoUser(userDetails);
     cognitoUser.authenticateUser(authenticationDetails, {
       onSuccess:(result) => {
         console.log(result);
@@ -80,6 +79,13 @@ class LoginPage extends React.Component {
             if (userType == "PropertyManager") {
               sessionStorage.setItem("username", response.data.idData.email);
               sessionStorage.setItem("sub", response.data.accessData.sub);
+              sessionStorage.setItem("accessToken", JSON.stringify(result.accessToken));
+              sessionStorage.setItem("custom:company_name", result.idToken.payload["custom:company_name"]);
+              sessionStorage.setItem("custom:street_name", result.idToken.payload["custom:street_name"]);
+              sessionStorage.setItem("custom:suite_number", result.idToken.payload["custom:suite_number"]);
+              sessionStorage.setItem("custom:city", result.idToken.payload["custom:city"]);
+              sessionStorage.setItem("custom:state", result.idToken.payload["custom:state"]);
+              sessionStorage.setItem("custom:zipcode", result.idToken.payload["custom:zipcode"]);
               propmanaaftersign();
             } else if (userType == "Admin") {
               adminaftersign();
@@ -102,7 +108,6 @@ class LoginPage extends React.Component {
   render() {
     var isError = this.state.errors;
     var message = this.state.errorMessage;
-    console.log(isError, message)
     return (
       <div>
         <div className="LoginPage">
@@ -134,21 +139,10 @@ class LoginPage extends React.Component {
                 error={this.state.errors}
                 required
               />
-              <Divider />
-              <Divider />
-              <Divider />
-              <Divider />
-              <Divider />
-              <Divider />
               <Button color="primary" type="submit" value="submit">
                 Login
               </Button>
-              <Divider />
-              <Divider />
-              <Divider />
-              <Divider />
-              <Divider />
-              <Divider />
+
               <Button color="primary" onClick={reset}>
                 Reset Password
               </Button>

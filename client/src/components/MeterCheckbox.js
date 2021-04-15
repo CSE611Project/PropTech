@@ -22,6 +22,7 @@ class MeterCheckBox extends React.Component {
       meter_id: "",
       property_id: this.props.property_id,
       onlyOption: this.props.onlyOption,
+      select_meter_list: "",
     };
     this.onChangeOnlyOption = this.onChangeOnlyOption.bind(this);
     this.onChangeMultiOption = this.onChangeMultiOption.bind(this);
@@ -52,10 +53,12 @@ class MeterCheckBox extends React.Component {
 
   onChangeMultiOption(event) {
     event.preventDefault();
+    console.log("even target name",event.target.name);
     this.setState({
       [event.target.name]: event.target.checked,
     });
-    this.props.methodfromparent(this.state.meter);
+    this.props.methodfromparent(event.target.name);
+
   }
 
   generateTable() {

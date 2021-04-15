@@ -26,7 +26,7 @@ class RUBS extends React.Component {
       rubs: "",
       yes: false,
       no: false,
-      totalBuildingFt: this.props.totalBuildingFt,
+      totalBuildingFt: this.props.total_footage,
       tenantFt: "",
     };
     this.onChangeYes = this.onChangeYes.bind(this);
@@ -39,8 +39,11 @@ class RUBS extends React.Component {
   changeRUBS(event) {
     event.preventDefault();
     this.setState({
+
       rubs: event.target.value,
     });
+
+    this.props.methodfromparent(event.target.value);
   }
 
   changeTenantFt(event) {
@@ -52,7 +55,19 @@ class RUBS extends React.Component {
 
   calculate(event) {
     {
+      var totalBuildingFt = this.state.totalBuildingFt;
+      var tenantft = this.state.tenantFt;
+      console.log(this.state.totalBuildingFt);
+      console.log(this.state.tenantFt);
+      if(tenantft != ""){
+        var rubs = tenantft/totalBuildingFt;
+        this.setState({
+          rubs: rubs,
+        })
+      }
+      this.props.methodfromparent(this.state.rubs);
       /* should specify a way to calculate rubs based on tenantFt and then save into rubs variable*/
+      console.log(tenantft/totalBuildingFt);
     }
     event.preventDefault();
   }

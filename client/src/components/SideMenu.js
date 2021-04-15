@@ -8,6 +8,7 @@ import TenantInfo from "./TenantInfo"
 import BillingHistory from "./BillingHistory"
 import UtilityBillMeter from "./UtilityBillMeter"
 import UtilityBillSubmeter from "./UtilityBillSubmeter"
+import GenerateInvoice from "./GenerateInvoice"
 
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -37,7 +38,7 @@ import axios from "axios";
 class SideMenu extends Component {
   constructor(props) {
     super(props);
-    this.state = { display_more_options: this.props.display_more_options };
+    this.state = { display_more_options: this.props.display_more_options, property_id: this.props.property_id };
   }
 
   render() {
@@ -59,9 +60,7 @@ class SideMenu extends Component {
                 <a href="#" onClick={manage_invoice}>
                   Manage Invoice History
                 </a>
-                <a href="#" onClick={generate_invoice}>
-                  Generate Invoice
-                </a>
+                <GenerateInvoice property_id={this.state.property_id} />
               </div>
             ) : null}
             <a href="#" onClick={log_out}>
@@ -79,23 +78,15 @@ function manage_property() {
 }
 
 function edit_profile() {
-  const ele = <div></div>;
-  return ReactDOM.render(ele, document.getElementById("root"));
+  window.location = `/PropMana/${sessionStorage.getItem("sub")}/user_info`;
 }
 
 function manage_utility() {
-  const ele = <div></div>
-  return ReactDOM.render(ele, document.getElementById("root"));
+  window.location = `/PropMana/${sessionStorage.getItem("sub")}/property/${sessionStorage.getItem("property_id")}/utility_bill`;
 }
 
 function manage_invoice() {
-  const ele = <div></div>;
-  return ReactDOM.render(ele, document.getElementById("root"));
-}
-
-function generate_invoice() {
-  const ele = <div></div>;
-  window.location = `/PropMana/${sessionStorage.getItem("sub")}/invoice`;
+  window.location = `/PropMana/${sessionStorage.getItem("sub")}/property/${sessionStorage.getItem("property_id")}/invoice_history`;
 }
 
 function log_out() {
@@ -103,6 +94,13 @@ function log_out() {
   sessionStorage.removeItem("username");
   sessionStorage.removeItem("property_id");
   sessionStorage.removeItem("property_name");
+  sessionStorage.removeItem("custom:state");
+  sessionStorage.removeItem("custom:company_name");
+  sessionStorage.removeItem("custom:city");
+  sessionStorage.removeItem("custom:zipcode");
+  sessionStorage.removeItem("custom:street_name");
+  sessionStorage.removeItem("custom:suite_number");
+  sessionStorage.removeItem("accessToken");
   axios.post("/logout");
   window.location = "/";
 }

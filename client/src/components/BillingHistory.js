@@ -160,37 +160,26 @@ class BillingHistory extends React.Component {
             <React.Fragment>
                 <Typography component="h2" variant="h6" color="primary" gutterBottom>Billing History</Typography>
                 <form noValidate>
-                    <table>
-                        <td>
-                            <TextField
-                                id="from_date"
-                                label="From"
-                                type="date"
-                                defaultValue={this.state.from_date}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                                onChange={this.handleFromDateChange}
-                            />
-                        </td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                            <TextField
-                                id="to_date"
-                                label="To"
-                                type="date"
-                                defaultValue={this.state.to_date}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                                onChange={this.handleToDateChange}
-                            />
-                        </td>
-                    </table>
+                    <TextField
+                        id="from_date"
+                        label="From"
+                        type="date"
+                        defaultValue={this.state.from_date}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        onChange={this.handleFromDateChange}
+                    />
+                    <TextField
+                        id="to_date"
+                        label="To"
+                        type="date"
+                        defaultValue={this.state.to_date}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        onChange={this.handleToDateChange}
+                    />
                 </form>
                 <DialogContentText />
                 <Button onClick={this.onSubmit} color="primary">
