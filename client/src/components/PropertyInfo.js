@@ -47,7 +47,7 @@ class PropertyInfo extends Component {
           <TableRow key={i} id={i}>
             <TableCell>{this.state.property_list[i].name}</TableCell>
             <TableCell>{this.state.property_list[i].address}</TableCell>
-            <TableCell>{this.state.property_list[i].property_type}</TableCell>
+            {/* <TableCell>{this.state.property_list[i].property_type}</TableCell> */}
             <TableCell>{this.state.property_list[i].total_footage}</TableCell>
             <TableCell>{this.state.property_list[i].landlord_phone}</TableCell>
             <TableCell>
@@ -66,7 +66,7 @@ class PropertyInfo extends Component {
                 property_id={this.state.property_list[i].property_id}
                 name={this.state.property_list[i].name}
                 address={this.state.property_list[i].address}
-                property_type={this.state.property_list[i].property_type}
+                // property_type={this.state.property_list[i].property_type}
                 total_footage={this.state.property_list[i].total_footage}
                 landlord_phone={this.state.property_list[i].landlord_phone}
                 info={this}
@@ -91,7 +91,7 @@ class PropertyInfo extends Component {
               <TableRow>
                 <TableCell>Property Name</TableCell>
                 <TableCell>Property Address</TableCell>
-                <TableCell>Property Type</TableCell>
+                {/* <TableCell>Property Type</TableCell> */}
                 <TableCell>Total Footage</TableCell>
                 <TableCell>Landlord Phone</TableCell>
                 <TableCell></TableCell>

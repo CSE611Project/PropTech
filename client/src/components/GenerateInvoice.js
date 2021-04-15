@@ -91,9 +91,14 @@ class GenerateInvoice extends Component {
     return new Promise((resolve, reject) => {
       axios.post("/upload_invoice", {final_invoice_list: final_invoice_list}).then((response) => {
         console.log("response",response.data);
-        if(response.data.length > 0){
+        if(response.data.length != 0){
           alert("This month's invoices were generated previously, please checkout invoice history");
           return;
+        }else {
+          console.log("nnnnnno");
+          
+            alert("Done ! ! !  now you can check invoice in {Manage Invoice History}");
+            
         }
 
       });
@@ -235,6 +240,7 @@ class GenerateInvoice extends Component {
     });
     if(this.state.from_date == '' || this.state.to_date == ''){
       alert("please select a time period");
+      return;
     }else{
     this.invoice_generator();
 
@@ -347,4 +353,3 @@ function get_tenant_emailby_tenant_id(tenant_id, all_tenant_list){
   return null;
 }
 export default GenerateInvoice;
-
