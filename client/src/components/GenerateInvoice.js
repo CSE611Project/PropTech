@@ -94,6 +94,11 @@ class GenerateInvoice extends Component {
         if(response.data.length > 0){
           alert("This month's invoices were generated previously, please checkout invoice history");
           return;
+        }else {
+          {
+            alert("Done ! ! !  now you can check invoice in {Manage Invoice History}");
+            return;
+            }
         }
 
       });
@@ -222,7 +227,6 @@ class GenerateInvoice extends Component {
       }
       console.log("final invoice list:", new_bill_list);
       this.uploadInvoiceToDataBase(new_bill_list);
-      alert("Done ! ! !  now you can check invoice in {Manage Invoice History}");
     });
   });
   }
@@ -236,6 +240,7 @@ class GenerateInvoice extends Component {
     });
     if(this.state.from_date == '' || this.state.to_date == ''){
       alert("please select a time period");
+      return;
     }else{
     this.invoice_generator();
 
