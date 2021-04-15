@@ -66,30 +66,24 @@ class LoginPage extends React.Component {
     cognitoUser.authenticateUser(authenticationDetails, {
       onSuccess: function (result) {
         console.log(result);
-        axios
-          .post("/auth", {
-            accessToken: result.accessToken.jwtToken,
-            idToken: result.idToken.jwtToken,
-          })
-          .then((response) => {
-            console.log(response.data);
-            let userType = response.data.accessData["cognito:groups"][0];
-            if (userType == "PropertyManager") {
-              sessionStorage.setItem("username", response.data.idData.email);
-              sessionStorage.setItem("sub", response.data.accessData.sub);
-              sessionStorage.setItem("accessToken", JSON.stringify(result.accessToken));
-              sessionStorage.setItem("custom:company_name", result.idToken.payload["custom:company_name"]);
-              sessionStorage.setItem("custom:street_name", result.idToken.payload["custom:street_name"]);
-              sessionStorage.setItem("custom:suite_number", result.idToken.payload["custom:suite_number"]);
-              sessionStorage.setItem("custom:city", result.idToken.payload["custom:city"]);
-              sessionStorage.setItem("custom:state", result.idToken.payload["custom:state"]);
-              sessionStorage.setItem("custom:zipcode", result.idToken.payload["custom:zipcode"]);
-              propmanaaftersign();
-            } else if (userType == "Admin") {
-              sessionStorage.setItem("accessToken", JSON.stringify(result.accessToken));
-              adminaftersign();
-            }
-          });
+        axios.post("/auth", { accessToken: result.accessToken.jwtToken, idToken: result.idToken.jwtToken }).then((response) => {
+          let userType = response.data.accessData["cognito:groups"][0];
+          if (userType == "PropertyManager") {
+            sessionStorage.setItem("username", response.data.idData.email);
+            sessionStorage.setItem("sub", response.data.accessData.sub);
+            sessionStorage.setItem("accessToken", JSON.stringify(result.accessToken));
+            sessionStorage.setItem("custom:company_name", result.idToken.payload["custom:company_name"]);
+            sessionStorage.setItem("custom:street_name", result.idToken.payload["custom:street_name"]);
+            sessionStorage.setItem("custom:suite_number", result.idToken.payload["custom:suite_number"]);
+            sessionStorage.setItem("custom:city", result.idToken.payload["custom:city"]);
+            sessionStorage.setItem("custom:state", result.idToken.payload["custom:state"]);
+            sessionStorage.setItem("custom:zipcode", result.idToken.payload["custom:zipcode"]);
+            propmanaaftersign();
+          } else if (userType == "Admin") {
+            sessionStorage.setItem("accessToken", JSON.stringify(result.accessToken));
+            adminaftersign();
+          }
+        });
       },
       onFailure: function (err) {
         console.log(err);

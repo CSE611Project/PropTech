@@ -2,10 +2,7 @@ import React from "react";
 import { Component } from "react";
 import ReactDOM from "react-dom";
 import "./../../App.css";
-import GenerateInvoice from "./../GenerateInvoice";
 import axios from "axios";
-import { de } from "date-fns/locale";
-import { Route53Resolver } from "aws-sdk";
 
 class AdminSideMenu extends Component {
   constructor(props) {
@@ -37,7 +34,7 @@ function manage_users() {
 
 function log_out() {
   sessionStorage.removeItem("accessToken");
-  axios.post("/logout").then((response) => {
+  axios.post("/logout", {}, { withCredentials: true, credentials: "include" }).then((response) => {
     window.location = "/";
   });
 }

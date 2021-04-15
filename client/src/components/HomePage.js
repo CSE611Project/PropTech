@@ -70,11 +70,9 @@ class HomePage extends React.Component {
 
 function login() {
   window.location = "/LoginPage";
-  return ReactDOM.render(<LoginPage />, document.getElementById("root"));
 }
 function signup() {
   window.location = "/SignUpPage";
-  return ReactDOM.render(<SignUpPage />, document.getElementById("root"));
 }
 
 export default HomePage;

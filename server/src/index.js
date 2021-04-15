@@ -4,7 +4,9 @@ const routesUrls = require("./router");
 const database = require("./database");
 const databaseRouter = require("./database_router");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use("", routesUrls);

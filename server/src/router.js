@@ -197,6 +197,7 @@ router.post("/auth", (req, res) => {
         if (err2) {
           res.status(401).send(err2);
         } else {
+          console.log(req.body);
           res.cookie("authCookie", { accessToken: req.body.accessToken, idToken: req.body.idToken }, { httpOnly: true });
           res.json({ accessData, idData });
         }
@@ -397,22 +398,16 @@ router.post("/tenant", (req, res) => {
         email: req.body.tenant_info.email,
         address: req.body.tenant_info.address,
         landlord_phone: req.body.tenant_info.landlord_phone,
-  
-      }
+      };
       console.log("meter list:", req.body.meter_list);
       db.selectTenant(filter, (result1) => {
-        console.log("tenant_id",JSON.parse(JSON.stringify(result1[0].tenant_id)));
+        console.log("tenant_id", JSON.parse(JSON.stringify(result1[0].tenant_id)));
         var tenant_id = JSON.parse(JSON.stringify(result1[0].tenant_id));
-        for(var i = 0; i < req.body.meter_list.length; i++){
-          db.associateMeterWithTenant(Number(req.body.meter_list[i]), Number(tenant_id), (result3) => {
-            
-          });
+        for (var i = 0; i < req.body.meter_list.length; i++) {
+          db.associateMeterWithTenant(Number(req.body.meter_list[i]), Number(tenant_id), (result3) => {});
         }
-  
       });
     });
-
-
   });
 });
 
@@ -614,16 +609,16 @@ router.post("/meterbill_list/", (req, res) => {
         db.selectMeterSubmeterBillByProperty(Number(req.body.property_id), req.body.from_date, req.body.to_date, (result3) => {
           db.selectMeterTenantListByProperty(Number(req.body.property_id), (result4) => {
             db.selectAllTenants(Number(req.body.property_id), (result5) => {
-            var final_result = {
-              meter_submeter_list: JSON.parse(JSON.stringify(result)),
-              meter_bill_list: JSON.parse(JSON.stringify(result2)),
-              submeter_bill_list: JSON.parse(JSON.stringify(result3)),
-              meter_tenant_list: JSON.parse(JSON.stringify(result4)),
-              all_tenant_list: JSON.parse(JSON.stringify(result5)),
-            };
-            console.log("final result:", final_result);
-            res.json(final_result);
-           });
+              var final_result = {
+                meter_submeter_list: JSON.parse(JSON.stringify(result)),
+                meter_bill_list: JSON.parse(JSON.stringify(result2)),
+                submeter_bill_list: JSON.parse(JSON.stringify(result3)),
+                meter_tenant_list: JSON.parse(JSON.stringify(result4)),
+                all_tenant_list: JSON.parse(JSON.stringify(result5)),
+              };
+              console.log("final result:", final_result);
+              res.json(final_result);
+            });
           });
         });
       });
@@ -669,7 +664,7 @@ router.post("/upload_invoice", (req, res) => {
       });
       return;
     }
-    console.log("receive by server: ",req.body);
+    console.log("receive by server: ", req.body);
     var final_invoice_list = req.body.final_invoice_list;
     console.log("length: ", final_invoice_list.length);
 
@@ -678,23 +673,23 @@ router.post("/upload_invoice", (req, res) => {
       tenant_id: req.body.final_invoice_list[0].tenant_id,
       from_date: req.body.final_invoice_list[0].from_date.split("T")[0],
       to_date: req.body.final_invoice_list[0].to_date.split("T")[0],
-    }
-    
+    };
+
     db.selectInvoice(filter, (results) => {
-      console.log("result=",results);
-      if(results.length != 0){
+      console.log("result=", results);
+      if (results.length != 0) {
         // console.log("hhhhh");
         res.json(JSON.parse(JSON.stringify(results)));
-      }else {
+      } else {
         // console.log("add to table");
-        for(var i = 0; i < final_invoice_list.length; i++){
+        for (var i = 0; i < final_invoice_list.length; i++) {
           var invoice = final_invoice_list[i];
           var has_submeter = invoice.has_submeter;
-          //for each tenant 
-          
-          for(var j = 0; j < final_invoice_list[i].charge_list.length; j++){
+          //for each tenant
+
+          for (var j = 0; j < final_invoice_list[i].charge_list.length; j++) {
             //for each sub invoice
-            if(invoice.rubs != 0){
+            if (invoice.rubs != 0) {
               console.log("has submeter:", has_submeter);
               var sub_invoice = final_invoice_list[i].charge_list[j];
               var invoice_info = {
@@ -704,28 +699,22 @@ router.post("/upload_invoice", (req, res) => {
                 total_charge: invoice.total_charge,
                 has_submeter: "n",
                 rubs: invoice.rubs,
-                
+
                 submeter_id: "",
-                prior_read : 0,
-                cur_read : 0,
+                prior_read: 0,
+                cur_read: 0,
                 unit_charge: 0,
                 submeter_charge: 0,
                 multiplier: 0,
-    
+
                 meter_amt_due: sub_invoice.meter_amt_due,
                 meter_id: sub_invoice.meter_id,
-    
-        
-              }
-    
-                  db.insertInvoice(invoice_info, (result2) => {
-                    console.log(result2);
-                  });
-    
-          
-            }
-            else{
-    
+              };
+
+              db.insertInvoice(invoice_info, (result2) => {
+                console.log(result2);
+              });
+            } else {
               var sub_invoice = final_invoice_list[i].charge_list[j];
               var invoice_info = {
                 tenant_id: invoice.tenant_id,
@@ -734,42 +723,27 @@ router.post("/upload_invoice", (req, res) => {
                 total_charge: invoice.total_charge,
                 has_submeter: "y",
                 rubs: invoice.rubs,
-                
+
                 submeter_id: sub_invoice.submeter_id,
-                prior_read : sub_invoice.prior_read,
-                cur_read : sub_invoice.cur_read,
+                prior_read: sub_invoice.prior_read,
+                cur_read: sub_invoice.cur_read,
                 unit_charge: sub_invoice.unit_charge,
                 submeter_charge: sub_invoice.amt_due,
                 multiplier: sub_invoice.multiplier,
-    
+
                 meter_amt_due: 0,
                 meter_id: 0,
-    
-        
-              }
+              };
               db.insertInvoice(invoice_info, (result3) => {
                 console.log(result3);
               });
-    
-    
-    
             }
-    
           }
-    
-    
-    
-    
         }
-
-
       }
     });
-
-  
   });
 });
-
 
 router.post("/invoice_history", (req, res) => {
   verifyClient(req, res, (accessData, idData) => {
@@ -789,18 +763,18 @@ router.post("/invoice_history", (req, res) => {
     db.selectAllTenants(req.body.property_id, (results1) => {
       var tenant_list = JSON.parse(JSON.stringify(results1));
       console.log("tenant_list length: ", tenant_list.length);
-      db.selectProperty(req.body.property_id,(results3) => {
-      var list = [];
-      for(var i = 0; i < tenant_list.length; i++){
-        list.push(Number(tenant_list[i].tenant_id));
-      }
+      db.selectProperty(req.body.property_id, (results3) => {
+        var list = [];
+        for (var i = 0; i < tenant_list.length; i++) {
+          list.push(Number(tenant_list[i].tenant_id));
+        }
         var filter = {
           tenant_id: list,
           from_date: req.body.from_date.split("T")[0],
           to_date: req.body.to_date.split("T")[0],
-        }; 
+        };
         db.selectInvoice(filter, (results2) => {
-          console.log("invoice length",results2.length);
+          console.log("invoice length", results2.length);
           var output = {
             tenant_list: JSON.parse(JSON.stringify(results1)),
             invoice_list: JSON.parse(JSON.stringify(results2)),
@@ -808,12 +782,10 @@ router.post("/invoice_history", (req, res) => {
           };
           res.json(output);
           // console.log(results);
-  
         });
+      });
     });
   });
-  });
 });
-
 
 module.exports = router;

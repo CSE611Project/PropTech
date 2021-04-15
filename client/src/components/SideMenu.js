@@ -4,6 +4,7 @@ import ReactDOM from "react-dom";
 import "./../App.css";
 import GenerateInvoice from "./GenerateInvoice";
 import axios from "axios";
+import { config } from "aws-sdk";
 
 class SideMenu extends Component {
   constructor(props) {
@@ -72,14 +73,8 @@ function log_out() {
   sessionStorage.removeItem("custom:street_name");
   sessionStorage.removeItem("custom:suite_number");
   sessionStorage.removeItem("accessToken");
-  axios.post("/logout").then((response) => {
+  axios.post("/logout", {}, { withCredentials: true, credentials: "include" }).then((response) => {
     window.location = "/";
   });
 }
-
-function homepage() {
-  //   window.location = "/";
-  //   return ReactDOM.render(<HomePage />, document.getElementById("root"));
-}
-
 export default SideMenu;

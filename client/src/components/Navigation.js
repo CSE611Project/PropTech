@@ -52,7 +52,7 @@ class Navigation extends React.Component {
 }
 
 function home() {
-  return ReactDOM.render(<HomePage />, document.getElementById("root"));
+  window.location = "/";
 }
 
 function about() {
