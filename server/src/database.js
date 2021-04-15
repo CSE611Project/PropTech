@@ -161,19 +161,16 @@ function deleteTenant(property_id, tenant_id, callback) {
 }
 
 function selectTenant(filter, callback){
-  let sql = `SELECT * FROM tenant`;
+  let sql = `SELECT * FROM tenant WHERE `;
   let keys = Object.keys(filter);
-  if (keys.length > 0) {
-    sql += ` WHERE `;
-    keys.forEach(function(key, index) {
-      if (index + 1 == keys.length){
-        sql += `${key} = ${filter[key]}`
-      } else {
-        sql += `${key} = ${filter[key]} AND `
-      }
-    })
-  }
-
+  keys.forEach(function(key, index) {
+    if (index + 1 == keys.length){
+      sql += `${key} = "${filter[key]}"`
+    } else {
+      sql += `${key} = "${filter[key]}" AND `
+    }
+  })
+  console.log(sql);
   connection.query(sql, function (err, tenantList) {
     if (err) {
       console.log(`not able to select tenantList of ${filter} from database`);
@@ -450,19 +447,15 @@ function selectAllSubmeters(tenant_id, callback) {
 // // filter is a JSON with an list of filter wants to apply when query submeter table
 // // return a list of JSON
 function selectSubmeter(filter, callback){
-  let sql = `SELECT * FROM submeter`;
+  let sql = `SELECT * FROM submeter WHERE `;
   let keys = Object.keys(filter);
-  if (keys.length > 0) {
-    sql += ` WHERE `;
-    keys.forEach(function(key, index) {
-      if (index + 1 == keys.length){
-        sql += `${key} = ${filter[key]}`
-      } else {
-        sql += `${key} = ${filter[key]} AND `
-      }
-    })
-  }
-
+  keys.forEach(function(key, index) {
+    if (index + 1 == keys.length){
+      sql += `${key} = ${filter[key]}`
+    } else {
+      sql += `${key} = ${filter[key]} AND `
+    }
+  })
   connection.query(sql, function (err, result) {
     if (err) {
       console.log(`not able to select list of ${filter} from database`);
@@ -575,25 +568,16 @@ function deleteBill(bill_id, callback) {
 // filter is a JSON with an list of filter wants to apply when query bill table
 // return a list of JSON contains bill list
 function selectBill(filter, callback) {
-  let sql = `SELECT * FROM bill`;
+  let sql = `SELECT * FROM bill WHERE `;
   let keys = Object.keys(filter);
-  if (keys.length > 0){
-    sql += ` WHERE `;
-    keys.forEach(function (key, index) {
-      if (key.localeCompare("from_date") == 0) {
-        sql += `${key} >= ${filter[key]}`;
-      } else if (key.localeCompare("to_date") == 0){
-        sql += `${key} <= ${filter[key]}`;
-      }
-      else{
-        sql += `${key} = ${filter[key]}`
-      }
-      if (index + 1 < keys.length) {
-        sql += ` AND `;
-      }
-    });
-  }
-  // console.log("sql:", sql);
+  keys.forEach(function (key, index) {
+    if (index + 1 == keys.length) {
+      sql += `${key} = ${filter[key]}`;
+    } else {
+      sql += `${key} = ${filter[key]} AND `;
+    }
+  });
+  console.log("sql:", sql);
   connection.query(sql, function (err, billList) {
     if (err) {
       console.log(`not able to select billList of ${filter} from database`);
@@ -700,23 +684,15 @@ function deleteSubmeterBill(submeter_bill_id, callback) {
 // filter is a JSON with an list of filter wants to apply when query submeter_bill table
 // return a list of JSON contains submeter_bill list
 function selectSubmeterBill(filter, callback) {
-  let sql = `SELECT * FROM submeter_bill`;
+  let sql = `SELECT * FROM submeter_bill WHERE `;
   let keys = Object.keys(filter);
-  if (keys.length > 0) {
-    sql += ` WHERE `;
-    keys.forEach(function (key, index) {
-      if (key.localeCompare("from_date") == 0) {
-        sql += `${key} >= ${filter[key]}`;
-      } else if (key.localeCompare("to_date") == 0) {
-        sql += `${key} <= ${filter[key]}`;
-      } else {
-        sql += `${key} = ${filter[key]}`
-      }
-      if (index + 1 < keys.length) {
-        sql += ` AND `;
-      }
-    });
-  }
+  keys.forEach(function (key, index) {
+    if (index + 1 == keys.length) {
+      sql += `${key} = ${filter[key]}`;
+    } else {
+      sql += `${key} = ${filter[key]} AND `;
+    }
+  });
   connection.query(sql, function (err, submeterBillList) {
     if (err) {
       console.log(`not able to select billList of ${filter} from database`);
@@ -729,7 +705,7 @@ function selectSubmeterBill(filter, callback) {
 }
 
 // insert new invoice
-// invoice_info is a JSON contains tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, submeter_charge, multiplier, meter_amt_due, meter_id, total_charge
+// invoice_info is a JSON contains tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, total_charge
 // return true if insert successfully
 // return false if insert failed
 function insertInvoice(invoice_info, callback) {
@@ -742,14 +718,18 @@ function insertInvoice(invoice_info, callback) {
   let has_submeter = invoice_info.has_submeter;
   let submeter_id = invoice_info.submeter_id;
   let unit_charge = invoice_info.unit_charge;
+  let total_charge = invoice_info.total_charge;
+
   let submeter_charge = invoice_info.submeter_charge;
   let multiplier = invoice_info.multiplier;
   let meter_amt_due = invoice_info.meter_amt_due;
   let meter_id = invoice_info.meter_id;
-  let total_charge = invoice_info.total_charge;
 
-  let sql = `INSERT INTO invoice(tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, submeter_charge, multiplier, meter_amt_due, meter_id, total_charge) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
-  let inserts = [tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, submeter_charge, multiplier, meter_amt_due, meter_id, total_charge];
+  let sql = `INSERT INTO invoice(tenant_id, from_date, to_date, prior_read, cur_read, rubs, 
+    has_submeter, submeter_id, unit_charge, total_charge, submeter_charge, multiplier, meter_amt_due, meter_id) 
+    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+  let inserts = [tenant_id, from_date, to_date, prior_read, cur_read, rubs, 
+    has_submeter, submeter_id, unit_charge, total_charge, submeter_charge, multiplier, meter_amt_due, meter_id];
 
   connection.query(sql, inserts, function (err, result) {
     if (err) {
@@ -769,7 +749,7 @@ function insertInvoice(invoice_info, callback) {
 }
 
 // update invoice
-// updated_info is a JSON contains tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, submeter_charge, multiplier, meter_amt_due, meter_id, total_charge
+// updated_info is a JSON contains tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, total_charge
 // return true if update successfully
 // return false if update failed
 function updateInvoice(invoice_id, updated_info, callback) {
@@ -782,14 +762,10 @@ function updateInvoice(invoice_id, updated_info, callback) {
   let has_submeter = updated_info.has_submeter;
   let submeter_id = updated_info.submeter_id;
   let unit_charge = updated_info.unit_charge;
-  let submeter_charge = updated_info.submeter_charge;
-  let multiplier = updated_info.multiplier;
-  let meter_amt_due = updated_info.meter_amt_due;
-  let meter_id = updated_info.meter_id;
   let total_charge = updated_info.total_charge;
 
-  let sql = `UPDATE invoice SET tenant_id = ?, from_date = ?, to_date = ?, prior_read = ?, cur_read = ?, rubs = ?, has_submeter = ?, submeter_id = ?, unit_charge = ?, submeter_charge = ?, multiplier = ?, meter_amt_due = ?, meter_id = ?, total_charge = ? WHERE invoice_id = ?`;
-  let inserts = [tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, submeter_charge, multiplier, meter_amt_due, meter_id, total_charge, invoice_id];
+  let sql = `UPDATE invoice SET tenant_id = ?, from_date = ?, to_date = ?, prior_read = ?, cur_read = ?, rubs = ?, has_submeter = ?, submeter_id = ?, unit_charge = ?, total_charge = ? WHERE invoice_id = ?`;
+  let inserts = [tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, total_charge, invoice_id];
   connection.query(sql, inserts, function (err, result) {
     if (err) {
       console.log(`not able to update invoice info for invoice_id: ${invoice_id}  into database`);
@@ -832,25 +808,21 @@ function deleteInvoice(invoice_id, callback) {
 // filter is a JSON with an list of filter wants to apply when query invoice table
 // return a list of JSON contains invoice list
 function selectInvoice(filter, callback) {
-  let sql = `SELECT * FROM invoice`;
+  let sql = `SELECT * FROM invoice WHERE `;
   let keys = Object.keys(filter);
-  if (keys.length > 0){
-    sql += ` WHERE `;
-    keys.forEach(function (key, index) {
-      if (key.localeCompare("from_date") == 0) {
-        sql += `${key} >= ${filter[key]}`;
-      } else if (key.localeCompare("to_date") == 0){
-        sql += `${key} <= ${filter[key]}`;
-      }
-      else{
-        sql += `${key} = ${filter[key]}`
-      }
-      if (index + 1 < keys.length) {
-        sql += ` AND `;
-      }
-    });
-  }
+  keys.forEach(function (key, index) {
+    if (index + 1 == keys.length) {
 
+      sql += `${key} = "${filter[key]}"`;
+    } else {
+      if(key == "tenant_id"){
+        sql += `${key} in (${filter[key]}) AND `;
+      }else {
+      sql += `${key} = "${filter[key]}" AND `;
+      }
+    }
+  });
+  console.log("new sql:",sql);
   connection.query(sql, function (err, invoiceList) {
     if (err) {
       console.log(`not able to select billList of ${filter} from database`);
