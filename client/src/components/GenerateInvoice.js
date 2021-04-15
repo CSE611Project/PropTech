@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
+import ReactDOM, { render } from "react-dom";
 import "./../App.css";
 import Navigation from "./Navigation.js";
 import HomePage from "./HomePage.js";
@@ -28,6 +28,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { ResourceGroups, Route53Resolver } from "aws-sdk";
+import IndividualTenantInvoice from "./IndividualTenantInvoice"; 
 class GenerateInvoice extends Component {
   constructor(props) {
     super(props);
@@ -41,6 +42,9 @@ class GenerateInvoice extends Component {
       meter_bill_list:[],
       submeter_bill_list:[],
       final_invoice_list: [],
+      tenant_list: [],
+      property_info: "",
+      invoice_list: []
     };
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -81,7 +85,13 @@ class GenerateInvoice extends Component {
         if(response.data.invoice_list == false || response.data.invoice_list.length === 0){
           alert("no invoice in selecting time peirod, make sure  generate invoice first using {Generate Invoice} on the side bar");
           return;
-        }
+        } this.setState({
+          property_info: response.data.property_info,
+          invoice_list: response.data.invoice_list,
+          tenant_list: response.data.tenant_list,
+        }); 
+        // console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh", this.state.property_info);
+        this.forceUpdate();
       });
     });
   }
@@ -243,7 +253,7 @@ class GenerateInvoice extends Component {
       return;
     }else{
     this.invoice_generator();
-
+    this.invoiceHistory();
     }
   }
 
@@ -279,6 +289,11 @@ class GenerateInvoice extends Component {
                     <Button onClick={this.invoiceHistory} color="primary">
                       test invoice history
                     </Button>
+                    {/* <Button
+                    onClick= {to_pdf_page(this.state.invoice_list, this.state.property_info, this.state.tenant_list) }>
+                      bbbb
+                    </Button> */}
+                    
                   </TableCell>
                 </TableRow>
               </TableHead>
@@ -351,5 +366,12 @@ function get_tenant_emailby_tenant_id(tenant_id, all_tenant_list){
     }
   }
   return null;
+}
+
+function to_pdf_page(invoice_list, property_info, tenant_list){
+  console.log("lllllllllllllll", invoice_list);
+  const ele = <IndividualTenantInvoice invoice_list={invoice_list} property_info={property_info} tenant_list={tenant_list}/>;
+  ReactDOM.render(ele, document.getElementById('root'));
+  
 }
 export default GenerateInvoice;

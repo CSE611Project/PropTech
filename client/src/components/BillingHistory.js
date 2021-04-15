@@ -57,8 +57,8 @@ class BillingHistory extends React.Component {
     }
 
     componentDidMount() {
-        this.generateMeterTable();
-        this.generateSubmeterTable();
+        // this.generateMeterTable();
+        // this.generateSubmeterTable();
     }
 
     handleFromDateChange(event) {
@@ -112,10 +112,7 @@ class BillingHistory extends React.Component {
         }
         this.generateMeterTable();
         this.generateSubmeterTable();
-        if(this.state.bill_list.length == 0 || this.state.submeter_bill_list.length == 0){
-            alert("No bills in current time period, please manually input !");
-            return;
-        } 
+        console.log("bill list length:",this.state.bill_list.length);
         console.log(this.state.from_date, this.state.to_date, this.state.bill_list, this.state.submeter_bill_list)
     }
 
@@ -123,6 +120,10 @@ class BillingHistory extends React.Component {
         var resm = [];
         this.getMeterBillList().then(() => {
             var tableData = this.state.bill_list;
+            if(tableData.length == 0){
+                alert("No bills in current time period, please manually input !");
+                return;
+            } 
             console.log(this.state.bill_list)
             for (var i = 0; i < tableData.length; i++) {
                 resm.push(
@@ -146,6 +147,7 @@ class BillingHistory extends React.Component {
         var res = [];
         this.getSubmeterBillList().then(() => {
             var tableData = this.state.submeter_bill_list;
+            
             console.log(this.state.submeter_bill_list)
             for (var i = 0; i < tableData.length; i++) {
                 res.push(

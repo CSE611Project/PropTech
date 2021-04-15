@@ -73,17 +73,20 @@ class UtilityBillSubmeter extends React.Component {
         this.getTenantList().then(() => {
             var res = [];
             let tableData = this.state.tenant_list;
+            var gg = 0;
             for (var i = 0; i < tableData.length; i++) {
                 this.state.tenant_id = tableData[i].tenant_id;
                 this.getSubmeterList().then(() => {
                     let tableDataSub = this.state.submeter_list;
                     for (var j = 0; j < tableDataSub.length; j++) {
+           
                         res.push(
-                            <TableRow key={j} id={j}>
+                            
+                            <TableRow key={gg} id={gg}>
                                 <TableCell>{tableDataSub[j].submeter_id}</TableCell>
-                                <TableCell>{tableDataSub[j].multiplier}</TableCell>
-                                <TableCell>{tableDataSub[j].meter_id}</TableCell>
-                                <TableCell>
+                                {/* <TableCell>{tableDataSub[j].multiplier}</TableCell>
+                                <TableCell>{tableDataSub[j].meter_id}</TableCell> */}
+                                {/* <TableCell>
                                     <SubmeterBill
                                         submeter_id={tableDataSub[j].submeter_id}
                                         tenant_id={tableDataSub[j].tenant_id}
@@ -92,12 +95,17 @@ class UtilityBillSubmeter extends React.Component {
                                         property_id={this.state.property_id}
                                         multiplier={tableDataSub[j].multiplier}
                                     />
-                                </TableCell>
+                                </TableCell> */}
                             </TableRow>
                         );
+                        gg++;
+                        console.log("id ;;;; 0", tableDataSub[j].submeter_id);
+                        console.log("ggg", gg);
                     }
+                
                 });
             }
+            console.log("ressfsafas",res.length);
             this.res = res;
             this.forceUpdate();
         });

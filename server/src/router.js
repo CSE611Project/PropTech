@@ -714,7 +714,7 @@ router.post("/upload_invoice", (req, res) => {
     db.selectInvoice(filter, (results) => {
       console.log("result=",results);
       if(results.length != 0){
-        // console.log("hhhhh");
+         console.log("hhhhh");
         res.json(JSON.parse(JSON.stringify(results)));
       }else {
         // console.log("add to table");
@@ -793,7 +793,7 @@ router.post("/upload_invoice", (req, res) => {
     
         }
 
-
+        res.json(JSON.parse(JSON.stringify(results)));
       }
     });
 
