@@ -13,6 +13,8 @@ import Meters from "./Meters";
 import UtilityBillMeter from "./UtilityBillMeter"
 import UtilityBillSubmeter from "./UtilityBillSubmeter"
 import BillingHistory from "./BillingHistory"
+import InvoiceHistory from "./InvoiceHistory"
+import UtilityBillingHistory from "./UtilityBillingHistory"
 import CollapseSubmeter from "./CollapseSubmeter"
 import { Component } from "react";
 import axios from "axios";
@@ -46,7 +48,7 @@ class TenantInfo extends Component {
       tenant_list: [],
       meter_list: [],
     };
-    this.toManageUtilityBillPage = this.toManageUtilityBillPage.bind(this)
+
     this.getSubmeterList = this.getSubmeterList.bind(this)
     this.generateTableData();
 
@@ -123,56 +125,6 @@ class TenantInfo extends Component {
     });
   }
 
-  toManageUtilityBillPage() {
-    const useStyles = makeStyles((theme) => ({
-      container: {
-        paddingTop: theme.spacing(4),
-        paddingBottom: theme.spacing(4),
-      },
-      paper: {
-        padding: theme.spacing(2),
-        display: 'flex',
-        overflow: 'auto',
-        flexDirection: 'column',
-      },
-      fixedHeight: {
-        height: 240,
-      },
-    }));
-    const ele = <React.Fragment>
-      <Container maxWidth="lg" className={useStyles.container}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={20} lg={9}>
-            <Paper>
-              <BillingHistory
-                className="display_item"
-                property_id={this.state.property_id}
-                tenant_list={this.state.tenant_list}
-                info={this}
-              />
-            </Paper>
-          </Grid>
-          <Grid item xs={12} md={8} lg={9}>
-            <Paper>
-              <UtilityBillMeter className="display_item" property_id={this.state.property_id} info={this} />
-            </Paper>
-          </Grid>
-          <Grid item xs={12} md={8} lg={9}>
-            <Paper>
-              <UtilityBillSubmeter
-                className="display_item"
-                property_id={this.state.property_id}
-                tenant_list={this.state.tenant_list}
-                info={this}
-              />
-            </Paper>
-          </Grid>
-        </Grid>
-      </Container>
-    </React.Fragment>;
-    return ReactDOM.render(ele, document.getElementById("root"));
-  }
-
   render() {
     return (
       <div className="main">
@@ -208,9 +160,6 @@ class TenantInfo extends Component {
               <AddTenant className="display_item" property_id={this.state.property_id} total_footage={this.state.total_footage} info={this} />
             </TableCell>
             <TableCell />
-            <TableCell component={Paper}>
-              <Button color="primary" onClick={this.toManageUtilityBillPage}>Manage Utility Bill</Button>
-            </TableCell>
           </Table>
 
         </TableContainer>
@@ -234,6 +183,18 @@ class TenantInfo extends Component {
             <TableBody>{this.res}</TableBody>
           </Table>
         </TableContainer>
+        {/*<UtilityBillingHistory 
+          className="display_item"
+          property_id={this.state.property_id}
+          tenant_list={this.state.tenant_list}
+          info={this}
+        />
+        <InvoiceHistory 
+          className="display_item"
+          property_id={this.state.property_id}
+          tenant_list={this.state.tenant_list}
+          info={this}
+        />*/}
       </div>
     );
   }

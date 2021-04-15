@@ -8,6 +8,7 @@ import TenantInfo from "./TenantInfo"
 import BillingHistory from "./BillingHistory"
 import UtilityBillMeter from "./UtilityBillMeter"
 import UtilityBillSubmeter from "./UtilityBillSubmeter"
+import GenerateInvoice from "./GenerateInvoice"
 
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -81,12 +82,11 @@ function edit_profile() {
 }
 
 function manage_utility() {
-  const ele = <div></div>
-  return ReactDOM.render(ele, document.getElementById("root"));
+  window.location = `/PropMana/${sessionStorage.getItem("sub")}/property/${sessionStorage.getItem("property_id")}/utility_bill`;
 }
 
 function manage_invoice() {
-  window.location = `/PropMana/${sessionStorage.getItem("sub")}/invoiceHistory`;
+  window.location = `/PropMana/${sessionStorage.getItem("sub")}/property/${sessionStorage.getItem("property_id")}/invoice_history`;
 }
 
 function log_out() {

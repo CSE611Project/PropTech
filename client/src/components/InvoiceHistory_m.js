@@ -25,6 +25,8 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
+import { Tab } from "@material-ui/core";
+import Button from "@material-ui/core/Button";
 
 class InvoiceHistory_m extends React.Component {
   constructor(props) {
@@ -41,9 +43,18 @@ class InvoiceHistory_m extends React.Component {
       total_kwh_usage: "",
       total_charge: "",
       unit_charge: "",
+      meter_invoice_list: [],
+      property_id: this.props.property_id,
+      tenant_list: this.props.tenant_list
     };
     this.handleFromDateChange = this.handleFromDateChange.bind(this);
     this.handleToDateChange = this.handleToDateChange.bind(this);
+    this.getMeterInvoiceList = this.getMeterInvoiceList.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    this.generateMeterTable();
   }
 
   handleFromDateChange(event) {
@@ -68,11 +79,52 @@ class InvoiceHistory_m extends React.Component {
     );
   }
 
+  getMeterInvoiceList() {
+    return new Promise((resolve, reject) => {
+      axios.get(`/history_meterinvoice_list/${this.state.property_id}/${this.state.from_date}/${this.state.to_date}
+        `).then((response) => {
+        console.log("response from database: ", response.data);
+        this.setState({ meter_invoice_list: response.data }, () => {
+          console.log("meter invoice list", this.state.meter_invoice_list);
+          resolve();
+        });
+      });
+    });
+  }
+
+  generateMeterTable() {
+    var res = [];
+    this.getMeterInvoiceList().then(() => {
+      var tableData = this.state.meter_invoice_list;
+      console.log(this.state.meter_invoice_list)
+      for (var i = 0; i < tableData.length; i++) {
+        res.push(
+          <TableRow key={i} id={i}>
+            <TableCell>{tableData[i].invoice_id}</TableCell>
+            <TableCell>{tableData[i].name}</TableCell>
+            <TableCell>{tableData[i].from_date}</TableCell>
+            <TableCell>{tableData[i].to_date}</TableCell>
+            <TableCell>{tableData[i].total_kwh_usage}</TableCell>
+            <TableCell>{tableData[i].rubs}</TableCell>
+            <TableCell>{tableData[i].tenantFt}</TableCell>
+            <TableCell>{tableData[i].total_footage}</TableCell>
+          </TableRow>
+        );
+      }
+      this.res = res;
+      this.forceUpdate();
+    });
+  }
+
+  onSubmit() {
+    this.generateMeterTable();
+  }
+
   render() {
     return (
       <React.Fragment>
         <Typography component="h2" variant="h6" color="primary" gutterBottom>
-          Invoice meter Statement History
+          Meter Invoice Statement History
         </Typography>
         <form noValidate>
           <TextField
@@ -96,38 +148,24 @@ class InvoiceHistory_m extends React.Component {
             onChange={this.handleToDateChange}
           />
         </form>
-
+        <Button onClick={this.onSubmit} color="primary">
+          Show
+        </Button>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>Invoice ID</TableCell>
               <TableCell>Tenant Name</TableCell>
-              <TableCell>Address</TableCell>
-              <TableCell>Meter ID</TableCell>
-              <TableCell>RUB</TableCell>
-              <TableCell>Unit Charge $</TableCell>
-              <TableCell>Total Charge $</TableCell>
+              <TableCell>From</TableCell>
+              <TableCell>To</TableCell>
+              <TableCell>RUBS</TableCell>
+              <TableCell>User Footage</TableCell>
+              <TableCell>Total Footage</TableCell>
+              <TableCell>Total Amount Due</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            <TableRow>
-              <TableCell>101026</TableCell>
-              <TableCell>101026</TableCell>
-              <TableCell>111</TableCell>
-              <TableCell>1234</TableCell>
-              <TableCell>245</TableCell>
-              <TableCell>1</TableCell>
-              <TableCell>3000</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>101026</TableCell>
-              <TableCell>101026</TableCell>
-              <TableCell>101026</TableCell>
-              <TableCell>1234</TableCell>
-              <TableCell>200</TableCell>
-              <TableCell>425</TableCell>
-              <TableCell>19.87</TableCell>
-            </TableRow>
+            {this.res}
           </TableBody>
         </Table>
       </React.Fragment>

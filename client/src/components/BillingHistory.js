@@ -106,8 +106,16 @@ class BillingHistory extends React.Component {
     }
 
     onSubmit() {
+        if(this.state.from_date == "" || this.state.to_date == ""){
+            alert("please select a time period");
+            return;
+        }
         this.generateMeterTable();
         this.generateSubmeterTable();
+        if(this.state.bill_list.length == 0 || this.state.submeter_bill_list.length == 0){
+            alert("No bills in current time period, please manually input !");
+            return;
+        } 
         console.log(this.state.from_date, this.state.to_date, this.state.bill_list, this.state.submeter_bill_list)
     }
 
@@ -121,8 +129,8 @@ class BillingHistory extends React.Component {
                     <TableRow key={i} id={i}>
                         <TableCell>{tableData[i].bill_id}</TableCell>
                         <TableCell>{tableData[i].meter_id}</TableCell>
-                        <TableCell>{tableData[i].from_date}</TableCell>
-                        <TableCell>{tableData[i].to_date}</TableCell>
+                        <TableCell>{tableData[i].from_date.split("T")[0]}</TableCell>
+                        <TableCell>{tableData[i].to_date.split("T")[0]}</TableCell>
                         <TableCell>{tableData[i].total_kwh_usage}</TableCell>
                         <TableCell>{tableData[i].unit_charge}</TableCell>
                         <TableCell>{tableData[i].total_charge}</TableCell>
@@ -143,6 +151,7 @@ class BillingHistory extends React.Component {
                 res.push(
                     <TableRow key={i} id={i}>
                         <TableCell>{tableData[i].submeter_bill_id}</TableCell>
+                        <TableCell>{tableData[i].bill_id}</TableCell>
                         <TableCell>{tableData[i].submeter_id}</TableCell>
                         <TableCell>{tableData[i].prior_read}</TableCell>
                         <TableCell>{tableData[i].cur_read}</TableCell>
@@ -160,37 +169,26 @@ class BillingHistory extends React.Component {
             <React.Fragment>
                 <Typography component="h2" variant="h6" color="primary" gutterBottom>Billing History</Typography>
                 <form noValidate>
-                    <table>
-                        <td>
-                            <TextField
-                                id="from_date"
-                                label="From"
-                                type="date"
-                                defaultValue={this.state.from_date}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                                onChange={this.handleFromDateChange}
-                            />
-                        </td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                            <TextField
-                                id="to_date"
-                                label="To"
-                                type="date"
-                                defaultValue={this.state.to_date}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                                onChange={this.handleToDateChange}
-                            />
-                        </td>
-                    </table>
+                    <TextField
+                        id="from_date"
+                        label="From"
+                        type="date"
+                        defaultValue={this.state.from_date}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        onChange={this.handleFromDateChange}
+                    />
+                    <TextField
+                        id="to_date"
+                        label="To"
+                        type="date"
+                        defaultValue={this.state.to_date}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        onChange={this.handleToDateChange}
+                    />
                 </form>
                 <DialogContentText />
                 <Button onClick={this.onSubmit} color="primary">
@@ -224,6 +222,7 @@ class BillingHistory extends React.Component {
                     <TableHead>
                         <TableRow>
                             <TableCell>Submeter Bill ID</TableCell>
+                            <TableCell>Associate with Bill ID:</TableCell>
                             <TableCell>Submeter</TableCell>
                             <TableCell>Prior Read</TableCell>
                             <TableCell>Current Read</TableCell>
