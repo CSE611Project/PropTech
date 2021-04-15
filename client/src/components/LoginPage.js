@@ -32,6 +32,8 @@ class LoginPage extends React.Component {
     this.state = {
       email: "",
       password: "",
+      errorMessage: "",
+      errors: ""
     };
 
     this.changeEmail = this.changeEmail.bind(this);
@@ -64,7 +66,7 @@ class LoginPage extends React.Component {
     };
     var cognitoUser = new cognito.CognitoUser(userDetails);
     cognitoUser.authenticateUser(authenticationDetails, {
-      onSuccess: function (result) {
+      onSuccess:(result) => {
         console.log(result);
         axios
           .post("/auth", {
@@ -89,14 +91,23 @@ class LoginPage extends React.Component {
               adminaftersign();
             }
           });
+          this.setState({
+            errors: false
+          })
       },
-      onFailure: function (err) {
+      onFailure: (err) => {
         console.log(err);
-      },
+        this.setState({
+          errorMessage: err.message,
+          errors: true
+        })
+      }
     });
   }
 
   render() {
+    var isError = this.state.errors;
+    var message = this.state.errorMessage;
     return (
       <div>
         <div className="LoginPage">
@@ -105,13 +116,29 @@ class LoginPage extends React.Component {
               <Typography component="h1" variant="h1" color="primary">
                 PropTech
               </Typography>
-
-              {/*<label className="EmailLabel">Email</label>
-              <input type="text" placeholder="Email" onChange={this.changeEmail} value={this.state.email} required />*/}
-              <TextField autoFocus margin="dense" id="email" label="Enter your email" type="text" onChange={this.changeEmail} value={this.state.email} />
-              {/*<label className="PasswordLabel">Password</label>
-              <input type="password" placeholder="Password" onChange={this.changePassword} value={this.state.password} required />*/}
-              <TextField autoFocus margin="dense" id="password" label="Password" type="password" onChange={this.changePassword} value={this.state.password} />
+              <TextField 
+                autoFocus 
+                margin="dense" 
+                id="email" 
+                label="Enter your email" 
+                type="text" 
+                onChange={this.changeEmail} 
+                value={this.state.email} 
+                error={this.state.errors}
+                required
+              />
+              <TextField 
+                autoFocus 
+                margin="dense" 
+                id="password" 
+                label="Password" 
+                type="password" 
+                onChange={this.changePassword} 
+                value={this.state.password} 
+                helperText={isError ? message : null}
+                error={this.state.errors}
+                required
+              />
               <Button color="primary" type="submit" value="submit">
                 Login
               </Button>
