@@ -165,11 +165,12 @@ function selectTenant(filter, callback){
   let keys = Object.keys(filter);
   keys.forEach(function(key, index) {
     if (index + 1 == keys.length){
-      sql += `${key} = ${filter[key]}`
+      sql += `${key} = "${filter[key]}"`
     } else {
-      sql += `${key} = ${filter[key]} AND `
+      sql += `${key} = "${filter[key]}" AND `
     }
   })
+  console.log(sql);
   connection.query(sql, function (err, tenantList) {
     if (err) {
       console.log(`not able to select tenantList of ${filter} from database`);
@@ -191,6 +192,19 @@ function selectAllProperties(user_id, callback) {
       callback(false);
     } else {
       console.log(`user_id: ${user_id} property list returned`);
+      callback(propertyList);
+    }
+  });
+}
+function selectProperty(property_id, callback) {
+  let sql = `SELECT * FROM property WHERE property_id = ?`;
+  let inserts = [property_id];
+  connection.query(sql, inserts, function (err, propertyList) {
+    if (err) {
+      console.log(`not able to select property of property_id: ${property_id} from database`);
+      callback(false);
+    } else {
+      console.log(`property_id: ${property_id} property list returned`);
       callback(propertyList);
     }
   });
@@ -706,8 +720,16 @@ function insertInvoice(invoice_info, callback) {
   let unit_charge = invoice_info.unit_charge;
   let total_charge = invoice_info.total_charge;
 
-  let sql = `INSERT INTO invoice(tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, total_charge) VALUES(?,?,?,?,?,?,?,?,?,?)`;
-  let inserts = [tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, total_charge];
+  let submeter_charge = invoice_info.submeter_charge;
+  let multiplier = invoice_info.multiplier;
+  let meter_amt_due = invoice_info.meter_amt_due;
+  let meter_id = invoice_info.meter_id;
+
+  let sql = `INSERT INTO invoice(tenant_id, from_date, to_date, prior_read, cur_read, rubs, 
+    has_submeter, submeter_id, unit_charge, total_charge, submeter_charge, multiplier, meter_amt_due, meter_id) 
+    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+  let inserts = [tenant_id, from_date, to_date, prior_read, cur_read, rubs, 
+    has_submeter, submeter_id, unit_charge, total_charge, submeter_charge, multiplier, meter_amt_due, meter_id];
 
   connection.query(sql, inserts, function (err, result) {
     if (err) {
@@ -790,11 +812,17 @@ function selectInvoice(filter, callback) {
   let keys = Object.keys(filter);
   keys.forEach(function (key, index) {
     if (index + 1 == keys.length) {
-      sql += `${key} = ${filter[key]}`;
+
+      sql += `${key} = "${filter[key]}"`;
     } else {
-      sql += `${key} = ${filter[key]} AND `;
+      if(key == "tenant_id"){
+        sql += `${key} in (${filter[key]}) AND `;
+      }else {
+      sql += `${key} = "${filter[key]}" AND `;
+      }
     }
   });
+  console.log("new sql:",sql);
   connection.query(sql, function (err, invoiceList) {
     if (err) {
       console.log(`not able to select billList of ${filter} from database`);
@@ -950,11 +978,12 @@ function selectBillWithProperty(filter, callback) {
   let keys = Object.keys(filter);
   keys.forEach(function (key, index) {
     if (index + 1 == keys.length) {
-      sql += `${key} = ${filter[key]}`;
+      sql += `${key} = "${filter[key]}"`;
     } else {
-      sql += `${key} = ${filter[key]} AND `;
+      sql += `${key} = "${filter[key]}" AND `;
     }
   });
+  console.log(sql);
   connection.query(sql, function (err, invoiceList) {
     if (err) {
       console.log(`not able to select billList of ${filter} from database`);
@@ -962,6 +991,7 @@ function selectBillWithProperty(filter, callback) {
     } else {
       console.log(`${filter} billList returned`);
       callback(invoiceList);
+      console.log("invoiceList",invoiceList);
     }
   });
 }
@@ -982,6 +1012,7 @@ exports.selectAllProperties = selectAllProperties;
 exports.insertProperty = insertProperty;
 exports.updateProperty = updateProperty;
 exports.deleteProperty = deleteProperty;
+exports.selectProperty = selectProperty;
 
 exports.selectAllMeters = selectAllMeters;
 exports.insertMeter = insertMeter;

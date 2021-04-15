@@ -16,6 +16,7 @@ import BillingHistory from "./BillingHistory";
 import CollapseSubmeter from "./CollapseSubmeter";
 import { Component } from "react";
 import axios from "axios";
+
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -39,7 +40,7 @@ class TenantInfo extends Component {
     super(props);
     this.state = {
       display: this.props.display,
-      property_id: this.props.property_id,
+      property_id: sessionStorage.getItem("property_id"),
       property_name: sessionStorage.getItem("property_name"),
       total_footage: sessionStorage.getItem("total_footage"),
       tenant_list: [],
@@ -93,7 +94,7 @@ class TenantInfo extends Component {
               />
             </TableCell>
             <TableCell>
-              <DeleteTenant tenant_id={this.state.tenant_list[i].tenant_id} info={this} property_id={this.state.property_id} />
+              <DeleteTenant tenant_id={this.state.tenant_list[i].tenant_id} info={this} />
             </TableCell>
             <TableCell>
               <Submeters
@@ -209,12 +210,9 @@ class TenantInfo extends Component {
                 <TableCell>Landlord Phone</TableCell>
                 <TableCell>RUBS</TableCell>
                 <TableCell />
-                <TableCell>
-                  <Meters className="display_item" property_id={this.state.property_id} info={this} />
-                </TableCell>
-                <TableCell>
-                  <AddTenant className="display_item" property_id={this.state.property_id} total_footage={this.state.total_footage} info={this} />
-                </TableCell>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TableCell />
               </TableRow>
             </TableHead>
             <TableBody>{this.res}</TableBody>
