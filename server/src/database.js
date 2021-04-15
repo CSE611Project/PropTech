@@ -161,15 +161,19 @@ function deleteTenant(property_id, tenant_id, callback) {
 }
 
 function selectTenant(filter, callback){
-  let sql = `SELECT * FROM tenant WHERE `;
+  let sql = `SELECT * FROM tenant`;
   let keys = Object.keys(filter);
-  keys.forEach(function(key, index) {
-    if (index + 1 == keys.length){
-      sql += `${key} = ${filter[key]}`
-    } else {
-      sql += `${key} = ${filter[key]} AND `
-    }
-  })
+  if (keys.length > 0) {
+    sql += ` WHERE `;
+    keys.forEach(function(key, index) {
+      if (index + 1 == keys.length){
+        sql += `${key} = ${filter[key]}`
+      } else {
+        sql += `${key} = ${filter[key]} AND `
+      }
+    })
+  }
+
   connection.query(sql, function (err, tenantList) {
     if (err) {
       console.log(`not able to select tenantList of ${filter} from database`);
@@ -691,7 +695,7 @@ function selectSubmeterBill(filter, callback) {
 }
 
 // insert new invoice
-// invoice_info is a JSON contains tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, total_charge
+// invoice_info is a JSON contains tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, submeter_charge, multiplier, meter_amt_due, meter_id, total_charge
 // return true if insert successfully
 // return false if insert failed
 function insertInvoice(invoice_info, callback) {
@@ -704,10 +708,14 @@ function insertInvoice(invoice_info, callback) {
   let has_submeter = invoice_info.has_submeter;
   let submeter_id = invoice_info.submeter_id;
   let unit_charge = invoice_info.unit_charge;
+  let submeter_charge = invoice_info.submeter_charge;
+  let multiplier = invoice_info.multiplier;
+  let meter_amt_due = invoice_info.meter_amt_due;
+  let meter_id = invoice_info.meter_id;
   let total_charge = invoice_info.total_charge;
 
-  let sql = `INSERT INTO invoice(tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, total_charge) VALUES(?,?,?,?,?,?,?,?,?,?)`;
-  let inserts = [tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, total_charge];
+  let sql = `INSERT INTO invoice(tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, submeter_charge, multiplier, meter_amt_due, meter_id, total_charge) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+  let inserts = [tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, submeter_charge, multiplier, meter_amt_due, meter_id, total_charge];
 
   connection.query(sql, inserts, function (err, result) {
     if (err) {
@@ -727,7 +735,7 @@ function insertInvoice(invoice_info, callback) {
 }
 
 // update invoice
-// updated_info is a JSON contains tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, total_charge
+// updated_info is a JSON contains tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, submeter_charge, multiplier, meter_amt_due, meter_id, total_charge
 // return true if update successfully
 // return false if update failed
 function updateInvoice(invoice_id, updated_info, callback) {
@@ -740,10 +748,14 @@ function updateInvoice(invoice_id, updated_info, callback) {
   let has_submeter = updated_info.has_submeter;
   let submeter_id = updated_info.submeter_id;
   let unit_charge = updated_info.unit_charge;
+  let submeter_charge = updated_info.submeter_charge;
+  let multiplier = updated_info.multiplier;
+  let meter_amt_due = updated_info.meter_amt_due;
+  let meter_id = updated_info.meter_id;
   let total_charge = updated_info.total_charge;
 
-  let sql = `UPDATE invoice SET tenant_id = ?, from_date = ?, to_date = ?, prior_read = ?, cur_read = ?, rubs = ?, has_submeter = ?, submeter_id = ?, unit_charge = ?, total_charge = ? WHERE invoice_id = ?`;
-  let inserts = [tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, total_charge, invoice_id];
+  let sql = `UPDATE invoice SET tenant_id = ?, from_date = ?, to_date = ?, prior_read = ?, cur_read = ?, rubs = ?, has_submeter = ?, submeter_id = ?, unit_charge = ?, submeter_charge = ?, multiplier = ?, meter_amt_due = ?, meter_id = ?, total_charge = ? WHERE invoice_id = ?`;
+  let inserts = [tenant_id, from_date, to_date, prior_read, cur_read, rubs, has_submeter, submeter_id, unit_charge, submeter_charge, multiplier, meter_amt_due, meter_id, total_charge, invoice_id];
   connection.query(sql, inserts, function (err, result) {
     if (err) {
       console.log(`not able to update invoice info for invoice_id: ${invoice_id}  into database`);
