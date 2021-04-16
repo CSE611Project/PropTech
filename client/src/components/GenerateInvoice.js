@@ -33,7 +33,7 @@ class GenerateInvoice extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      property_id: 10,
+      property_id: this.props.property_id,
       begin: "",
       end: "",
       open: false,

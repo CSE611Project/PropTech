@@ -60,7 +60,7 @@ class SideMenu extends Component {
                 <a href="#" onClick={manage_invoice}>
                   Manage Invoice History
                 </a>
-                <GenerateInvoice property_id={this.state.property_id} />
+                <GenerateInvoice property_id={sessionStorage.getItem("property_id")} />
               </div>
             ) : null}
             <a href="#" onClick={log_out}>
