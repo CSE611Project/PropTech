@@ -1,22 +1,39 @@
-import React from "react";
+import React, { useState } from "react";
+import ReactDOM, { render } from "react-dom";
 import "./../App.css";
+import Navigation from "./Navigation.js";
+import HomePage from "./HomePage.js";
+import PropManaAfterSign from "./PropManaAfterSign.js";
+import PropertyInfo from "./PropertyInfo.js";
+import EditTenant from "./EditTenant";
+import AddTenant from "./AddTenant";
+import DeleteTenant from "./DeleteTenant";
+import Submeters from "./Submeters";
+import Meters from "./Meters";
 import { Component } from "react";
 import axios from "axios";
 import Button from "@material-ui/core/Button";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
 import DatePicker from "./DatePicker.js";
+import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-
+import { ResourceGroups, Route53Resolver } from "aws-sdk";
+import IndividualTenantInvoice from "./IndividualTenantInvoice";
 class GenerateInvoice extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      property_id: 10,
+      property_id: this.props.property_id,
       begin: "",
       end: "",
       open: false,
@@ -25,6 +42,9 @@ class GenerateInvoice extends Component {
       meter_bill_list: [],
       submeter_bill_list: [],
       final_invoice_list: [],
+      tenant_list: [],
+      property_info: "",
+      invoice_list: [],
     };
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -66,6 +86,13 @@ class GenerateInvoice extends Component {
           alert("no invoice in selecting time peirod, make sure  generate invoice first using {Generate Invoice} on the side bar");
           return;
         }
+        this.setState({
+          property_info: response.data.property_info,
+          invoice_list: response.data.invoice_list,
+          tenant_list: response.data.tenant_list,
+        });
+        // console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh", this.state.property_info);
+        this.forceUpdate();
       });
     });
   }
@@ -74,9 +101,13 @@ class GenerateInvoice extends Component {
     return new Promise((resolve, reject) => {
       axios.post("/upload_invoice", { final_invoice_list: final_invoice_list }).then((response) => {
         console.log("response", response.data);
-        if (response.data.length > 0) {
+        if (response.data.length != 0) {
           alert("This month's invoices were generated previously, please checkout invoice history");
           return;
+        } else {
+          console.log("nnnnnno");
+
+          alert("Done ! ! !  now you can check invoice in {Manage Invoice History}");
         }
       });
     });
@@ -202,8 +233,10 @@ class GenerateInvoice extends Component {
     });
     if (this.state.from_date == "" || this.state.to_date == "") {
       alert("please select a time period");
+      return;
     } else {
       this.invoice_generator();
+      this.invoiceHistory();
     }
   }
 
@@ -236,6 +269,10 @@ class GenerateInvoice extends Component {
                     <Button onClick={this.invoiceHistory} color="primary">
                       test invoice history
                     </Button>
+                    {/* <Button
+                    onClick= {to_pdf_page(this.state.invoice_list, this.state.property_info, this.state.tenant_list) }>
+                      bbbb
+                    </Button> */}
                   </TableCell>
                 </TableRow>
               </TableHead>
@@ -303,5 +340,11 @@ function get_tenant_emailby_tenant_id(tenant_id, all_tenant_list) {
     }
   }
   return null;
+}
+
+function to_pdf_page(invoice_list, property_info, tenant_list) {
+  console.log("lllllllllllllll", invoice_list);
+  const ele = <IndividualTenantInvoice invoice_list={invoice_list} property_info={property_info} tenant_list={tenant_list} />;
+  ReactDOM.render(ele, document.getElementById("root"));
 }
 export default GenerateInvoice;

@@ -10,6 +10,7 @@ import Navigation from "./components/NavigationBar/Navigation.js";
 import Abouts from "./components/NavigationBar/About.js";
 import AdminAfterSign from "./components/Admin/AdminAfterSign.js";
 import PropManaAfterSign from "./components/PropMana/PropManaAfterSign.js";
+import IndividualTenantInvoice from "./components/IndividualTenantInvoice";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import axios from "axios";
 
@@ -32,13 +33,18 @@ function App() {
           <Route exact path="/PropMana/:sub" component={PropManaAfterSign} />
           <Route exact path="/PropMana/:sub/property" component={PropManaAfterSign} />
           <Route exact path="/PropMana/:sub/property/:property_id" component={PropManaAfterSign} />
-          <Route exact path="/PropMana/:sub/invoiceHistory" component={PropManaAfterSign} />
+          <Route exact path="/PropMana/:sub/property/:property_id/invoice_history" component={PropManaAfterSign} />
+          <Route exact path="/PropMana/:sub/property/:property_id/utility_bill" component={PropManaAfterSign} />
           <Route exact path="/PropMana/:sub/user_info" component={PropManaAfterSign} />
+          <Route exact path="/PropMana/:sub/property/:propertyId/individual_tenant_invoice" component={IndividualTenantInvoice} />
           <Route exact path="/Admin/PropMana/:sub" component={PropManaAfterSign} />
           <Route exact path="/Admin/PropMana/:sub/property" component={PropManaAfterSign} />
           <Route exact path="/Admin/PropMana/:sub/property/:property_id" component={PropManaAfterSign} />
           <Route exact path="/Admin/PropMana/:sub/invoiceHistory" component={PropManaAfterSign} />
-          <Route exact path="/Admin/PropMana/:sub/user_info" component={PropManaAfterSign} />
+          <Route exact path="/Admin/PropMana/:sub/property/:property_id/invoice_history" component={PropManaAfterSign} />
+          <Route exact path="/Admin/PropMana/:sub/property/:property_id/utility_bill" component={PropManaAfterSign} />
+          <Route exact path="/Admin/PropMana/:sub/user_info" component={PropManaAfterSign} /> {/*  TODO unused */}
+          <Route exact path="/Admin/PropMana/:sub/property/:propertyId/individual_tenant_invoice" component={IndividualTenantInvoice} />
           <Route exact path="/RegProcess" component={RegProcess} />
           <Route exact path="/ResetPassword" component={ResetPassword} />
           <Route exact path="/ResetProcess" component={ResetProcess} />

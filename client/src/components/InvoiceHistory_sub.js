@@ -1,7 +1,7 @@
 import "date-fns";
 import React from "react";
 import "./../App.css";
-
+import axios from "axios";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -9,6 +9,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
 
 class InvoiceHistory_sub extends React.Component {
   constructor(props) {
@@ -25,9 +26,18 @@ class InvoiceHistory_sub extends React.Component {
       total_kwh_usage: "",
       total_charge: "",
       unit_charge: "",
+      submeter_invoice_list: [],
+      property_id: this.props.property_id,
+      tenant_list: this.props.tenant_list,
     };
     this.handleFromDateChange = this.handleFromDateChange.bind(this);
     this.handleToDateChange = this.handleToDateChange.bind(this);
+    this.getSubmeterInvoiceList = this.getSubmeterInvoiceList.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    this.generateSubmeterTable();
   }
 
   handleFromDateChange(event) {
@@ -52,11 +62,53 @@ class InvoiceHistory_sub extends React.Component {
     );
   }
 
+  getSubmeterInvoiceList() {
+    return new Promise((resolve, reject) => {
+      axios
+        .get(
+          `/history_submeterinvoice_list/${this.state.property_id}/${this.state.from_date}/${this.state.to_date}
+        `
+        )
+        .then((response) => {
+          console.log("response from database: ", response.data);
+          this.setState({ submeter_invoice_list: response.data }, () => {
+            console.log("submeter invoice list", this.state.submeter_invoice_list);
+            resolve();
+          });
+        });
+    });
+  }
+
+  generateSubmeterTable() {
+    var res = [];
+    this.getSubmeterInvoiceList().then(() => {
+      var tableData = this.state.submeter_invoice_list;
+      console.log(this.state.submeter_invoice_list);
+      for (var i = 0; i < tableData.length; i++) {
+        res.push(
+          <TableRow key={i} id={i}>
+            <TableCell>{tableData[i].invoice_id}</TableCell>
+            <TableCell>{tableData[i].name}</TableCell>
+            <TableCell>{tableData[i].from_date}</TableCell>
+            <TableCell>{tableData[i].to_date}</TableCell>
+            <TableCell>{tableData[i].total_footage}</TableCell>
+          </TableRow>
+        );
+      }
+      this.res = res;
+      this.forceUpdate();
+    });
+  }
+
+  onSubmit() {
+    this.generateSubmeterTable();
+  }
+
   render() {
     return (
       <React.Fragment>
         <Typography component="h2" variant="h6" color="primary" gutterBottom>
-          Invoice submeter Statement History
+          Submeter Invoice Statement History
         </Typography>
         <form noValidate>
           <TextField
@@ -81,43 +133,21 @@ class InvoiceHistory_sub extends React.Component {
             onChange={this.handleToDateChange}
           />
         </form>
+        <Button onClick={this.onSubmit} color="primary">
+          Show
+        </Button>
 
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>Invoice ID</TableCell>
               <TableCell>Tenant Name</TableCell>
-              <TableCell>Address</TableCell>
-              <TableCell>Submeter ID</TableCell>
-              <TableCell>Current Read</TableCell>
-              <TableCell>Prior Read</TableCell>
-              <TableCell>Unit Charge $</TableCell>
-              <TableCell>Total Charge $</TableCell>
+              <TableCell>From</TableCell>
+              <TableCell>To</TableCell>
+              <TableCell>Total Amount Due</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell>101026</TableCell>
-              <TableCell>101026</TableCell>
-              <TableCell>101026</TableCell>
-              <TableCell>1234</TableCell>
-              <TableCell>245</TableCell>
-              <TableCell>7000</TableCell>
-              <TableCell>101026</TableCell>
-              <TableCell>19.87</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>101026</TableCell>
-              <TableCell>101026</TableCell>
-              <TableCell>101026</TableCell>
-              <TableCell>101026</TableCell>
-              <TableCell>200</TableCell>
-
-              <TableCell>1234</TableCell>
-              <TableCell>425</TableCell>
-              <TableCell>19.87</TableCell>
-            </TableRow>
-          </TableBody>
+          <TableBody>{this.res}</TableBody>
         </Table>
       </React.Fragment>
     );

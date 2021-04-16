@@ -31,8 +31,9 @@ class TenantInfo extends Component {
       tenant_list: [],
       meter_list: [],
     };
-    this.toManageUtilityBillPage = this.toManageUtilityBillPage.bind(this);
-    // this.getSubmeterList = this.getSubmeterList.bind(this); TODO maybe delete
+    this.generateTableData = this.generateTableData.bind(this);
+    this.getTenantList = this.getTenantList.bind(this);
+    this.getSubmeterList = this.getSubmeterList.bind(this);
     this.generateTableData();
   }
 
@@ -45,14 +46,14 @@ class TenantInfo extends Component {
     });
   }
 
-  // getSubmeterList() {      TODO maybe delete
-  //   return new Promise((resolve, reject) => {
-  //     axios.get(`/submeter/${this.state.tenant_id}/${this.props.sub}`).then((response) => {
-  //       this.setState({ submeter_list: response.data });
-  //       resolve();
-  //     });
-  //   });
-  // }
+  getSubmeterList() {
+    return new Promise((resolve, reject) => {
+      axios.get(`/submeter/${this.state.tenant_id}/${this.props.sub}`).then((response) => {
+        this.setState({ submeter_list: response.data });
+        resolve();
+      });
+    });
+  }
 
   generateTableData() {
     this.getTenantList().then(() => {
@@ -90,48 +91,6 @@ class TenantInfo extends Component {
       }
       this.forceUpdate();
     });
-  }
-
-  toManageUtilityBillPage() {
-    const useStyles = makeStyles((theme) => ({
-      container: {
-        paddingTop: theme.spacing(4),
-        paddingBottom: theme.spacing(4),
-      },
-      paper: {
-        padding: theme.spacing(2),
-        display: "flex",
-        overflow: "auto",
-        flexDirection: "column",
-      },
-      fixedHeight: {
-        height: 240,
-      },
-    }));
-    const ele = (
-      <React.Fragment>
-        <Container maxWidth="lg" className={useStyles.container}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={20} lg={9}>
-              <Paper>
-                <BillingHistory className="display_item" property_id={this.props.property_id} tenant_list={this.state.tenant_list} info={this} />
-              </Paper>
-            </Grid>
-            <Grid item xs={12} md={8} lg={9}>
-              <Paper>
-                <UtilityBillMeter className="display_item" property_id={this.props.property_id} info={this} />
-              </Paper>
-            </Grid>
-            <Grid item xs={12} md={8} lg={9}>
-              <Paper>
-                <UtilityBillSubmeter className="display_item" property_id={this.props.property_id} tenant_list={this.state.tenant_list} info={this} />
-              </Paper>
-            </Grid>
-          </Grid>
-        </Container>
-      </React.Fragment>
-    );
-    return ReactDOM.render(ele, document.getElementById("root"));
   }
 
   render() {

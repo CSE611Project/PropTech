@@ -648,6 +648,59 @@ router.get("/meterbill_list/:meter_id?/:sub?", (req, res) => {
     });
   });
 });
+router.get("/history_meterbill_list/:property_id?/:from_date?/:to_date?/:sub?", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.params.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+    var filter = {
+      property_id: Number(req.params.property_id),
+      from_date: String(req.params.from_date),
+      to_date: String(req.params.to_date),
+    };
+    db.selectBillWithProperty(filter, (result) => {
+      console.log(result);
+      res.json(result);
+    });
+  });
+});
+
+router.get("/history_submeterbill_list/:property_id?/:from_date?/:to_date?/:sub?", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.params.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+    var filter = {
+      property_id: Number(req.params.property_id),
+      from_date: req.params.from_date,
+      to_date: req.params.to_date,
+    };
+    db.selectMeterSubmeterBillByProperty(filter.property_id, filter.from_date, filter.to_date, (result) => {
+      console.log(result);
+      res.json(result);
+    });
+  });
+});
 
 router.post("/upload_invoice", (req, res) => {
   verifyClient(req, res, (accessData, idData) => {
@@ -740,6 +793,7 @@ router.post("/upload_invoice", (req, res) => {
             }
           }
         }
+        res.json(JSON.parse(JSON.stringify(results)));
       }
     });
   });
@@ -750,6 +804,49 @@ router.post("/invoice_history", (req, res) => {
     var sub;
     if (accessData["cognito:groups"][0] == "Admin") {
       sub = req.body.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+    db.selectAllTenants(req.body.property_id, (results1) => {
+      var tenant_list = JSON.parse(JSON.stringify(results1));
+      console.log("tenant_list length: ", tenant_list.length);
+      db.selectProperty(req.body.property_id, (results3) => {
+        var list = [];
+        for (var i = 0; i < tenant_list.length; i++) {
+          list.push(Number(tenant_list[i].tenant_id));
+        }
+        var filter = {
+          tenant_id: list,
+          from_date: req.body.from_date.split("T")[0],
+          to_date: req.body.to_date.split("T")[0],
+        };
+        db.selectInvoice(filter, (results2) => {
+          console.log("invoice length", results2.length);
+          var output = {
+            tenant_list: JSON.parse(JSON.stringify(results1)),
+            invoice_list: JSON.parse(JSON.stringify(results2)),
+            property_info: JSON.parse(JSON.stringify(results3)),
+          };
+          res.json(output);
+          // console.log(results);
+        });
+      });
+    });
+  });
+});
+
+router.get("/history_meterinvoice_list/:property_id?/:from_date?/:to_date?/:sub?", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.params.sub;
     } else if (accessData["cognito:groups"][0] == "PropertyManager") {
       sub = accessData.sub;
     } else {

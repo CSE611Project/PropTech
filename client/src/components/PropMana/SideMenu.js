@@ -5,13 +5,8 @@ import GenerateInvoice from "./../GenerateInvoice"; //TODO
 import axios from "axios";
 
 class SideMenu extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { display_more_options: this.props.display_more_options, is_admin: this.props.is_admin };
-  }
-
   manage_property = () => {
-    if (this.state.is_admin === true) {
+    if (this.props.is_admin === true) {
       window.location = `/Admin/PropMana/${this.props.sub}/property`;
     } else {
       window.location = `/PropMana/${this.props.sub}/property`;
@@ -19,7 +14,7 @@ class SideMenu extends Component {
   };
 
   edit_profile = () => {
-    if (this.state.is_admin === true) {
+    if (this.props.is_admin === true) {
       window.location = `/Admin/PropMana/${this.props.sub}/user_info`;
     } else {
       window.location = `/PropMana/${this.props.sub}/user_info`;
@@ -27,14 +22,18 @@ class SideMenu extends Component {
   };
 
   manage_utility = () => {
-    //
+    if (this.props.is_admin === true) {
+      window.location = `/Admin/PropMana/${this.props.sub}/property/${this.props.property_id}/utility_bill`;
+    } else {
+      window.location = `/PropMana/${this.props.sub}/property/${this.props.property_id}/utility_bill`;
+    }
   };
 
   manage_invoice = () => {
-    if (this.state.is_admin === true) {
-      window.location = `/Admin/PropMana/${this.props.sub}/invoiceHistory`;
+    if (this.props.is_admin === true) {
+      window.location = `/Admin/PropMana/${this.props.sub}/property/${this.props.property_id}/invoice_history`;
     } else {
-      window.location = `/PropMana/${this.props.sub}/invoiceHistory`;
+      window.location = `/PropMana/${this.props.sub}/property/${this.props.property_id}/invoice_history`;
     }
   };
 
@@ -74,13 +73,13 @@ class SideMenu extends Component {
               Manage Property Info
             </a>
 
-            {this.state.is_admin ? null : (
+            {this.props.is_admin ? null : (
               <a href="#" onClick={this.edit_profile}>
                 Edit Profile Info
               </a>
             )}
 
-            {this.state.display_more_options ? (
+            {this.props.display_more_options ? (
               <div>
                 <a href="#" onClick={this.manage_utility}>
                   Manage Utility Bill
@@ -88,13 +87,13 @@ class SideMenu extends Component {
                 <a href="#" onClick={this.manage_invoice}>
                   Manage Invoice History
                 </a>
-                <GenerateInvoice property_id={this.state.property_id} />
+                <GenerateInvoice property_id={this.props.property_id} />
               </div>
             ) : null}
 
-            {this.state.is_admin ? (
+            {this.props.is_admin ? (
               <a href="#" onClick={this.manage_users}>
-                Manage Users
+                Back to Admin Panel
               </a>
             ) : (
               <a href="#" onClick={this.log_out}>
