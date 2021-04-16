@@ -1,14 +1,10 @@
 import React from "react";
-import Checkbox from "@material-ui/core/Checkbox";
 import FormLabel from "@material-ui/core/FormLabel";
 import FormControl from "@material-ui/core/FormControl";
-import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import axios from "axios";
-import { IoTJobsDataPlane } from "aws-sdk";
 {
   /* meter_1 and meter_2 are temporary hardcode variables used for demostration 
     onlyOption specifies whether checkbox allows multiple selection or single selection

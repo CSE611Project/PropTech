@@ -1,28 +1,12 @@
 import "date-fns";
 import React from "react";
-import ReactDOM from "react-dom";
 import "./../App.css";
-import Navigation from "./Navigation.js";
-import HomePage from "./HomePage.js";
-import PropManaAfterSign from "./PropManaAfterSign.js";
-import PropertyInfo from "./PropertyInfo.js";
-import EditTenant from "./EditTenant";
-import AddTenant from "./AddTenant";
-import DeleteTenant from "./DeleteTenant";
-import Submeters from "./Submeters";
-import Meters from "./Meters";
-import MeterBillPage from "./MeterBillPage";
-import DatePicker from "./DatePicker";
-import { Component } from "react";
-import axios from "axios";
 
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 

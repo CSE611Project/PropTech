@@ -1,20 +1,19 @@
-import React, { useState } from "react";
-import ReactDOM from "react-dom";
+import React from "react";
 import "./App.css";
-import LoginPage from "./components/LoginPage.js";
-import SignUpPage from "./components/SignUpPage.js";
-import Navigation from "./components/Navigation.js";
-import HomePage from "./components/HomePage.js";
-import Abouts from "./components/About.js";
-import ResetPassword from "./components/ResetPassword.js";
+import HomePage from "./components/Login/HomePage.js";
+import RegProcess from "./components/Login/RegProcess";
+import ResetProcess from "./components/Login//ResetProcess";
+import LoginPage from "./components/Login/LoginPage.js";
+import SignUpPage from "./components/Login/SignUpPage.js";
+import ResetPassword from "./components/Login/ResetPassword.js";
+import Navigation from "./components/NavigationBar/Navigation.js";
+import Abouts from "./components/NavigationBar/About.js";
 import AdminAfterSign from "./components/Admin/AdminAfterSign.js";
-import PropManaAfterSign from "./components/PropManaAfterSign.js";
+import PropManaAfterSign from "./components/PropMana/PropManaAfterSign.js";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import RegProcess from "./components/RegProcess";
-import ResetProcess from "./components/ResetProcess";
 import axios from "axios";
 
-axios.defaults.baseURL = "http://3.131.169.6:3000";
+axios.defaults.baseURL = "http://3.131.169.6:3000/";
 axios.defaults.withCredentials = true;
 function App() {
   return (
@@ -32,12 +31,12 @@ function App() {
           <Route exact path="/PropMana" component={PropManaAfterSign} />
           <Route exact path="/PropMana/:sub" component={PropManaAfterSign} />
           <Route exact path="/PropMana/:sub/property" component={PropManaAfterSign} />
-          <Route exact path="/PropMana/:sub/property/:propertyId" component={PropManaAfterSign} />
+          <Route exact path="/PropMana/:sub/property/:property_id" component={PropManaAfterSign} />
           <Route exact path="/PropMana/:sub/invoiceHistory" component={PropManaAfterSign} />
           <Route exact path="/PropMana/:sub/user_info" component={PropManaAfterSign} />
           <Route exact path="/Admin/PropMana/:sub" component={PropManaAfterSign} />
           <Route exact path="/Admin/PropMana/:sub/property" component={PropManaAfterSign} />
-          <Route exact path="/Admin/PropMana/:sub/property/:propertyId" component={PropManaAfterSign} />
+          <Route exact path="/Admin/PropMana/:sub/property/:property_id" component={PropManaAfterSign} />
           <Route exact path="/Admin/PropMana/:sub/invoiceHistory" component={PropManaAfterSign} />
           <Route exact path="/Admin/PropMana/:sub/user_info" component={PropManaAfterSign} />
           <Route exact path="/RegProcess" component={RegProcess} />

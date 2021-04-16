@@ -1,6 +1,5 @@
 import "date-fns";
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 
 class DatePicker extends React.Component {

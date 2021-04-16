@@ -2,13 +2,10 @@ import { Component } from "react";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import { userPool, cognito, region, poolData } from "./../UserPool";
 import axios from "axios";
 import { Button } from "@material-ui/core";
-const aws = require("aws-sdk");
 
 class AdminManageUsers extends Component {
   constructor(props) {
@@ -16,19 +13,21 @@ class AdminManageUsers extends Component {
     this.state = {
       user_list: [],
     };
+    this.generateTableData = this.generateTableData.bind(this);
+    this.getUserList = this.getUserList.bind(this);
     this.generateTableData();
   }
 
-  getUserList = () => {
+  getUserList() {
     return new Promise((resolve, reject) => {
       axios.get(`/users`).then((response) => {
         this.setState({ user_list: response.data.Users });
         resolve();
       });
     });
-  };
+  }
 
-  generateTableData = () => {
+  generateTableData() {
     this.getUserList().then(() => {
       this.res1 = [];
       this.res2 = [];
@@ -67,7 +66,7 @@ class AdminManageUsers extends Component {
       }
       this.forceUpdate();
     });
-  };
+  }
   render() {
     return (
       <div>
@@ -91,6 +90,7 @@ class AdminManageUsers extends Component {
     );
   }
 }
+
 class RejectButton extends Component {
   decline_app = (user_id, email) => {
     axios.delete(`/reject`, { sub: user_id, email: email }).then((response) => {

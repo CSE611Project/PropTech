@@ -308,11 +308,11 @@ router.delete("/property", (req, res) => {
 });
 
 //request to get tenant list
-router.get("/tenant/:property_id?", (req, res) => {
+router.get("/tenant/:property_id?/:sub?", (req, res) => {
   verifyClient(req, res, (accessData, idData) => {
     var sub;
     if (accessData["cognito:groups"][0] == "Admin") {
-      sub = req.body.sub;
+      sub = req.params.sub;
     } else if (accessData["cognito:groups"][0] == "PropertyManager") {
       sub = accessData.sub;
     } else {
@@ -412,11 +412,11 @@ router.post("/tenant", (req, res) => {
 });
 
 //get submeter list by tenant id
-router.get("/submeter/:tenant_id?", (req, res) => {
+router.get("/submeter/:tenant_id?/:sub?", (req, res) => {
   verifyClient(req, res, (accessData, idData) => {
     var sub;
     if (accessData["cognito:groups"][0] == "Admin") {
-      sub = req.body.sub;
+      sub = req.params.sub;
     } else if (accessData["cognito:groups"][0] == "PropertyManager") {
       sub = accessData.sub;
     } else {
@@ -478,11 +478,11 @@ router.post("/add_submeter", (req, res) => {
   });
 });
 
-router.get("/meter/:property_id?", (req, res) => {
+router.get("/meter/:property_id?/:sub?", (req, res) => {
   verifyClient(req, res, (accessData, idData) => {
     var sub;
     if (accessData["cognito:groups"][0] == "Admin") {
-      sub = req.body.sub;
+      sub = req.params.sub;
     } else if (accessData["cognito:groups"][0] == "PropertyManager") {
       sub = accessData.sub;
     } else {
@@ -626,11 +626,11 @@ router.post("/meterbill_list/", (req, res) => {
   });
 });
 //get meter bills list by filter
-router.get("/meterbill_list/:meter_id?", (req, res) => {
+router.get("/meterbill_list/:meter_id?/:sub?", (req, res) => {
   verifyClient(req, res, (accessData, idData) => {
     var sub;
     if (accessData["cognito:groups"][0] == "Admin") {
-      sub = req.body.sub;
+      sub = req.params.sub;
     } else if (accessData["cognito:groups"][0] == "PropertyManager") {
       sub = accessData.sub;
     } else {

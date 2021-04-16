@@ -1,14 +1,11 @@
 import React from "react";
 import { Component } from "react";
-import ReactDOM from "react-dom";
 import "./../../App.css";
 import AdminManageUsers from "./AdminManageUsers";
+import AdminSideMenu from "./AdminSideMenu";
 import { matchPath } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import { DialogContent } from "@material-ui/core";
-import AdminSideMenu from "./AdminSideMenu";
-
-import TableCell from "@material-ui/core/TableCell";
 
 class AdminAfterSign extends Component {
   constructor(props) {
@@ -18,7 +15,6 @@ class AdminAfterSign extends Component {
       page = "manage_users";
     }
     this.state = {
-      // sub: this.props.match.params.sub,
       page: (() => {
         switch (page) {
           case "manage_users":
@@ -31,8 +27,6 @@ class AdminAfterSign extends Component {
             return "Manage Users";
         }
       })(),
-      pathname: this.props.location.pathname,
-      // property_id: null,
     };
   }
   render() {
@@ -43,7 +37,7 @@ class AdminAfterSign extends Component {
         </Typography>
         <DialogContent />
         <div className="Info_Page_Split">
-          <AdminSideMenu page={this} property_id={this.state.property_id} />
+          <AdminSideMenu />
           <div className="display">{this.state.page}</div>
         </div>
       </div>
