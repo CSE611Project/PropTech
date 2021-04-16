@@ -83,7 +83,7 @@ class GenerateInvoice extends Component {
         console.log("invoice history response:",response.data);
         resolve();
         if(response.data.invoice_list == false || response.data.invoice_list.length === 0){
-          alert("no invoice in selecting time peirod, make sure  generate invoice first using {Generate Invoice} on the side bar");
+          // alert("no invoice in selecting time peirod, make sure  generate invoice first using {Generate Invoice} on the side bar");
           return;
         } this.setState({
           property_info: response.data.property_info,
@@ -286,9 +286,9 @@ class GenerateInvoice extends Component {
                     <Button onClick={this.handleClose} color="primary">
                       Cancel
                     </Button>
-                    <Button onClick={this.invoiceHistory} color="primary">
+                    {/* <Button onClick={this.invoiceHistory} color="primary">
                       test invoice history
-                    </Button>
+                    </Button> */}
                     {/* <Button
                     onClick= {to_pdf_page(this.state.invoice_list, this.state.property_info, this.state.tenant_list) }>
                       bbbb
