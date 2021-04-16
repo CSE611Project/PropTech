@@ -12,6 +12,7 @@ import DeleteTenant from "./DeleteTenant";
 import Submeters from "./Submeters";
 import Meters from "./Meters";
 import MeterBillPage from "./MeterBillPage";
+import IndividualTenantInvoice from "./IndividualTenantInvoice"
 import DatePicker from "./DatePicker";
 import { Component } from "react";
 import axios from "axios";
@@ -25,8 +26,9 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
-import { Tab } from "@material-ui/core";
+import { Divider, Tab } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
+import { isThisHour } from "date-fns";
 
 class InvoiceHistory_m extends React.Component {
   constructor(props) {
@@ -43,18 +45,15 @@ class InvoiceHistory_m extends React.Component {
       total_kwh_usage: "",
       total_charge: "",
       unit_charge: "",
-      meter_invoice_list: [],
+      invoice_list: [],
       property_id: this.props.property_id,
-      tenant_list: this.props.tenant_list
+      tenant_list: this.props.tenant_list,
+      property_info: this.props.property_info
     };
     this.handleFromDateChange = this.handleFromDateChange.bind(this);
     this.handleToDateChange = this.handleToDateChange.bind(this);
     this.getMeterInvoiceList = this.getMeterInvoiceList.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-  }
-
-  componentDidMount() {
-    this.generateMeterTable();
   }
 
   handleFromDateChange(event) {
@@ -81,37 +80,86 @@ class InvoiceHistory_m extends React.Component {
 
   getMeterInvoiceList() {
     return new Promise((resolve, reject) => {
-      axios.get(`/history_meterinvoice_list/${this.state.property_id}/${this.state.from_date}/${this.state.to_date}
-        `).then((response) => {
-        console.log("response from database: ", response.data);
-        this.setState({ meter_invoice_list: response.data }, () => {
-          console.log("meter invoice list", this.state.meter_invoice_list);
-          resolve();
-        });
+      axios.post("/invoice_history", { property_id: this.state.property_id, from_date: this.state.from_date, to_date: this.state.to_date }).then((response) => {
+        console.log("invoice history response:",response.data);
+        this.setState({
+          invoice_list: response.data.invoice_list,
+          tenant_list: response.data.tenant_list,
+          property_info: response.data.property_info
+        })
+        resolve();
+        if(response.data.invoice_list == false || response.data.invoice_list.length === 0){
+          alert("no invoice in selecting time peirod, make sure  generate invoice first using {Generate Invoice} on the side bar");
+          return;
+        }
       });
     });
   }
 
   generateMeterTable() {
     var res = [];
+    var resm = [];
+    var name = "";
+    var rubs = 0;
+    var total_footage = 0;
+    var total_building_amt_due = 0;
+    var total_kwh_usage = 0;
     this.getMeterInvoiceList().then(() => {
-      var tableData = this.state.meter_invoice_list;
-      console.log(this.state.meter_invoice_list)
+      var tableData = this.state.invoice_list;
+      var tableDataTenant = this.state.tenant_list;
+      var tableDataProperty = this.state.property_info;
+      console.log(this.state.invoice_list)
+      console.log(tableDataTenant)
+      console.log(tableDataProperty)
       for (var i = 0; i < tableData.length; i++) {
-        res.push(
-          <TableRow key={i} id={i}>
-            <TableCell>{tableData[i].invoice_id}</TableCell>
-            <TableCell>{tableData[i].name}</TableCell>
-            <TableCell>{tableData[i].from_date}</TableCell>
-            <TableCell>{tableData[i].to_date}</TableCell>
-            <TableCell>{tableData[i].total_kwh_usage}</TableCell>
-            <TableCell>{tableData[i].rubs}</TableCell>
-            <TableCell>{tableData[i].tenantFt}</TableCell>
-            <TableCell>{tableData[i].total_footage}</TableCell>
-          </TableRow>
-        );
+        for (var j = 0; j < tableDataTenant.length; j++) {
+          if (tableData[i].tenant_id === tableDataTenant[j].tenant_id) {
+            name = tableDataTenant[j].name;
+            rubs = tableDataTenant[j].rubs;
+            total_footage = rubs * tableDataProperty[0].total_footage;
+            total_building_amt_due = tableData[i].total_charge / rubs;
+            total_building_amt_due = total_building_amt_due.toFixed(2);
+            if (tableData[i].has_submeter === "y") {
+              total_kwh_usage = tableData[i].cur_read - tableData[i].prior_read;
+            }
+          }
+        }
+        if (rubs !== 0) {
+          res.push(
+            <TableRow key={i} id={i}>
+              <TableCell>{tableData[i].invoice_id}</TableCell>
+              <TableCell>{name}</TableCell>
+              <TableCell>{tableData[i].meter_id}</TableCell>
+              <TableCell>{tableData[i].from_date}</TableCell>
+              <TableCell>{tableData[i].to_date}</TableCell>
+              <TableCell>{tableData[i].meter_amt_due}</TableCell>
+              <TableCell>{rubs}</TableCell>
+              <TableCell>{total_footage}</TableCell>
+              <TableCell>{tableDataProperty[0].total_footage}</TableCell>
+              <TableCell>{total_building_amt_due}</TableCell>
+              <TableCell>{tableData[i].total_charge}</TableCell>
+            </TableRow>
+          );
+        } else {
+          resm.push(
+            <TableRow key={i} id={i}>
+              <TableCell>{tableData[i].invoice_id}</TableCell>
+              <TableCell>{name}</TableCell>
+              <TableCell>{tableData[i].submeter_id}</TableCell>
+              <TableCell>{tableData[i].from_date}</TableCell>
+              <TableCell>{tableData[i].to_date}</TableCell>
+              <TableCell>{tableData[i].submeter_charge}</TableCell>
+              <TableCell>{tableData[i].prior_read}</TableCell>
+              <TableCell>{tableData[i].cur_read}</TableCell>
+              <TableCell>{total_kwh_usage}</TableCell>
+              <TableCell>{tableData[i].unit_charge}</TableCell>
+              <TableCell>{tableData[i].total_charge}</TableCell>
+            </TableRow>
+          );
+        }
       }
       this.res = res;
+      this.resm = resm;
       this.forceUpdate();
     });
   }
@@ -124,7 +172,7 @@ class InvoiceHistory_m extends React.Component {
     return (
       <React.Fragment>
         <Typography component="h2" variant="h6" color="primary" gutterBottom>
-          Meter Invoice Statement History
+          Invoice Statement History
         </Typography>
         <form noValidate>
           <TextField
@@ -156,18 +204,57 @@ class InvoiceHistory_m extends React.Component {
             <TableRow>
               <TableCell>Invoice ID</TableCell>
               <TableCell>Tenant Name</TableCell>
+              <TableCell>Meter ID</TableCell>
               <TableCell>From</TableCell>
               <TableCell>To</TableCell>
+              <TableCell>Meter Amount Due</TableCell>
               <TableCell>RUBS</TableCell>
               <TableCell>User Footage</TableCell>
               <TableCell>Total Footage</TableCell>
-              <TableCell>Total Amount Due</TableCell>
+              <TableCell>Total Building Amount Due</TableCell>
+              <TableCell>Total Tenant Amount Due</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {this.res}
           </TableBody>
+          <TableRow>
+            <TableCell><Divider /><Divider /><Divider /><Divider /></TableCell>
+            <TableCell><Divider /><Divider /><Divider /><Divider /></TableCell>
+            <TableCell><Divider /><Divider /><Divider /><Divider /></TableCell>
+            <TableCell><Divider /><Divider /><Divider /><Divider /></TableCell>
+            <TableCell><Divider /><Divider /><Divider /><Divider /></TableCell>
+            <TableCell><Divider /><Divider /><Divider /><Divider /></TableCell>
+            <TableCell><Divider /><Divider /><Divider /><Divider /></TableCell>
+            <TableCell><Divider /><Divider /><Divider /><Divider /></TableCell>
+            <TableCell><Divider /><Divider /><Divider /><Divider /></TableCell>
+            <TableCell><Divider /><Divider /><Divider /><Divider /></TableCell>
+            <TableCell><Divider /><Divider /><Divider /><Divider /></TableCell>
+          </TableRow>
+          <TableHead>
+            <TableRow>
+              <TableCell>Invoice ID</TableCell>
+              <TableCell>Tenant Name</TableCell>
+              <TableCell>Submeter ID</TableCell>
+              <TableCell>From</TableCell>
+              <TableCell>To</TableCell>
+              <TableCell>Submeter Charge</TableCell>
+              <TableCell>Prior Read</TableCell>
+              <TableCell>Current Read</TableCell>
+              <TableCell>Total KWH Usage</TableCell>
+              <TableCell>Unit Charge</TableCell>
+              <TableCell>Total Amount Due</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {this.resm}
+          </TableBody>
         </Table>
+        {/* <IndividualTenantInvoice 
+          property_id={this.state.property_id} 
+          from_date={this.state.from_date}
+          to_date={this.state.to_date}
+        /> */}
       </React.Fragment>
     );
   }

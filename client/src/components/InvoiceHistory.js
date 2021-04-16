@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import InvoiceHistory_m from "./InvoiceHistory_m";
 import InvoiceHistory_sub from "./InvoiceHistory_sub";
+import IndividualTenantInvoice from "./IndividualTenantInvoice"
 import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
@@ -50,16 +51,19 @@ class InvoiceHistory extends Component {
               </Grid>
               <Grid item xs={12} md={12} lg={12}>
                 <Paper>
-                  <InvoiceHistory_sub
+                  {/* <InvoiceHistory_sub
                     className="display_item"
                     property_id={this.state.property_id}
                     tenant_list={this.state.tenant_list}
                     info={this}
-                  />
+                  /> */}
                 </Paper>
               </Grid>
             </Grid>
           </Container>
+          {/* <IndividualTenantInvoice
+            tenant_list={this.state.tenant_list}
+          /> */}
         </React.Fragment>
       </div>
     );
