@@ -1,268 +1,251 @@
 import React, { useState } from "react";
-import ReactDOM from 'react-dom';
+import ReactDOM from "react-dom";
 import "./../App.css";
-import Navigation from "./Navigation.js"
-import HomePage from "./HomePage.js"
-import PropManaAfterSign from "./PropManaAfterSign.js"
-import PropertyInfo from "./PropertyInfo.js"
-import EditTenant from "./EditTenant"
-import AddTenant from "./AddTenant"
-import DeleteTenant from "./DeleteTenant"
-import Submeters from "./Submeters"
+import Navigation from "./Navigation.js";
+import HomePage from "./HomePage.js";
+import PropManaAfterSign from "./PropManaAfterSign.js";
+import PropertyInfo from "./PropertyInfo.js";
+import EditTenant from "./EditTenant";
+import AddTenant from "./AddTenant";
+import DeleteTenant from "./DeleteTenant";
+import Submeters from "./Submeters";
+import Meters from "./Meters";
+import UtilityBillMeter from "./UtilityBillMeter"
+import UtilityBillSubmeter from "./UtilityBillSubmeter"
+import BillingHistory from "./BillingHistory"
+import InvoiceHistory from "./InvoiceHistory"
+import UtilityBillingHistory from "./UtilityBillingHistory"
+import CollapseSubmeter from "./CollapseSubmeter"
 import { Component } from "react";
-import { TableBody } from "@material-ui/core";
 import axios from "axios";
 
+import { makeStyles } from '@material-ui/core/styles';
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+import Button from '@material-ui/core/Button';
+import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
+import Collapse from '@material-ui/core/Collapse';
+import IconButton from '@material-ui/core/IconButton';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import Box from '@material-ui/core/Box';
+import Typography from '@material-ui/core/Typography';
+
 class TenantInfo extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      display: this.props.display,
+      property_id: sessionStorage.getItem("property_id"),
+      property_name: sessionStorage.getItem("property_name"),
+      total_footage: sessionStorage.getItem("total_footage"),
+      tenant_list: [],
+      meter_list: [],
+    };
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            sub: this.props.sub,
-            property_id: this.props.property_id,
-            total_footage: this.props.total_footage,
-            tenant_list: [
-            ]
-            
-        }
-        this.generateTableData();
-    }
+    this.getSubmeterList = this.getSubmeterList.bind(this)
+    this.generateTableData();
 
-    componentDidUpdate() {
-        if (this.props.sub !== this.state.sub || this.props.property_id !== this.state.property_id) {
-            this.setState({
-                sub: this.props.sub,
-                property_id: this.props.property_id,
-                tenant_list: [
-                ]
-            });
-            this.generateTableData();
-        }
-    }
+  }
 
-    getTenantList() {
-        return new Promise((resolve, reject) => {
-            axios.get(`/tenant/${this.state.property_id}`).then((response) => {
-              console.log(response.data);
-                this.setState({ tenant_list: response.data })
-                resolve();
-            })
-        })
-    }
+  getTenantList() {
+    console.log("tenantinfo: ", this.state.total_footage);
+    return new Promise((resolve, reject) => {
+      axios.get(`/tenant/${this.state.property_id}`).then((response) => {
+        this.setState({ tenant_list: response.data });
+        resolve();
+      });
+    });
+  }
 
-
-    // updateTenantTable(sub,  propery_id, tenant_list){
-    //             var tenant_list;
-    //             for(var i = 0; i < tenant_list.length; i++){
-    //                 this.state.tenant_list.push({
-    //                     tenant_id: tenant_list[i].tenant_id,
-    //                     name: tenant_list[i].name,
-    //                     email: tenant_list[i].email,
-    //                     address: tenant_list[i].address,
-    //                     rented_area: tenant_list[i].rented_area,
-    //                     submeter: tenant_list[i].submeter
-
-    //                 })
-    //             }
-
-    //         }
+  getSubmeterList() {
+    return new Promise((resolve, reject) => {
+      axios.get(`/submeter/${this.state.tenant_id}`).then((response) => {
+        this.setState({ submeter_list: response.data });
+        resolve();
+      });
+    });
+  }
 
 
+  generateTableData() {
+    this.getTenantList().then(() => {
+      this.res = [];
+      for (var i = 0; i < this.state.tenant_list.length; i++) {
+        this.res.push(
 
-
-
-    //get tenant_list from database  implement get_tenant_list function here
-
-    generateTableData() {
-        //call updateTable everytime when we need to generate a list of tenants
-        //this.updateTenantTable(this.state.sub, this.state.property_id);
-        this.getTenantList().then(() => {
-            var res = [];
-            let tableData = this.state.tenant_list;
-            for (var i = 0; i < tableData.length; i++) {
-                res.push(
-
-                    <tr key={i} id={i}>
-                        <td key={tableData[i].name}>{tableData[i].name}</td>
-                        <td key={tableData[i].email}>{tableData[i].email}</td>
-                        <td key={tableData[i].address}>{tableData[i].address}</td>
-                        <td key={tableData[i].rented_area}>{tableData[i].rented_area}</td>
-                        <td key={tableData[i].submeter}>{tableData[i].submeter}</td>
-                        <td><Submeters 
-                            tenant_id={tableData[i].tenant_id}
-                            name={tableData[i].name}
-                            email={tableData[i].email}
-                            address={tableData[i].address}
-                            rented_area={tableData[i].rented_area}
-                            submeter={tableData[i].submeter}
-                            property_id={this.state.property_id}
-                            info={this}
-                        /></td>
-                        <td><EditTenant
-                            tenant_id={tableData[i].tenant_id}
-                            name={tableData[i].name}
-                            email={tableData[i].email}
-                            address={tableData[i].address}
-                            rented_area={tableData[i].rented_area}
-                            submeter={tableData[i].submeter}
-                            property_id={this.state.property_id}
-                            info={this}
-                        />
-                        </td>
-                        <td><DeleteTenant
-                            tenant_id={tableData[i].tenant_id}
-                            name={tableData[i].name}
-                            email={tableData[i].email}
-                            address={tableData[i].address}
-                            rented_area={tableData[i].rented_area}
-                            submeter={tableData[i].submeter}
-                            property_id={this.state.property_id}
-                            info={this}
-                        />
-                        </td>
-                    </tr>
-                )
-            }
-            this.res = res;
-            this.forceUpdate();
-        })
-    }
-
-    render() {
-        return (
-            <div>
-                <div className="AdminAfterSign">
-                    <header className="Admin_menu">
-                        <h1>Tenants information</h1>
-                        <ul className="buttonUL">
-                            <button className="Admin_option" onClick={manage_tenant}>Manage Tenant Info</button>
-                            <button className="Admin_option" onClick={manage_property}>Manage Property Info</button>
-                            <button className="Admin_option" onClick={edit_profile}>Edit Profile Info</button>
-                            <button className="Admin_option" onClick={manage_utility}>Manage Utility Bill</button>
-                            <button className="Admin_option" onClick={manage_invoice}>Manage Invoice History</button>
-                            <button className="Admin_option" onClick={generate_invoice}>Generate Invoice</button>
-                            <button className="Admin_option" onClick={log_out}>Log Out</button>
-                        </ul>
-                        <div className="tenant_list" ref="tenant_list">
-                            <table className="display_item">
-                                <tbody>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Address</th>
-                                        <th>Rented Area(sqft)</th>
-                                        <th>Submeter</th>
-
-                                    </tr>
-                                    {this.res}
-                                    <tr>
-                                        <td>Caroline</td>
-                                        <td>Email@gmail.com</td>
-                                        <td>Address</td>
-                                        <td>Rented Area(sqft)</td>
-                                        <td>Submeter</td>
-                                        <td><Submeters /></td>
-                                        <td><EditTenant
-                                        />
-                                        </td>
-                                        <td><DeleteTenant
-                                        />
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <AddTenant
-                                className="display_item"
-                                property_id={this.state.property_id}
-                                info={this}
-                            />
-                        </div>
-                    </header>
-                </div>
-            </div>
+          <TableRow key={i} id={i}>
+            <TableCell>{this.state.tenant_list[i].name}</TableCell>
+            <TableCell>{this.state.tenant_list[i].email}</TableCell>
+            <TableCell>{this.state.tenant_list[i].address}</TableCell>
+            <TableCell>{this.state.tenant_list[i].landlord_phone}</TableCell>
+            <TableCell>{this.state.tenant_list[i].rubs}</TableCell>
+            <TableCell>
+              <EditTenant
+                tenant_id={this.state.tenant_list[i].tenant_id}
+                name={this.state.tenant_list[i].name}
+                email={this.state.tenant_list[i].email}
+                address={this.state.tenant_list[i].address}
+                landlord_phone={this.state.tenant_list[i].landlord_phone}
+                rubs={this.state.tenant_list[i].rubs}
+                property_id={this.state.property_id}
+                info={this}
+              />
+            </TableCell>
+            <TableCell>
+              <DeleteTenant tenant_id={this.state.tenant_list[i].tenant_id} info={this} />
+            </TableCell>
+            <TableCell>
+              <Submeters
+                tenant_id={this.state.tenant_list[i].tenant_id}
+                name={this.state.tenant_list[i].name}
+                email={this.state.tenant_list[i].email}
+                address={this.state.tenant_list[i].address}
+                rented_area={this.state.tenant_list[i].rented_area}
+                submeter={this.state.tenant_list[i].submeter}
+                property_id={this.state.property_id}
+                info={this}
+              />
+            </TableCell>
+            <CollapseSubmeter
+              tenant_id={this.state.tenant_list[i].tenant_id}
+              property_id={this.state.property_id}
+              info={this}
+            />
+          </TableRow>
         );
-    }
+      }
+      this.forceUpdate();
+    });
+  }
+
+  render() {
+    return (
+      <div className="main">
+        <TableContainer>
+          <Table>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell component={Paper}>
+              <Meters className="display_item" property_id={this.state.property_id} info={this} />
+            </TableCell>
+            <TableCell></TableCell>
+            <TableCell component={Paper}>
+              <AddTenant className="display_item" property_id={this.state.property_id} total_footage={this.state.total_footage} info={this} />
+            </TableCell>
+            <TableCell />
+          </Table>
+
+        </TableContainer>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Address</TableCell>
+                <TableCell>Landlord Phone</TableCell>
+                <TableCell>RUBS</TableCell>
+                <TableCell />
+                <TableCell>
+                </TableCell>
+                <TableCell>
+                </TableCell>
+                <TableCell />
+              </TableRow>
+            </TableHead>
+            <TableBody>{this.res}</TableBody>
+          </Table>
+        </TableContainer>
+        {/*<UtilityBillingHistory 
+          className="display_item"
+          property_id={this.state.property_id}
+          tenant_list={this.state.tenant_list}
+          info={this}
+        />
+        <InvoiceHistory 
+          className="display_item"
+          property_id={this.state.property_id}
+          tenant_list={this.state.tenant_list}
+          info={this}
+        />*/}
+      </div>
+    );
+  }
 }
 
-function manage_tenant() {
-    const ele =
-        <div>
-            <TenantInfo />
-        </div>
-    window.location = "/PropManaAfterSign/TenantInfo"
-    return (ReactDOM.render(ele, document.getElementById('root')));
-}
+const useRowStyles = makeStyles({
+  root: {
+    '& > *': {
+      borderBottom: 'unset',
+    },
+  },
+});
 
-function manage_property() {
-    const ele =
-        <div>
-            <PropertyInfo />
-        </div>
-    window.location = "/PropManaAfterSign/PropertyInfo"
-    return (ReactDOM.render(ele, document.getElementById('root')));
-}
+function CollapseRow(props) {
+  const { row } = props;
+  const [open, setOpen] = React.useState(false);
+  const classes = useRowStyles();
+  return (
+    <React.Fragment>
+      <TableRow className={classes.root}>
+        <TableCell>
+          <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box margin={1}>
+              <Typography variant="h6" gutterBottom component="div">
+                Submeters
+              </Typography>
+              <Table size="small" aria-label="purchases">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Submeter</TableCell>
+                    <TableCell>Multiplier</TableCell>
+                    <TableCell>Associated Meter</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
 
-function edit_profile() {
-    const ele =
-        <div>
-
-        </div>
-    return (ReactDOM.render(ele, document.getElementById('root')));
-}
-
-function manage_utility() {
-    const ele =
-        <div>
-
-        </div>
-    return (ReactDOM.render(ele, document.getElementById('root')));
-}
-
-function manage_invoice() {
-    const ele =
-        <div>
-
-        </div>
-    return (ReactDOM.render(ele, document.getElementById('root')));
-}
-
-function generate_invoice() {
-    const ele =
-        <div>
-
-        </div>
-    return (ReactDOM.render(ele, document.getElementById('root')));
-}
-
-function log_out() {
-    const ele =
-        <div>
-            <div className="Admin_menu" id="logout">
-                <header className="RegProcess-header">
-                    <h1>You have successfully logout</h1>
-                    <button className="button" onClick={homepage}>OK</button>
-                </header>
-            </div>
-        </div>
-    return (ReactDOM.render(ele, document.getElementById('root')));
-}
-
-function homepage() {
-    window.location = "/"
-    return (ReactDOM.render(<HomePage />, document.getElementById('root')));
-}
-
-function back() {
-    return (ReactDOM.render(<PropManaAfterSign />, document.getElementById('root')));
-}
-function confirm_win() {
-    window.confirm("Sure?");
-}
-function addNewTenant(sub, property_id, new_tenant) {
-
-    //call add_new_tenant function here to add to database
-
-
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </React.Fragment>
+  );
 }
 
 export default TenantInfo;

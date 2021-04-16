@@ -8,12 +8,32 @@ import ResetPassword from "./ResetPassword.js";
 import axios from "axios";
 import { cognito, userPool } from "./UserPool";
 
+import { makeStyles } from "@material-ui/core/styles";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Drawer from "@material-ui/core/Drawer";
+import Box from "@material-ui/core/Box";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import List from "@material-ui/core/List";
+import Typography from "@material-ui/core/Typography";
+import Divider from "@material-ui/core/Divider";
+import IconButton from "@material-ui/core/IconButton";
+import Badge from "@material-ui/core/Badge";
+import Container from "@material-ui/core/Container";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Link from "@material-ui/core/Link";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+
 class LoginPage extends React.Component {
   constructor() {
     super();
     this.state = {
       email: "",
       password: "",
+      errorMessage: "",
+      errors: ""
     };
 
     this.changeEmail = this.changeEmail.bind(this);
@@ -35,7 +55,6 @@ class LoginPage extends React.Component {
 
   onSubmit(event) {
     event.preventDefault();
-    console.log(this);
     const loginDetails = {
       Username: this.state.email,
       Password: this.state.password,
@@ -45,9 +64,9 @@ class LoginPage extends React.Component {
       Username: this.state.email,
       Pool: userPool,
     };
-    const cognitoUser = new cognito.CognitoUser(userDetails);
+    var cognitoUser = new cognito.CognitoUser(userDetails);
     cognitoUser.authenticateUser(authenticationDetails, {
-      onSuccess: function (result) {
+      onSuccess:(result) => {
         console.log(result);
         axios
           .post("/auth", {
@@ -58,38 +77,75 @@ class LoginPage extends React.Component {
             console.log(response.data);
             let userType = response.data.accessData["cognito:groups"][0];
             if (userType == "PropertyManager") {
+              sessionStorage.setItem("username", response.data.idData.email);
+              sessionStorage.setItem("sub", response.data.accessData.sub);
+              sessionStorage.setItem("accessToken", JSON.stringify(result.accessToken));
+              sessionStorage.setItem("custom:company_name", result.idToken.payload["custom:company_name"]);
+              sessionStorage.setItem("custom:street_name", result.idToken.payload["custom:street_name"]);
+              sessionStorage.setItem("custom:suite_number", result.idToken.payload["custom:suite_number"]);
+              sessionStorage.setItem("custom:city", result.idToken.payload["custom:city"]);
+              sessionStorage.setItem("custom:state", result.idToken.payload["custom:state"]);
+              sessionStorage.setItem("custom:zipcode", result.idToken.payload["custom:zipcode"]);
               propmanaaftersign();
             } else if (userType == "Admin") {
               adminaftersign();
             }
           });
+          this.setState({
+            errors: false
+          })
       },
-      onFailure: function (err) {
+      onFailure: (err) => {
         console.log(err);
-      },
+        this.setState({
+          errorMessage: err.message,
+          errors: true
+        })
+      }
     });
   }
 
   render() {
+    var isError = this.state.errors;
+    var message = this.state.errorMessage;
     return (
       <div>
         <div className="LoginPage">
           <form onSubmit={this.onSubmit}>
             <header className="Login-header">
-              <h1 className="Title">PropTech</h1>
-
-              <label className="EmailLabel">Email</label>
-              <input type="text" placeholder="Email" onChange={this.changeEmail} value={this.state.email} required />
-
-              <label className="PasswordLabel">Password</label>
-              <input type="password" placeholder="Password" onChange={this.changePassword} value={this.state.password} required />
-
-              <button className="button" type="submit" value="submit">
+              <Typography component="h1" variant="h1" color="primary">
+                PropTech
+              </Typography>
+              <TextField 
+                autoFocus 
+                margin="dense" 
+                id="email" 
+                label="Enter your email" 
+                type="text" 
+                onChange={this.changeEmail} 
+                value={this.state.email} 
+                error={this.state.errors}
+                required
+              />
+              <TextField 
+                autoFocus 
+                margin="dense" 
+                id="password" 
+                label="Password" 
+                type="password" 
+                onChange={this.changePassword} 
+                value={this.state.password} 
+                helperText={isError ? message : null}
+                error={this.state.errors}
+                required
+              />
+              <Button color="primary" type="submit" value="submit">
                 Login
-              </button>
-              <button className="reset" onClick={reset}>
+              </Button>
+
+              <Button color="primary" onClick={reset}>
                 Reset Password
-              </button>
+              </Button>
             </header>
           </form>
         </div>
@@ -100,17 +156,14 @@ class LoginPage extends React.Component {
 
 function adminaftersign() {
   window.location = "/AdminAfterSign";
-  return ReactDOM.render(<AdminAfterSign />, document.getElementById("root"));
 }
 
 function propmanaaftersign() {
-  window.location = "/PropManaAfterSign";
-  return ReactDOM.render(<PropManaAfterSign />, document.getElementById("root"));
+  window.location = `/PropMana/${sessionStorage.getItem("sub")}`;
 }
 
 function reset() {
   window.location = "/ResetPassword";
-  return ReactDOM.render(<ResetPassword />, document.getElementById("root"));
 }
 
 export default LoginPage;

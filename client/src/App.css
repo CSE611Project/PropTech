@@ -1,18 +1,18 @@
 .App {
   text-align: center;
-  background-color: #282c30;
+  background-color: #ffffff;
   min-height: 100vh;
 }
 
 .App-header {
-  background-color: #282c30;
+  background-color: #ffffff;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: 40px;
-  color: white;
+  color: rgb(0, 0, 0);
 }
 
 .buttons {
@@ -38,7 +38,7 @@
 }
 
 .edit_delete_ul {
-  background-color: #282c30;
+  background-color: #ffffff;
   display: inline-flex;
 }
 
@@ -47,13 +47,13 @@
 }
 
 .Login-header {
-  background-color: #282c30;
+  background-color: #ffffff;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: rgb(0, 0, 0);
 }
 
 .Title {
@@ -73,7 +73,7 @@ ul {
   margin: 0;
   padding: 10px;
   overflow: hidden;
-  background-color: black;
+  background-color: rgb(255, 255, 255);
 }
 
 li {
@@ -88,13 +88,13 @@ li {
 }
 
 .SignUp-header {
-  background-color: #282c30;
+  background-color: #ffffff;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: rgb(0, 0, 0);
 }
 
 .PropManaAfterSign {
@@ -104,26 +104,28 @@ li {
 .Page_Name {
   height: 60px;
   text-align: center;
-  background-color: #282c30;
-  color: white;
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
 }
 
 .Info_Page_Split {
-  background-color: #282c30;
+  background-color: #ffffff;
   display: flex;
 }
 
 .PropMana_menu {
-  background-color: #282c30;
+  background-color: #ffffff;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  color: white;
+  color: rgb(0, 0, 0);
 }
 
 .display_item {
+  width: 100%;
   padding: 20px;
-  color: white;
+  color: rgb(0, 0, 0);
+  border-spacing: 50px 0;
 }
 
 .display {
@@ -131,8 +133,17 @@ li {
 }
 
 .table {
-  color: white;
+  color: rgb(0, 0, 0);
   width: 100%;
+  margin-right: 0px;
+}
+
+.topOffset {
+  margin-top: 100px;
+}
+
+.leftOffset {
+  margin-left: 160px;
 }
 
 .buttonUL {
@@ -140,7 +151,7 @@ li {
   margin: 0;
   padding: 10px 24px;
   overflow: hidden;
-  background-color: #282c30;
+  background-color: #ffffff;
   align-items: left;
   text-align: left;
   justify-content: left;
@@ -171,17 +182,17 @@ li {
 
 .RegProcess {
   text-align: center;
-  background-color: #282c30;
+  background-color: #ffffff;
 }
 
 .RegProcess-header {
-  background-color: #282c30;
+  background-color: #ffffff;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: rgb(0, 0, 0);
 }
 
 label {
@@ -195,4 +206,52 @@ label {
   height: 30px;
   margin: 10px;
   margin-left: 230px;
+}
+
+.utility_bill_page {
+  padding-left: 300px;
+}
+
+/************************************************************/
+/* The sidebar menu */
+.sidenav {
+  height: 100%; /* Full-height: remove this if you want "auto" height */
+  width: 160px; /* Set the width of the sidebar */
+  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  left: 0;
+  background-color: rgb(66, 103, 178); /* Black */
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 20px;
+}
+
+/* The navigation menu links */
+.sidenav a {
+  padding: 40px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 15px;
+  color: #ffffff;
+  display: block;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+  color: #534d4d;
+}
+
+/* Style page content */
+.main {
+  margin-left: 130px; /* Same as the width of the sidebar */
+  padding: 0px 10px;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidebar (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+  .sidenav {
+    padding-top: 15px;
+  }
+  .sidenav a {
+    font-size: 18px;
+  }
 }

@@ -24,13 +24,16 @@ class DeleteSubmeters extends React.Component {
       submeter_list: this.props.submeter_list,
       submeter: this.props.submeter,
       property_id: this.props.property_id,
+      submeter_id: this.props.submeter_id,
+      meter_id: this.props.meter_id,
     };
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.deleteSubmeter = this.deleteSubmeter.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
   componentDidUpdate() {
-    if (this.props.tenant_id !== this.state.tenant_id) {
+    if (this.props.submeter_id !== this.state.submeter_id) {
       this.setState({
         name: this.props.name,
         tenant_id: this.props.tenant_id,
@@ -40,14 +43,18 @@ class DeleteSubmeters extends React.Component {
         submeter_list: this.props.submeter_list,
         submeter: this.props.submeter,
         property_id: this.props.property_id,
+        submeter_id: this.props.submeter_id,
+        meter_id: this.props.meter_id,
       });
     }
   }
   deleteSubmeter() {
     {
-      /*axios.delete('/tenant', {data: {tenant_id: this.state.tenant_id , property_id: this.state.property_id }}).then(response => {
-            this.props.info.generateTableData();
-        })*/
+      console.log("this tenant id:", this.state.tenant_id);
+      console.log("this submeter_id: ", this.state.submeter_id);
+      axios.delete("/delete_submeter", { data: { tenant_id: this.state.tenant_id, submeter_id: this.state.submeter_id } }).then((response) => {
+        this.props.info.generateTable();
+      });
     }
   }
 
@@ -68,32 +75,24 @@ class DeleteSubmeters extends React.Component {
       open: false,
     });
     this.deleteSubmeter();
+    console.log(this.state.submeter);
   }
   render() {
     return (
       <div>
-        <Button onClick={this.handleClickOpen} color="primary">
+        <Button color="secondary" onClick={this.handleClickOpen}>
           Delete
         </Button>
-        <Dialog
-          open={this.state.open}
-          onClose={this.handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            {"Use Google's location service?"}
-          </DialogTitle>
+        <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+          <DialogTitle id="alert-dialog-title">{"Delete Submeter"}</DialogTitle>
           <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Are you sure you want to delete this submeter?
-            </DialogContentText>
+            <DialogContentText id="alert-dialog-description">Are you sure you want to delete this submeter?</DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">
               Back
             </Button>
-            <Button onClick={this.onSubmit} color="primary" autoFocus>
+            <Button onClick={this.onSubmit} color="secondary" autoFocus>
               Delete
             </Button>
           </DialogActions>

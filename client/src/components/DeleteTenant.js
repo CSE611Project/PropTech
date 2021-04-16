@@ -16,42 +16,26 @@ class DeleteTenant extends React.Component {
     super(props);
     this.state = {
       open: false,
-      name: this.props.name,
       tenant_id: this.props.tenant_id,
-      email: this.props.email,
-      address: this.props.address,
-      rented_area: this.props.rented_area,
-      submeter: this.props.submeter,
       property_id: this.props.property_id,
     };
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
+
   componentDidUpdate() {
     if (this.props.tenant_id !== this.state.tenant_id) {
       this.setState({
-        name: this.props.name,
         tenant_id: this.props.tenant_id,
-        email: this.props.email,
-        address: this.props.address,
-        rented_area: this.props.rented_area,
-        submeter: this.props.submeter,
-        property_id: this.props.property_id,
       });
     }
   }
+
   deleteTenant() {
-    axios
-      .delete("/tenant", {
-        data: {
-          tenant_id: this.state.tenant_id,
-          property_id: this.state.property_id,
-        },
-      })
-      .then((response) => {
-        this.props.info.generateTableData();
-      });
+    axios.delete("/tenant", { data: { tenant_id: this.state.tenant_id, property_id: this.state.property_id } }).then((response) => {
+      this.props.info.generateTableData();
+    });
   }
 
   handleClickOpen() {
@@ -75,26 +59,19 @@ class DeleteTenant extends React.Component {
   render() {
     return (
       <div>
-        <Button onClick={this.handleClickOpen}>Delete</Button>
-        <Dialog
-          open={this.state.open}
-          onClose={this.handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            {"Use Google's location service?"}
-          </DialogTitle>
+        <Button color="secondary" onClick={this.handleClickOpen}>
+          Delete
+        </Button>
+        <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+          <DialogTitle id="alert-dialog-title">{"Delete Tenant"}</DialogTitle>
           <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Are you sure you want to delete the chosen tenant?
-            </DialogContentText>
+            <DialogContentText id="alert-dialog-description">Are you sure you want to delete the chosen tenant?</DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">
               Back
             </Button>
-            <Button onClick={this.onSubmit} color="primary" autoFocus>
+            <Button color="secondary" onClick={this.onSubmit} autoFocus>
               Delete
             </Button>
           </DialogActions>
