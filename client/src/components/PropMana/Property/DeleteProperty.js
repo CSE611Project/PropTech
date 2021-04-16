@@ -20,7 +20,7 @@ class DeleteProperty extends React.Component {
   }
 
   deleteProperty() {
-    axios.delete("/property", { sub: this.props.sub, data: { property_id: this.props.property_id } }).then((response) => {
+    axios.delete("/property", { data: { sub: this.props.sub, property_id: this.props.property_id } }).then((response) => {
       this.props.generateTableData();
     });
   }

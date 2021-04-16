@@ -20,7 +20,7 @@ class DeleteTenant extends React.Component {
   }
 
   deleteTenant() {
-    axios.delete("/tenant", { sub: this.props.sub, data: { tenant_id: this.props.tenant_id, property_id: this.props.property_id } }).then((response) => {
+    axios.delete("/tenant", { data: { sub: this.props.sub, tenant_id: this.props.tenant_id, property_id: this.props.property_id } }).then((response) => {
       this.props.generateTableData();
     });
   }

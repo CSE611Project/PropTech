@@ -17,7 +17,6 @@ class EditProperty extends React.Component {
       property_id: this.props.property_id,
       name: this.props.name,
       address: this.props.address,
-      property_type: this.props.property_type,
       total_footage: this.props.total_footage,
       landlord_phone: this.props.landlord_phone,
     };
@@ -26,7 +25,6 @@ class EditProperty extends React.Component {
     this.handleClose = this.handleClose.bind(this);
     this.changeName = this.changeName.bind(this);
     this.changeAddress = this.changeAddress.bind(this);
-    this.changePropertyType = this.changePropertyType.bind(this);
     this.changeTotalFootage = this.changeTotalFootage.bind(this);
     this.changeLandlordPhone = this.changeLandlordPhone.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
@@ -38,7 +36,6 @@ class EditProperty extends React.Component {
         property_id: this.props.property_id,
         name: this.props.name,
         address: this.props.address,
-        property_type: this.props.property_type,
         total_footage: this.props.total_footage,
         landlord_phone: this.props.landlord_phone,
       });
@@ -75,12 +72,6 @@ class EditProperty extends React.Component {
     });
   }
 
-  changePropertyType(event) {
-    this.setState({
-      property_type: event.target.value,
-    });
-  }
-
   changeTotalFootage(event) {
     this.setState({
       total_footage: event.target.value,
@@ -102,7 +93,6 @@ class EditProperty extends React.Component {
       property_id: this.state.property_id,
       name: this.state.name,
       address: this.state.address,
-      property_type: this.state.property_type,
       total_footage: this.state.total_footage,
       landlord_phone: this.state.landlord_phone,
     };
@@ -121,7 +111,6 @@ class EditProperty extends React.Component {
             <DialogContentText></DialogContentText>
             <TextField autoFocus margin="dense" id="name" label="Property Name" type="text" value={this.state.name} onChange={this.changeName} fullWidth />
             <TextField autoFocus margin="dense" id="address" label="Property Address" type="text" value={this.state.address} onChange={this.changeAddress} fullWidth />
-            <TextField autoFocus margin="dense" id="property_type" label="Property Type" type="text" value={this.state.property_type} onChange={this.changePropertyType} fullWidth />
             <TextField autoFocus margin="dense" id="total_footage" label="Total Footage" type="text" value={this.state.total_footage} onChange={this.changeTotalFootage} fullWidth />
             <TextField autoFocus margin="dense" id="landlord_phone" label="Landlord Phone" type="text" value={this.state.landlord_phone} onChange={this.changeLandlordPhone} fullWidth />
           </DialogContent>

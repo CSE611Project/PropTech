@@ -16,7 +16,6 @@ class AddProperty extends React.Component {
       open: false,
       name: "",
       address: "",
-      property_type: "",
       total_footage: "",
       landlord_phone: "",
     };
@@ -25,7 +24,6 @@ class AddProperty extends React.Component {
     this.handleClose = this.handleClose.bind(this);
     this.changeName = this.changeName.bind(this);
     this.changeAddress = this.changeAddress.bind(this);
-    this.changePropertyType = this.changePropertyType.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.changeTotal_footage = this.changeTotal_footage.bind(this);
     this.changeLandlord_phone = this.changeLandlord_phone.bind(this);
@@ -58,12 +56,6 @@ class AddProperty extends React.Component {
     });
   }
 
-  changePropertyType(event) {
-    this.setState({
-      property_type: event.target.value,
-    });
-  }
-
   changeTotalFootage(event) {
     this.setState({
       total_footage: event.target.value,
@@ -89,7 +81,7 @@ class AddProperty extends React.Component {
     var property_info = {
       name: this.state.name,
       address: this.state.address,
-      property_type: this.state.property_type,
+      property_type: "residential", // TODO get rid of this on backend and then here
       total_footage: this.state.total_footage,
       landlord_phone: this.state.landlord_phone,
     };
@@ -109,7 +101,6 @@ class AddProperty extends React.Component {
             <DialogContentText></DialogContentText>
             <TextField autoFocus margin="dense" id="name" label="Name" type="text" onChange={this.changeName} fullWidth />
             <TextField autoFocus margin="dense" id="address" label="Address" type="text" onChange={this.changeAddress} fullWidth />
-            <TextField autoFocus margin="dense" id="property_type" label="Property Type" type="text" onChange={this.changePropertyType} fullWidth />
             <TextField autoFocus margin="dense" id="totalfootage" label="Total Building Square Footage" type="text" onChange={this.changeTotal_footage} fullWidth />
             <TextField autoFocus margin="dense" id="landlord_phone" label="Landlord Phone Number" type="text" onChange={this.changeLandlord_phone} fullWidth />
           </DialogContent>

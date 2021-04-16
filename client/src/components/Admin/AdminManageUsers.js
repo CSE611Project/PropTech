@@ -93,7 +93,7 @@ class AdminManageUsers extends Component {
 
 class RejectButton extends Component {
   decline_app = (user_id, email) => {
-    axios.delete(`/reject`, { sub: user_id, email: email }).then((response) => {
+    axios.delete(`/reject`, { data: { sub: user_id, email: email } }).then((response) => {
       this.props.generateTableData();
     });
   };

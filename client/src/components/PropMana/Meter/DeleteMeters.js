@@ -20,7 +20,7 @@ class DeleteMeters extends React.Component {
   }
 
   deleteMeter() {
-    axios.delete("/meter", { sub: this.props.sub, data: { meter_id: this.props.meter_id, property_id: this.props.property_id } }).then((response) => {
+    axios.delete("/meter", { data: { sub: this.props.sub, meter_id: this.props.meter_id, property_id: this.props.property_id } }).then((response) => {
       this.props.generateMeter();
     });
   }
