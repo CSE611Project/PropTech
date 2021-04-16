@@ -1,6 +1,5 @@
 import React from "react";
 import "./../../App.css";
-import "./../../App.css";
 import axios from "axios";
 import { cognito, userPool } from "./../UserPool";
 import Typography from "@material-ui/core/Typography";
@@ -13,6 +12,8 @@ class LoginPage extends React.Component {
     this.state = {
       email: "",
       password: "",
+      errorMessage: "",
+      errors: "",
     };
 
     this.changeEmail = this.changeEmail.bind(this);
@@ -45,8 +46,10 @@ class LoginPage extends React.Component {
     };
     var cognitoUser = new cognito.CognitoUser(userDetails);
     cognitoUser.authenticateUser(authenticationDetails, {
-      onSuccess: function (result) {
+      onSuccess: (result) => {
+        console.log(result);
         axios.post("/auth", { accessToken: result.accessToken.jwtToken, idToken: result.idToken.jwtToken }).then((response) => {
+          console.log(response.data);
           let userType = response.data.accessData["cognito:groups"][0];
           if (userType == "PropertyManager") {
             sessionStorage.setItem("username", response.data.idData.email);
@@ -60,13 +63,19 @@ class LoginPage extends React.Component {
             sessionStorage.setItem("custom:zipcode", result.idToken.payload["custom:zipcode"]);
             propManaAfterSign();
           } else if (userType == "Admin") {
-            sessionStorage.setItem("accessToken", JSON.stringify(result.accessToken));
             adminAfterSign();
           }
         });
+        this.setState({
+          errors: false,
+        });
       },
-      onFailure: function (err) {
+      onFailure: (err) => {
         console.log(err);
+        this.setState({
+          errorMessage: err.message,
+          errors: true,
+        });
       },
     });
   }
@@ -76,6 +85,8 @@ class LoginPage extends React.Component {
   };
 
   render() {
+    var isError = this.state.errors;
+    var message = this.state.errorMessage;
     return (
       <div>
         <div className="LoginPage">
@@ -84,13 +95,19 @@ class LoginPage extends React.Component {
               <Typography component="h1" variant="h1" color="primary">
                 PropTech
               </Typography>
-
-              {/*<label className="EmailLabel">Email</label>
-              <input type="text" placeholder="Email" onChange={this.changeEmail} value={this.state.email} required />*/}
-              <TextField autoFocus margin="dense" id="email" label="Enter your email" type="text" onChange={this.changeEmail} value={this.state.email} />
-              {/*<label className="PasswordLabel">Password</label>
-              <input type="password" placeholder="Password" onChange={this.changePassword} value={this.state.password} required />*/}
-              <TextField autoFocus margin="dense" id="password" label="Password" type="password" onChange={this.changePassword} value={this.state.password} />
+              <TextField autoFocus margin="dense" id="email" label="Enter your email" type="text" onChange={this.changeEmail} value={this.state.email} error={this.state.errors} required />
+              <TextField
+                autoFocus
+                margin="dense"
+                id="password"
+                label="Password"
+                type="password"
+                onChange={this.changePassword}
+                value={this.state.password}
+                helperText={isError ? message : null}
+                error={this.state.errors}
+                required
+              />
               <Button color="primary" type="submit" value="submit">
                 Login
               </Button>
