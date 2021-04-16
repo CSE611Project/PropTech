@@ -105,19 +105,10 @@ class SignUpPage extends React.Component {
       zipcode: this.state.zipcode,
     };
 
-    axios.post("/signup", registered).then((response) => console.log(response.data));
-
-    this.setState = {
-      company_name: "",
-      email: "",
-      password: "",
-      street_name: "",
-      suite_number: "",
-      city: "",
-      state: "",
-      zipcode: "",
-    };
-    this.regprocess();
+    axios.post("/signup", registered).then((response) => {
+      console.log(response.data);
+      this.regprocess();
+    });
   }
 
   regprocess = () => {

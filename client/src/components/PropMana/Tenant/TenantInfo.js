@@ -1,18 +1,13 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import "./../../../App.css";
 import EditTenant from "./EditTenant";
 import AddTenant from "./AddTenant";
 import DeleteTenant from "./DeleteTenant";
 import Submeters from "./../Submeter/Submeters";
 import Meters from "./../Meter/Meters";
-import UtilityBillMeter from "./../../UtilityBillMeter";
-import UtilityBillSubmeter from "./../../UtilityBillSubmeter";
-import BillingHistory from "./../../BillingHistory";
 import CollapseSubmeter from "./../Submeter/CollapseSubmeter";
 import { Component } from "react";
 import axios from "axios";
-import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -21,8 +16,6 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
-import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
 
 class TenantInfo extends Component {
   constructor(props) {
@@ -109,11 +102,6 @@ class TenantInfo extends Component {
                 total_footage={sessionStorage.getItem("total_footage")}
                 generateTableData={this.generateTableData}
               />
-            </TableCell>
-            <TableCell component={Paper}>
-              <Button color="primary" onClick={this.toManageUtilityBillPage}>
-                Manage Utility Bill
-              </Button>
             </TableCell>
           </Table>
         </TableContainer>

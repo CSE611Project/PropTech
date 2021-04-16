@@ -6,6 +6,7 @@ import TenantInfo from "./Tenant/TenantInfo";
 import PropertyInfo from "./Property/PropertyInfo";
 import InvoiceHistory from "./../InvoiceHistory";
 import UtilityBillingHistory from "./../UtilityBillingHistory";
+import UserProfile from "./../UserProfile";
 import SideMenu from "./SideMenu";
 import Typography from "@material-ui/core/Typography";
 import { DialogContent } from "@material-ui/core";
@@ -57,6 +58,8 @@ class PropManaAfterSign extends Component {
       property_id: property_id,
       page: (() => {
         switch (page) {
+          case "user_info":
+            return <UserProfile />;
           case "property":
             return <PropertyInfo sub={sub} is_admin={user_type == "Admin" ? true : false} />;
           case "tenant":

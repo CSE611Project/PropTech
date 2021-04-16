@@ -1,5 +1,6 @@
 import React from "react";
 import "./../App.css";
+import SubmeterBill from "./PropMana/Submeter/SubmeterBill";
 import axios from "axios";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -16,7 +17,7 @@ class UtilityBillSubmeter extends React.Component {
       meter_id: this.props.meter_id,
       property_id: this.props.property_id,
       tenant_id: [],
-      tenant_list: this.props.tenant_list,
+      tenant_list: [],
       submeter_list: [],
     };
     this.generateTable = this.generateTable.bind(this);
@@ -62,23 +63,21 @@ class UtilityBillSubmeter extends React.Component {
             res.push(
               <TableRow key={gg} id={gg}>
                 <TableCell>{tableDataSub[j].submeter_id}</TableCell>
-                {/* <TableCell>{tableDataSub[j].multiplier}</TableCell>
-                                <TableCell>{tableDataSub[j].meter_id}</TableCell> */}
-                {/* <TableCell>
-                                    <SubmeterBill
-                                        submeter_id={tableDataSub[j].submeter_id}
-                                        tenant_id={tableDataSub[j].tenant_id}
-                                        info={this}
-                                        meter_id={tableDataSub[j].meter_id}
-                                        property_id={this.state.property_id}
-                                        multiplier={tableDataSub[j].multiplier}
-                                    />
-                                </TableCell> */}
+                <TableCell>{tableDataSub[j].multiplier}</TableCell>
+                <TableCell>{tableDataSub[j].meter_id}</TableCell>
+                <TableCell>
+                  <SubmeterBill
+                    submeter_id={tableDataSub[j].submeter_id}
+                    tenant_id={tableDataSub[j].tenant_id}
+                    info={this}
+                    meter_id={tableDataSub[j].meter_id}
+                    property_id={this.state.property_id}
+                    multiplier={tableDataSub[j].multiplier}
+                  />
+                </TableCell>
               </TableRow>
             );
             gg++;
-            console.log("id ;;;; 0", tableDataSub[j].submeter_id);
-            console.log("ggg", gg);
           }
         });
       }

@@ -44,7 +44,7 @@ class AdminManageUsers extends Component {
               <TableCell>{attributes["custom:city"]}</TableCell>
               <TableCell>{attributes["custom:state"]}</TableCell>
               <TableCell>{attributes["custom:zipcode"]}</TableCell>
-              <ViewPropManager sub={attributes["sub"]} />
+              <ViewPropManager sub={attributes["sub"]} username={attributes["email"]} />
             </TableRow>
           );
         } else {
@@ -138,7 +138,8 @@ class AcceptButton extends Component {
 }
 
 class ViewPropManager extends Component {
-  viewManager = (sub) => {
+  viewManager = (sub, username) => {
+    sessionStorage.setItem("username", username);
     window.location = `/Admin/PropMana/${sub}`;
   };
 
@@ -148,7 +149,7 @@ class ViewPropManager extends Component {
         <Button
           color="primary"
           onClick={() => {
-            this.viewManager(this.props.sub);
+            this.viewManager(this.props.sub, this.props.username);
           }}
         >
           View User

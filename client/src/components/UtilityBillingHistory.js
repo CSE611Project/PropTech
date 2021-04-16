@@ -12,19 +12,10 @@ class UtilityBillingHistory extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tenant_list: [],
+      display: this.props.display,
+      property_id: this.props.property_id,
+      tenant_list: this.props.tenant_list,
     };
-    this.getTenantList = this.getTenantList.bind(this);
-    this.getTenantList();
-  }
-
-  getTenantList() {
-    return new Promise((resolve, reject) => {
-      axios.get(`/tenant/${this.props.property_id}`).then((response) => {
-        this.setState({ tenant_list: response.data });
-        resolve();
-      });
-    });
   }
 
   render() {
@@ -50,17 +41,17 @@ class UtilityBillingHistory extends React.Component {
             <Grid container spacing={3}>
               <Grid item xs={12} md={12} lg={12}>
                 <Paper>
-                  <BillingHistory className="display_item" property_id={this.props.property_id} tenant_list={this.state.tenant_list} info={this} />
+                  <BillingHistory className="display_item" property_id={this.state.property_id} tenant_list={this.state.tenant_list} info={this} />
                 </Paper>
               </Grid>
               <Grid item xs={12} md={12} lg={12}>
                 <Paper>
-                  <UtilityBillMeter className="display_item" property_id={this.props.property_id} info={this} />
+                  <UtilityBillMeter className="display_item" property_id={this.state.property_id} info={this} />
                 </Paper>
               </Grid>
               <Grid item xs={12} md={12} lg={12}>
                 <Paper>
-                  <UtilityBillSubmeter className="display_item" property_id={this.props.property_id} tenant_list={this.state.tenant_list} info={this} />
+                  <UtilityBillSubmeter className="display_item" property_id={this.state.property_id} info={this} />
                 </Paper>
               </Grid>
             </Grid>
