@@ -250,9 +250,9 @@ class GenerateInvoice extends Component {
                     <Button onClick={this.handleClose} color="primary">
                       Cancel
                     </Button>
-                    <Button onClick={this.invoiceHistory} color="primary">
+                    {/* <Button onClick={this.invoiceHistory} color="primary">
                       test invoice history
-                    </Button>
+                    </Button> */}
                     {/* <Button
                     onClick= {to_pdf_page(this.state.invoice_list, this.state.property_info, this.state.tenant_list) }>
                       bbbb

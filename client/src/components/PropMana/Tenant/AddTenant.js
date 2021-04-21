@@ -1,7 +1,7 @@
 import React from "react";
 import "./../../../App.css";
 import WhatIsProRataShare from "./../../WhatIsProRataShare.js";
-import MeterCheckBox from "./../../MeterCheckBox.js";
+import MeterCheckBox from "./../../MeterCheckbox";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";

@@ -208,10 +208,6 @@ label {
   margin-left: 230px;
 }
 
-.utility_bill_page {
-  padding-left: 300px;
-}
-
 /************************************************************/
 /* The sidebar menu */
 .sidenav {
@@ -254,4 +250,39 @@ label {
   .sidenav a {
     font-size: 18px;
   }
+}
+
+
+tr.spaceUnder>td {
+  padding-bottom: 5em;
+}
+
+/***************************CSS for the new format of submeter invoce PDF**************************************/
+
+.underline {
+  border-bottom: 1px solid #000000;
+  padding:0 20px;
+}
+
+.unbolden {
+
+    font-weight:normal;
+    padding:0 20px;
+
+}
+
+.topline{
+  border-top: 1px solid #000000;  
+}
+
+.top_and_bottom_line{
+  border-top: 1px solid #000000;
+  border-bottom: 1px solid #000000;  
+
+}
+
+/***************************CSS for the new format of meter invoce PDF**************************************/
+
+.place_in_center{
+  padding-left:20%
 }

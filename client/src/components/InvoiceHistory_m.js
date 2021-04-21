@@ -11,6 +11,7 @@ import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import { Divider } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
+import IndividualTenantInvoice from "./new_IndividualTenantInvoice"
 
 class InvoiceHistory_m extends React.Component {
   constructor(props) {
@@ -69,6 +70,7 @@ class InvoiceHistory_m extends React.Component {
           tenant_list: response.data.tenant_list,
           property_info: response.data.property_info,
         });
+        this.forceUpdate();
         resolve();
         if (response.data.invoice_list == false || response.data.invoice_list.length === 0) {
           alert("no invoice in selecting time peirod, make sure  generate invoice first using {Generate Invoice} on the side bar");
@@ -112,8 +114,8 @@ class InvoiceHistory_m extends React.Component {
               <TableCell>{tableData[i].invoice_id}</TableCell>
               <TableCell>{name}</TableCell>
               <TableCell>{tableData[i].meter_id}</TableCell>
-              <TableCell>{tableData[i].from_date}</TableCell>
-              <TableCell>{tableData[i].to_date}</TableCell>
+              <TableCell>{tableData[i].from_date.split("T")[0]}</TableCell>
+              <TableCell>{tableData[i].to_date.split("T")[0]}</TableCell>
               <TableCell>{tableData[i].meter_amt_due}</TableCell>
               <TableCell>{rubs}</TableCell>
               <TableCell>{total_footage}</TableCell>
@@ -128,8 +130,8 @@ class InvoiceHistory_m extends React.Component {
               <TableCell>{tableData[i].invoice_id}</TableCell>
               <TableCell>{name}</TableCell>
               <TableCell>{tableData[i].submeter_id}</TableCell>
-              <TableCell>{tableData[i].from_date}</TableCell>
-              <TableCell>{tableData[i].to_date}</TableCell>
+              <TableCell>{tableData[i].from_date.split("T")[0]}</TableCell>
+              <TableCell>{tableData[i].to_date.split("T")[0]}</TableCell>
               <TableCell>{tableData[i].submeter_charge}</TableCell>
               <TableCell>{tableData[i].prior_read}</TableCell>
               <TableCell>{tableData[i].cur_read}</TableCell>
@@ -283,12 +285,13 @@ class InvoiceHistory_m extends React.Component {
           </TableHead>
           <TableBody>{this.resm}</TableBody>
         </Table>
-        {/* <IndividualTenantInvoice 
-          property_id={this.state.property_id} 
-          from_date={this.state.from_date}
-          to_date={this.state.to_date}
-        /> */}
+        <IndividualTenantInvoice 
+          property_info ={this.state.property_info}
+          tenant_list ={this.state.tenant_list}
+          invoice_list = {this.state.invoice_list}
+        />
       </React.Fragment>
+      
     );
   }
 }
