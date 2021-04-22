@@ -885,4 +885,41 @@ router.get("/history_meterinvoice_list/:property_id?/:from_date?/:to_date?/:sub?
   });
 });
 
+router.post('/sendPDFToTenant', (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.body.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+
+    //console.log(req.body.data);
+
+    let subject = "invoice";
+    let html = "<p>Invoice attached<\p>"
+
+    req.body.data.forEach(function(obj){
+      let emailBody = {
+        receiver: obj.receiver,
+        subject: subject,
+        html: html,
+        path: obj.path
+      }
+      emailer.sentEmailWithAttachment(emailBody, (results) => {
+        res.json(results);
+      });
+    })
+
+  });
+
+});
+
 module.exports = router;
