@@ -35,7 +35,7 @@ class GenerateInvoice extends Component {
     this.onSubmit = this.onSubmit.bind(this);
     this.changeFromDate = this.changeFromDate.bind(this);
     this.changeTodate = this.changeTodate.bind(this);
-    this.invoiceHistory = this.invoiceHistory.bind(this);
+    // this.invoiceHistory = this.invoiceHistory.bind(this);
   }
 
   handleClickOpen() {
@@ -61,25 +61,25 @@ class GenerateInvoice extends Component {
     });
   }
 
-  invoiceHistory() {
-    return new Promise((resolve, reject) => {
-      axios.post("/invoice_history", { property_id: this.state.property_id, from_date: this.state.from_date, to_date: this.state.to_date }).then((response) => {
-        console.log("invoice history response:", response.data);
-        resolve();
-        if (response.data.invoice_list == false || response.data.invoice_list.length === 0) {
-          alert("no invoice in selecting time peirod, make sure  generate invoice first using {Generate Invoice} on the side bar");
-          return;
-        }
-        this.setState({
-          property_info: response.data.property_info,
-          invoice_list: response.data.invoice_list,
-          tenant_list: response.data.tenant_list,
-        });
-        // console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh", this.state.property_info);
-        this.forceUpdate();
-      });
-    });
-  }
+  // invoiceHistory() {
+  //   return new Promise((resolve, reject) => {
+  //     axios.post("/invoice_history", { property_id: this.state.property_id, from_date: this.state.from_date, to_date: this.state.to_date }).then((response) => {
+  //       console.log("invoice history response:", response.data);
+  //       resolve();
+  //       if (response.data.invoice_list == false || response.data.invoice_list.length === 0) {
+  //         alert("no invoice in selecting time peirod, make sure  generate invoice first using {Generate Invoice} on the side bar");
+  //         return;
+  //       }
+  //       this.setState({
+  //         property_info: response.data.property_info,
+  //         invoice_list: response.data.invoice_list,
+  //         tenant_list: response.data.tenant_list,
+  //       });
+  //       // console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh", this.state.property_info);
+  //       this.forceUpdate();
+  //     });
+  //   });
+  // }
 
   uploadInvoiceToDataBase(final_invoice_list) {
     return new Promise((resolve, reject) => {
@@ -220,7 +220,7 @@ class GenerateInvoice extends Component {
       return;
     } else {
       this.invoice_generator();
-      this.invoiceHistory();
+      // this.invoiceHistory();
     }
   }
 
