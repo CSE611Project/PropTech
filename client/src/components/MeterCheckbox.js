@@ -21,6 +21,8 @@ class MeterCheckBox extends React.Component {
       property_id: this.props.property_id,
       onlyOption: this.props.onlyOption,
       select_meter_list: "",
+      meter_error: false,
+      helper_text: "",
     };
     this.onChangeOnlyOption = this.onChangeOnlyOption.bind(this);
     this.onChangeMultiOption = this.onChangeMultiOption.bind(this);
@@ -57,6 +59,18 @@ class MeterCheckBox extends React.Component {
     });
     this.props.methodfromparent(event.target.name);
 
+  }
+
+  meter_submeter_validate() {
+    var isValidate = true;
+    if (this.state.meter_id === "") {
+      this.setState({
+        meter_error: true,
+        helper_text: "Please select associated meter number"
+      })
+      isValidate = false;
+    }
+    return isValidate;
   }
 
   generateTable() {

@@ -35,7 +35,7 @@ class GenerateInvoice extends Component {
     this.onSubmit = this.onSubmit.bind(this);
     this.changeFromDate = this.changeFromDate.bind(this);
     this.changeTodate = this.changeTodate.bind(this);
-    // this.invoiceHistory = this.invoiceHistory.bind(this);
+    this.invoiceHistory = this.invoiceHistory.bind(this);
   }
 
   handleClickOpen() {
@@ -61,25 +61,25 @@ class GenerateInvoice extends Component {
     });
   }
 
-  // invoiceHistory() {
-  //   return new Promise((resolve, reject) => {
-  //     axios.post("/invoice_history", { property_id: this.state.property_id, from_date: this.state.from_date, to_date: this.state.to_date }).then((response) => {
-  //       console.log("invoice history response:", response.data);
-  //       resolve();
-  //       if (response.data.invoice_list == false || response.data.invoice_list.length === 0) {
-  //         alert("no invoice in selecting time peirod, make sure  generate invoice first using {Generate Invoice} on the side bar");
-  //         return;
-  //       }
-  //       this.setState({
-  //         property_info: response.data.property_info,
-  //         invoice_list: response.data.invoice_list,
-  //         tenant_list: response.data.tenant_list,
-  //       });
-  //       // console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh", this.state.property_info);
-  //       this.forceUpdate();
-  //     });
-  //   });
-  // }
+  invoiceHistory() {
+    return new Promise((resolve, reject) => {
+      axios.post("/invoice_history", { property_id: this.state.property_id, from_date: this.state.from_date, to_date: this.state.to_date }).then((response) => {
+        console.log("invoice history response:", response.data);
+        resolve();
+        if (response.data.invoice_list == false || response.data.invoice_list.length === 0) {
+          alert("no invoice in selecting time peirod, make sure  generate invoice first using {Generate Invoice} on the side bar");
+          return;
+        }
+        this.setState({
+          property_info: response.data.property_info,
+          invoice_list: response.data.invoice_list,
+          tenant_list: response.data.tenant_list,
+        });
+        // console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh", this.state.property_info);
+        this.forceUpdate();
+      });
+    });
+  }
 
   uploadInvoiceToDataBase(final_invoice_list) {
     return new Promise((resolve, reject) => {
@@ -89,6 +89,7 @@ class GenerateInvoice extends Component {
           alert("This month's invoices were generated previously, please checkout invoice history");
           return;
         } else {
+          console.log("nnnnnno");
 
           alert("Done ! ! !  now you can check invoice in {Manage Invoice History}");
         }
@@ -117,10 +118,7 @@ class GenerateInvoice extends Component {
         var all_tenant_list = response.data.all_tenant_list;
         var submeter_tenant_list = response.data.meter_submeter_list;
         var aft_meter_bill_list = meter_bill_list;
-        console.log("meter bill length: ", meter_bill_list.length)
-        console.log("submeter bill length: ", meter_tenant_list.length)
-        console.log("all tenant length: ", all_tenant_list.length)
-        console.log("meter bill length: ", meter_bill_list.length)
+
         if (meter_tenant_list.length != meter_bill_list.length) {
           alert("please input all meter bills for this time period, you can check from {Manage Utility Bill}");
           return;
@@ -222,7 +220,7 @@ class GenerateInvoice extends Component {
       return;
     } else {
       this.invoice_generator();
-      // this.invoiceHistory();
+      this.invoiceHistory();
     }
   }
 

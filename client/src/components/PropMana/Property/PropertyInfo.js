@@ -13,6 +13,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import { DialogContent } from "@material-ui/core";
 
 class PropertyInfo extends Component {
   constructor(props) {
@@ -77,6 +78,12 @@ class PropertyInfo extends Component {
   render() {
     return (
       <div className="main">
+        <TableHead>
+          <TableCell component={Paper}>
+            <AddProperty className="display_item" sub={this.props.sub} generateTableData={this.generateTableData} />
+          </TableCell>
+        </TableHead>
+        <DialogContent />
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -85,9 +92,9 @@ class PropertyInfo extends Component {
                 <TableCell>Property Address</TableCell>
                 <TableCell>Total Footage</TableCell>
                 <TableCell>Landlord Phone</TableCell>
-                <TableCell>
-                  <AddProperty className="display_item" sub={this.props.sub} generateTableData={this.generateTableData} />
-                </TableCell>
+                <TableCell />
+                <TableCell />
+                <TableCell />
               </TableRow>
             </TableHead>
             <TableBody>{this.res}</TableBody>

@@ -14,7 +14,7 @@ import IndividualTenantInvoice from "./components/IndividualTenantInvoice";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import axios from "axios";
 
-axios.defaults.baseURL = "http://3.131.169.6:3000/";
+// axios.defaults.baseURL = "http://3.131.169.6:3000/";
 axios.defaults.withCredentials = true;
 function App() {
   return (

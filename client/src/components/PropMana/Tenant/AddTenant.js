@@ -15,6 +15,7 @@ import FormLabel from "@material-ui/core/FormLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import NumberFormat from 'react-number-format';
 
 {
   /* New variables: multiplier, rubs 
@@ -38,6 +39,14 @@ class AddTenant extends React.Component {
       yes: false,
       no: false,
       tenantFt: "",
+      nameError: "",
+      addressError: "",
+      emailError: "",
+      phoneError: "",
+      name_errors: false,
+      address_errors: false,
+      email_errors: false,
+      phone_errors: false,
     };
 
     this.handleClickOpen = this.handleClickOpen.bind(this);
@@ -56,6 +65,7 @@ class AddTenant extends React.Component {
     this.changeTenantFt = this.changeTenantFt.bind(this);
     this.calculate = this.calculate.bind(this);
     this.changeMeter_List = this.changeMeter_List.bind(this);
+    this.validation = this.validation.bind(this);
   }
 
   addTenant(tenant_info) {
@@ -72,12 +82,26 @@ class AddTenant extends React.Component {
   handleClose() {
     this.setState({
       open: false,
+      name: "",
+      address: "",
+      email: "",
+      landlord_phone: "",
+      nameError: "",
+      addressError: "",
+      emailError: "",
+      phoneError: "",
+      name_errors: false,
+      address_errors: false,
+      email_errors: false,
+      phone_errors: false,
     });
   }
 
   changeName(event) {
     this.setState({
       name: event.target.value,
+      nameError: "",
+      name_errors: false
     });
   }
   changeMeter_List(meter_list) {
@@ -88,18 +112,24 @@ class AddTenant extends React.Component {
   changeEmail(event) {
     this.setState({
       email: event.target.value,
+      emailError: "",
+      email_errors: false
     });
   }
 
   changeAddress(event) {
     this.setState({
       address: event.target.value,
+      addressError: "",
+      address_errors: false
     });
   }
 
   changeLandlordPhone(event) {
     this.setState({
       landlord_phone: event.target.value,
+      phoneError: "",
+      phone_errors: false
     });
   }
 
@@ -113,21 +143,32 @@ class AddTenant extends React.Component {
       /* tenant_info update to new requirements */
     }
     event.preventDefault();
-    this.setState({
-      open: false,
-    });
-
-    var tenant_info = {
-      name: this.state.name,
-      email: this.state.email,
-      address: this.state.address,
-      landlord_phone: this.state.landlord_phone,
-      rubs: this.state.rubs,
-    };
-    this.addTenant(tenant_info);
-    this.setState({
-      meter_list: [],
-    });
+    if (this.validation()) {
+      var tenant_info = {
+        name: this.state.name,
+        email: this.state.email,
+        address: this.state.address,
+        landlord_phone: this.state.landlord_phone,
+        rubs: this.state.rubs,
+      };
+      this.addTenant(tenant_info);
+      this.setState({
+        meter_list: [],
+        open: false,
+        name: "",
+        address: "",
+        email: "",
+        landlord_phone: "",
+        nameError: "",
+        addressError: "",
+        emailError: "",
+        phoneError: "",
+        name_errors: false,
+        address_errors: false,
+        email_errors: false,
+        phone_errors: false,
+      });
+    }
     // this.forceUpdate();
   }
 
@@ -182,9 +223,65 @@ class AddTenant extends React.Component {
     });
   }
 
+  validation() {
+    var isValidate = true;
+    var email_pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
+    var name_pattern = new RegExp(/^[a-z ,.'-]+$/i);
+    if (this.state.name === "" || !name_pattern.test(this.state.name)) {
+      var nameMessage = "Please enter a valid name"
+      this.setState({
+        nameError: nameMessage,
+        name_errors: true
+      })
+      isValidate = false;
+    }
+    if (this.state.email === "" ) {
+      var emailMessage = "Please enter a valid email address"
+      this.setState({
+        emailError: emailMessage,
+        email_errors: true
+      })
+      isValidate = false;
+    }
+    if (!email_pattern.test(this.state.email)) {
+      var emailMessage = "Please enter a valid email address"
+      this.setState({
+        emailError: emailMessage,
+        email_errors: true
+      })
+      isValidate = false;
+    }
+    if (this.state.address === "") {
+      var addressMessage = "Please enter a valid address"
+      this.setState({
+        addressError: addressMessage,
+        address_errors: true
+      })
+      isValidate = false;
+    }
+    var phone_pattern = new RegExp(/^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/);
+    if (this.state.landlord_phone === "" || !phone_pattern.test(this.state.landlord_phone)) {
+      var phoneMessage = "Please enter a valid phone number"
+      this.setState({
+        phoneError: phoneMessage,
+        phone_errors: true
+      })
+      isValidate = false;
+    }
+    return isValidate;
+  }
+
   render() {
     const isYes = this.state.yes;
     const isNo = this.state.no;
+    var is_validate_name = this.state.name_errors;
+    var is_validate_address = this.state.address_errors;
+    var is_validate_email = this.state.email_errors;
+    var is_validate_phone = this.state.phone_errors;
+    var name_message = this.state.nameError;
+    var address_message = this.state.addressError;
+    var email_message = this.state.emailError;
+    var phone_message = this.state.phoneError;
     return (
       <div>
         <Button color="primary" onClick={this.handleClickOpen}>
@@ -194,21 +291,68 @@ class AddTenant extends React.Component {
           <DialogTitle id="form-dialog-title">Enter Tenant Info</DialogTitle>
           <DialogContent>
             <DialogContentText></DialogContentText>
-            <TextField autoFocus margin="dense" id="name" label="Name" type="text" onChange={this.changeName} fullWidth />
-            <TextField autoFocus margin="dense" id="email" label="Email Address" type="email" onChange={this.changeEmail} fullWidth />
-            <TextField autoFocus margin="dense" id="address" label="Address" type="text" onChange={this.changeAddress} fullWidth />
-            <TextField autoFocus margin="dense" id="landlord_phone" label="Landlord Phone" type="text" onChange={this.changeLandlordPhone} fullWidth />
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Name"
+              type="text"
+              onChange={this.changeName}
+              helperText={is_validate_name ? name_message : null}
+              error={this.state.name_errors}
+              fullWidth
+              required
+            />
+            <TextField 
+              autoFocus 
+              margin="dense" 
+              id="email" 
+              label="Email Address" 
+              type="email" 
+              onChange={this.changeEmail} 
+              helperText={is_validate_email ? email_message : null}
+              error={this.state.email_errors}
+              fullWidth 
+              required
+            />
+            <TextField 
+              autoFocus 
+              margin="dense" 
+              id="address" 
+              label="Address" 
+              type="text" 
+              onChange={this.changeAddress} 
+              helperText={is_validate_address ? address_message : null}
+              error={this.state.address_errors}
+              fullWidth 
+              required
+            />
+            <NumberFormat 
+              customInput={TextField} 
+              autoFocus 
+              margin="dense"
+              id="landlord_phone" 
+              label="Landlord Phone" 
+              type="text" 
+              onChange={this.changeLandlordPhone} 
+              helperText={is_validate_phone ? phone_message : null}
+              error={this.state.phone_errors}
+              fullWidth 
+              format="(###) ###-####" 
+              required
+            />
             {/* 
                             After import meter_list, assign meter_list to the MeterCheckBox variable
                         */}
+            <DialogContent />
             <MeterCheckBox property_id={this.props.property_id} onlyOption={false} methodfromparent={this.getAssociatedMeter} />
             {/* <TextField autoFocus margin="dense" id="multiplier" label="Is there a multiplier?" type="text" onChange={this.changeMultiplier} fullWidth />
             <WhatIsMultiplier /> */}
             <DialogContent></DialogContent>
-            <DialogContent></DialogContent>
             <FormControl>
               <FormLabel>
-                Is there a RUBS?
+                Is this Tenant Billed based off a Percentage (Pro-Rata) Share of Building?
+                <DialogContentText />
                 <WhatIsProRataShare />
               </FormLabel>
               <FormGroup row>
@@ -219,7 +363,17 @@ class AddTenant extends React.Component {
               <div>
                 {isYes ? (
                   <div>
-                    <TextField autoFocus margin="dense" id="rubs" label="Enter RUBS" type="text" onChange={this.changeRUBS} fullWidth />
+                    <NumberFormat
+                      customInput={TextField}
+                      autoFocus
+                      margin="dense"
+                      id="rubs"
+                      label="Enter Percentage Share of Building"
+                      type="text"
+                      fullWidth
+                      onChange={this.changeRUBS}
+                      suffix="%"
+                    />
                   </div>
                 ) : null}
                 {isNo ? (

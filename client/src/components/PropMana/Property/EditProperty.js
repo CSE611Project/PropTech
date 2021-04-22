@@ -7,6 +7,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import NumberFormat from 'react-number-format';
 import axios from "axios";
 
 class EditProperty extends React.Component {
@@ -38,7 +39,16 @@ class EditProperty extends React.Component {
         address: this.props.address,
         total_footage: this.props.total_footage,
         landlord_phone: this.props.landlord_phone,
+        nameError: "",
+        addressError: "",
+        footageError: "",
+        phoneError: "",
+        name_errors: false,
+        address_errors: false,
+        footage_errors: false,
+        phone_errors: false,
       });
+      this.validation = this.validation.bind(this)
     }
   }
 
@@ -57,49 +67,121 @@ class EditProperty extends React.Component {
   handleClose() {
     this.setState({
       open: false,
+      nameError: "",
+      addressError: "",
+      footageError: "",
+      phoneError: "",
+      name_errors: false,
+      address_errors: false,
+      footage_errors: false,
+      phone_errors: false,
     });
   }
 
   changeName(event) {
     this.setState({
       name: event.target.value,
+      nameError: "",
+      name_errors: false
     });
   }
 
   changeAddress(event) {
     this.setState({
       address: event.target.value,
+      addressError: "",
+      address_errors: false
     });
   }
 
   changeTotalFootage(event) {
     this.setState({
       total_footage: event.target.value,
+      footageError: "",
+      footage_errors: false
     });
   }
 
   changeLandlordPhone(event) {
     this.setState({
       landlord_phone: event.target.value,
+      phoneError: "",
+      phone_errors: false
     });
+  }
+
+  validation() {
+    var isValidate = true;
+    if (this.state.name === "") {
+      var nameMessage = "Please enter a valid property name"
+      this.setState({
+        nameError: nameMessage,
+        name_errors: true
+      })
+      isValidate = false;
+    }
+    if (this.state.address === "") {
+      var addressMessage = "Please enter a valid property address"
+      this.setState({
+        addressError: addressMessage,
+        address_errors: true
+      })
+      isValidate = false;
+    }
+    if (this.state.total_footage === "" || this.state.total_footage < 1 || !this.state.total_footage) {
+      var footageMessage = "Please enter a valid total footage"
+      this.setState({
+        footageError: footageMessage,
+        footage_errors: true
+      })
+      isValidate = false;
+    }
+    var phone_pattern = new RegExp(/^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/);
+    if (this.state.landlord_phone === "" || !phone_pattern.test(this.state.landlord_phone)) {
+      var phoneMessage = "Please enter a valid phone number"
+      this.setState({
+        phoneError: phoneMessage,
+        phone_errors: true
+      })
+      isValidate = false;
+    }
+    return isValidate;
   }
 
   onSubmit(event) {
     event.preventDefault();
-    this.setState({
-      open: false,
-    });
-    var property_info = {
-      property_id: this.state.property_id,
-      name: this.state.name,
-      address: this.state.address,
-      total_footage: this.state.total_footage,
-      landlord_phone: this.state.landlord_phone,
-    };
-    this.updatePropertyInfo(property_info);
+    if (this.validation()) {
+      this.setState({
+        open: false,
+        nameError: "",
+        addressError: "",
+        footageError: "",
+        phoneError: "",
+        name_errors: false,
+        address_errors: false,
+        footage_errors: false,
+        phone_errors: false,
+      });
+      var property_info = {
+        property_id: this.state.property_id,
+        name: this.state.name,
+        address: this.state.address,
+        total_footage: this.state.total_footage,
+        landlord_phone: this.state.landlord_phone,
+      };
+      this.updatePropertyInfo(property_info);
+    }
   }
 
   render() {
+    var is_validate_name = this.state.name_errors;
+    var is_validate_address = this.state.address_errors;
+    var is_validate_footage = this.state.footage_errors;
+    var is_validate_phone = this.state.phone_errors;
+    var name_message = this.state.nameError;
+    var address_message = this.state.addressError;
+    var footage_message = this.state.footageError;
+    var phone_message = this.state.phoneError;
     return (
       <div>
         <Button color="primary" onClick={this.handleClickOpen}>
@@ -109,10 +191,56 @@ class EditProperty extends React.Component {
           <DialogTitle id="form-dialog-title">Edit Property Info</DialogTitle>
           <DialogContent>
             <DialogContentText></DialogContentText>
-            <TextField autoFocus margin="dense" id="name" label="Property Name" type="text" value={this.state.name} onChange={this.changeName} fullWidth />
-            <TextField autoFocus margin="dense" id="address" label="Property Address" type="text" value={this.state.address} onChange={this.changeAddress} fullWidth />
-            <TextField autoFocus margin="dense" id="total_footage" label="Total Footage" type="text" value={this.state.total_footage} onChange={this.changeTotalFootage} fullWidth />
-            <TextField autoFocus margin="dense" id="landlord_phone" label="Landlord Phone" type="text" value={this.state.landlord_phone} onChange={this.changeLandlordPhone} fullWidth />
+            <TextField 
+              autoFocus 
+              margin="dense" 
+              id="name" 
+              label="Property Name" 
+              type="text" 
+              value={this.state.name} 
+              onChange={this.changeName}
+              helperText={is_validate_name ? name_message : null}
+              error={this.state.name_errors} 
+              fullWidth 
+            />
+            <TextField 
+              autoFocus 
+              margin="dense" 
+              id="address" 
+              label="Property Address" 
+              type="text" 
+              value={this.state.address} 
+              onChange={this.changeAddress} 
+              helperText={is_validate_address ? address_message : null}
+              error={this.state.address_errors}
+              fullWidth 
+            />
+            <TextField 
+              autoFocus 
+              margin="dense" 
+              id="total_footage" 
+              label="Total Footage" 
+              type="text" 
+              value={this.state.total_footage} 
+              onChange={this.changeTotalFootage} 
+              helperText={is_validate_footage ? footage_message : null}
+              error={this.state.footage_errors}
+              fullWidth 
+            />
+            <NumberFormat 
+              customInput={TextField}
+              autoFocus 
+              margin="dense" 
+              id="landlord_phone" 
+              label="Landlord Phone Number" 
+              type="text" 
+              value={this.state.landlord_phone} 
+              onChange={this.changeLandlordPhone} 
+              helperText={is_validate_phone ? phone_message : null}
+              error={this.state.phone_errors}
+              fullWidth 
+              format="(###) ###-####" 
+            />
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="secondary">

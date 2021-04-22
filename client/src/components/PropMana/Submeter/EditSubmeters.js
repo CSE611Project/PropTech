@@ -17,6 +17,8 @@ class EditSubmeters extends React.Component {
       submeter_list: [],
       submeter_id: this.props.submeter_id,
       meter_id: this.props.meter_id,
+      submeter_error: false,
+      error_message: ""
     };
 
     this.handleClickOpen = this.handleClickOpen.bind(this);
@@ -25,7 +27,7 @@ class EditSubmeters extends React.Component {
     this.onSubmit = this.onSubmit.bind(this);
   }
   componentDidUpdate() {
-    if (this.props.submeter_id !== this.state.submeter_id) {
+    if (this.props.tenant_id !== this.state.tenant_id) {
       this.setState({
         tenant_id: this.props.tenant_id,
         submeter_list: [],
@@ -58,6 +60,8 @@ class EditSubmeters extends React.Component {
   changeSubmeter(event) {
     this.setState({
       submeter_id: event.target.value,
+      submeter_error: false,
+      error_message: ""
     });
   }
 

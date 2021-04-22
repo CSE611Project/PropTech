@@ -1,5 +1,8 @@
-import React from "react";
-import "./../../../App.css";
+import React, { useState } from "react";
+import ReactDOM from "react-dom";
+import "./../App.css";
+import PropertyInfo from "./PropertyInfo.js";
+import DeleteMeters from "./DeleteMeters.js";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
@@ -10,7 +13,8 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import axios from "axios";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import DatePicker from "./../../DatePicker.js";
+import DatePicker from "./DatePicker.js";
+import { IoTJobsDataPlane } from "aws-sdk";
 
 class MeterBillPage extends React.Component {
   constructor(props) {
@@ -26,6 +30,8 @@ class MeterBillPage extends React.Component {
       end: "",
       m_kwh_usage: 0,
       m_charge: 0,
+      user_id: this.props.user_id,
+
       /*second bill info */
       s_kwh_usage: 0,
       s_charge: 0,
@@ -58,10 +64,11 @@ class MeterBillPage extends React.Component {
       open: false,
     });
   }
-  changeBill(event) {
+  changeBill(event){
     this.setState({
       m_charge: Number(event.target.value),
     });
+
   }
   changeMeter(event) {
     this.setState({
@@ -74,6 +81,7 @@ class MeterBillPage extends React.Component {
       begin: time,
     });
     console.log(this.begin);
+    
   }
 
   changeEnd(time) {
@@ -113,10 +121,10 @@ class MeterBillPage extends React.Component {
   }
 
   submitBill(bill_info) {
-    axios.post("/bill", { sub: this.props.sub, bill_info: bill_info }).then((response) => {
-      //this.props.info.generateTableBill();
-    });
-
+        axios.post("/bill", { bill_info: bill_info }).then((response) => {
+          //this.props.info.generateTableBill();
+        });
+    
     /* the bill should be saved in somewhere of database */
   }
 
@@ -127,26 +135,27 @@ class MeterBillPage extends React.Component {
     });
     var tmp_m_kwh_usage = this.state.m_kwh_usage;
     var tmp_s_kwh_usage = this.state.s_kwh_usage;
-    var tmp_total_kwh_usage = tmp_m_kwh_usage + tmp_s_kwh_usage;
-    var tmp_total_charge = this.state.m_charge + this.state.s_charge;
-    var tmp_unit_charge = tmp_total_charge / tmp_total_kwh_usage;
+    var tmp_total_kwh_usage = tmp_m_kwh_usage+tmp_s_kwh_usage;
+    var tmp_total_charge = this.state.m_charge+this.state.s_charge;
+    var tmp_unit_charge = tmp_total_charge/tmp_total_kwh_usage;
 
-    var bill_info = {
-      account_id: "60c5c41d-b8b2-40d5-925b-0f482f112f13", //leave account id as test account
-      meter_id: this.state.meter_id,
-      from_date: this.state.begin,
-      to_date: this.state.end,
-      m_kwh_usage: this.state.m_kwh_usage,
-      m_charge: this.state.m_charge,
-      //second bill info
-      s_kwh_usage: this.state.s_kwh_usage,
-      s_charge: this.state.s_charge,
+        var bill_info = {
+            account_id: "60c5c41d-b8b2-40d5-925b-0f482f112f13", //leave account id as test account
+            meter_id: this.state.meter_id,
+            from_date: this.state.begin,
+            to_date: this.state.end,
+            m_kwh_usage: this.state.m_kwh_usage,
+            m_charge: this.state.m_charge,
+            //second bill info
+            s_kwh_usage: this.state.s_kwh_usage,
+            s_charge: this.state.s_charge,
 
-      //total kwh usage, charge, unit charge
-      total_kwh_usage: tmp_total_kwh_usage,
-      total_charge: tmp_total_charge,
-      unit_charge: tmp_unit_charge,
-    };
+            //total kwh usage, charge, unit charge
+            total_kwh_usage: tmp_total_kwh_usage,
+            total_charge: tmp_total_charge,
+            unit_charge: tmp_unit_charge
+  
+    }
 
     this.submitBill(bill_info);
     console.log(bill_info);
@@ -163,14 +172,14 @@ class MeterBillPage extends React.Component {
           <DialogContent>
             <DialogContentText></DialogContentText>
 
-            <TextField autoFocus margin="dense" id="meter_code" label={"meter# " + this.state.meter_id} type="text" disabled fullWidth />
-            <DatePicker from_date={this.changeBegin.bind(this)} to_date={this.changeEnd.bind(this)} />
+            <TextField autoFocus margin="dense" id="meter_code" label={"meter# "+this.state.meter_id} type="text" disabled fullWidth />
+            <DatePicker from_date={this.changeBegin.bind(this)} to_date={this.changeEnd.bind(this)}/>
             <TextField autoFocus margin="dense" id="kwh_rate" label="KWH" type="number" onChange={this.changeKWH} fullWidth />
             <TextField autoFocus margin="dense" id="m_charge" label="bill $" type="number" onChange={this.changeBill} fullWidth />
 
             <FormControlLabel
               control={<Checkbox checked={this.state.setCheck} onChange={this.changeCheckBox} inputProps={{ "aria-label": "primary checkbox" }} />}
-              label="Add third party energy supply billing information"
+              label="I have second bill/constellation company need to input"
             />
             <TextField autoFocus margin="dense" id="kwh_rate" label="KWH" type="number" disabled={!this.state.setCheck} onChange={this.change_sec_KWH} fullWidth />
             <TextField autoFocus margin="dense" id="2nd_bill_amount" label="2nd_bill $" type="number" disabled={!this.state.setCheck} onChange={this.change_sec_bill_amount} fullWidth />

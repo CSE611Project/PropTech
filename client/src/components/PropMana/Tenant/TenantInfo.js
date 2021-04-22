@@ -16,6 +16,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
+import { DialogContent } from "@material-ui/core";
 
 class TenantInfo extends Component {
   constructor(props) {
@@ -58,7 +59,7 @@ class TenantInfo extends Component {
             <TableCell>{this.state.tenant_list[i].email}</TableCell>
             <TableCell>{this.state.tenant_list[i].address}</TableCell>
             <TableCell>{this.state.tenant_list[i].landlord_phone}</TableCell>
-            <TableCell>{this.state.tenant_list[i].rubs}</TableCell>
+            <TableCell>{this.state.tenant_list[i].rubs + "%"}</TableCell>
             <TableCell>
               <EditTenant
                 sub={this.props.sub}
@@ -89,11 +90,8 @@ class TenantInfo extends Component {
   render() {
     return (
       <div className="main">
-        <TableContainer>
-          <Table>
-            <TableCell component={Paper}>
-              <Meters className="display_item" sub={this.props.sub} property_id={this.props.property_id} />
-            </TableCell>
+
+          <TableHead>
             <TableCell component={Paper}>
               <AddTenant
                 className="display_item"
@@ -103,8 +101,11 @@ class TenantInfo extends Component {
                 generateTableData={this.generateTableData}
               />
             </TableCell>
-          </Table>
-        </TableContainer>
+            <TableCell component={Paper}>
+              <Meters className="display_item" sub={this.props.sub} property_id={this.props.property_id} />
+            </TableCell>
+          </TableHead>
+        <DialogContent />
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -114,6 +115,10 @@ class TenantInfo extends Component {
                 <TableCell>Address</TableCell>
                 <TableCell>Landlord Phone</TableCell>
                 <TableCell>RUBS</TableCell>
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
               </TableRow>
             </TableHead>
             <TableBody>{this.res}</TableBody>
