@@ -1,293 +1,373 @@
-import React from "react";
+import React, { useState } from "react";
+import ReactDOM from "react-dom";
 import "./../App.css";
-import { Component } from "react";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import Page from "./Page";
-import html2canvas from "html2canvas";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import axios from "axios";
+//////////////////////////////////////////////
+
+
+import html2canvas from 'html2canvas';
 import { jsPDF } from "jspdf";
-class IndividualTenantInvoice extends Component {
+import * as htmlToImage from 'html-to-image';
+import {toPng, toJpeg, toBlob, toPixelData, toSvg} from 'html-to-image';
+// var htmlToImage =require('html-to-image');
+///////////////////////////////////////////////
+class IndividualTenantInvoice extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // display: this.props.display,
+      open: false,
+      display: this.props.display,
       invoice_list: this.props.invoice_list,
       tenant_list: this.props.tenant_list,
-      property_info: this.props.property_info,
-      open: false,
+      property_info : this.props.property_info
+
     };
+    /////////////////////////////////
     this.sub_meter_size = 0;
     this.meter_size = 0;
+    // this.generateTableData();
+    // this.generateIndividual();
     this.generateTableData = this.generateTableData.bind(this);
-
     this.generateIndividual = this.generateIndividual.bind(this);
+    this.printDocument= this.printDocument.bind(this);
+    //////////////////////////////////////////
+
+
     this.handleClickOpen = this.handleClickOpen.bind(this);
-    this.printDocument = this.printDocument.bind(this);
-    console.log("invoice list::::::", this.state.invoice_list);
+    this.handleClose = this.handleClose.bind(this);
+
   }
-  componentDidMount() {
-    this.generateTableData();
-    this.generateIndividual();
-  }
+
   handleClickOpen() {
     this.setState({
       open: true,
     });
+    console.log(
+      "invoice list: ", this.props.invoice_list[0]
+    )
+    this.generateTableData();
+    this.generateIndividual();
   }
+  handleClose() {
+    this.setState({
+      open: false,
+    });
+  }
+
+
   generateTableData = () => {
     var sub_total_charge = 0;
     var submeter_number = 0; //  is submeter number count for print pdf function
     var meter_number = 0; // it is meter number count for print pdf function
     var meter_total_charge = 0;
     var total_tenant_share = 0;
-    //////////////////////////////////////////////////
-    var matrix = [];
-    var tenant_list_size = this.state.tenant_list.length;
+//////////////////////////////////////////////////
+    var matrix = [],
+    tenant_list_size = this.state.tenant_list.length;
 
-    for (var i = 0; i < tenant_list_size; i++) {
-      matrix[i] = [];
+
+    for ( var i = 0; i < tenant_list_size; i++ ) {
+        matrix[i] = []; 
     }
     this.res = matrix;
     this.print = matrix;
-
-    /////////////////////////////////////////////////
-    //create empty array but with defined size
-    /////////////////////////////////////////////////
-    for (var i = 0; i < tenant_list_size; i++) {
-      if (this.state.tenant_list[i].rubs == 0) {
+    
+/////////////////////////////////////////////////
+//create empty array but with defined size
+/////////////////////////////////////////////////
+      for (var i = 0; i < tenant_list_size; i++) {
+        
+        if(this.state.tenant_list[i].rubs == 0){
+          // submeter first part table
         this.res[i].push(
-          <div>
-            <Table>
-              <table>
-                <tr class="spaceUnder">
-                  <tr>{this.state.tenant_list[i].name}</tr>
-                  <td></td>
-                </tr>
+        
+        <div>        
 
-                <tr class="spaceUnder">
-                  <tr>{this.state.tenant_list[i].address}</tr>
-                  <td></td>
-                </tr>
+            <table>
 
-                <tr class="spaceUnder">
-                  <tr>{this.state.invoice_list[0].from_date.split("T")[0]}</tr>
-                  <tr>{this.state.invoice_list[0].to_date.split("T")[0]}</tr>
-                </tr>
-              </table>
-            </Table>
+            <tr class="spaceUnder">
+            <tr>{this.state.tenant_list[i].name}</tr>
+            <td></td>
+            </tr>
 
-            <Table>
-              <TableRow>
-                <TableCell>Sub-Unit</TableCell>
-                <TableCell>Prior Amt (KwH)</TableCell>
-                <TableCell>Current Amt (KwH)</TableCell>
-                <TableCell>Current Usage (KwH)</TableCell>
-                <TableCell>Unit Charge</TableCell>
-                <TableCell>Amount</TableCell>
-              </TableRow>
-            </Table>
-          </div>
-        );
-      } else {
-        this.res[i].push(
-          <div>
-            <Table>
-              <table>
-                <tr class="spaceUnder">
-                  <tr>{this.state.tenant_list[i].name}</tr>
-                  <td></td>
-                </tr>
+            <tr class="spaceUnder">
+            <tr>{this.state.tenant_list[i].address}</tr>
+            <td></td>
+            </tr>
 
-                <tr class="spaceUnder">
-                  <tr>{this.state.tenant_list[i].address}</tr>
-                  <td></td>
-                </tr>
+            <tr>Electrical Charges as Metered</tr>
+            <td></td>
 
-                <tr class="spaceUnder">
-                  <tr>{this.state.invoice_list[0].from_date.split("T")[0]}</tr>
-                  <tr>{this.state.invoice_list[0].to_date.split("T")[0]}</tr>
-                </tr>
-              </table>
-            </Table>
+            <tr class="spaceUnder">
+            <tr>Period Start:  {this.state.invoice_list[0].from_date.split("T")[0]}</tr>
+            <tr>Period End: {this.state.invoice_list[0].to_date.split("T")[0]}</tr>
+            </tr>
 
-            <Table>
-              <TableRow>
-                <TableCell>Meter Number</TableCell>
-                <TableCell>RUBS</TableCell>
-                <TableCell>Meter Charge</TableCell>
-                <TableCell>Amount Due</TableCell>
-              </TableRow>
-            </Table>
-          </div>
-        );
-      }
+            </table>
 
-      for (var j = 0; j < this.state.invoice_list.length; j++) {
-        var current_invoice = this.state.invoice_list[j];
-        if (current_invoice.has_submeter == "y" && current_invoice.tenant_id == this.state.tenant_list[i].tenant_id) {
-          sub_total_charge = current_invoice.total_charge;
-          submeter_number++;
+        <table class="underline">
+          <tr>
+            <th>Sub-Unit</th>
+            <th>PriorAmt(KwH)</th>
+            <th>CurrentAmt(KwH)</th>
+            <th>CurrentUsage(KwH)</th>
+            <th>UnitCharge</th>
+            <th>Amount</th>
+          </tr>
+        </table>
+        </div>
+
+        );}
+        
+        else{
+          //meter first part table
           this.res[i].push(
-            <Page>
-              <Table>
-                <TableRow>
-                  <TableCell>{current_invoice.submeter_id}</TableCell>
-                  <TableCell>{current_invoice.prior_read}</TableCell>
-                  <TableCell>{current_invoice.cur_read}</TableCell>
-                  <TableCell>{current_invoice.cur_read - current_invoice.prior_read}</TableCell>
-                  <TableCell>{current_invoice.unit_charge}</TableCell>
-                  <TableCell>{current_invoice.submeter_charge}</TableCell>
-                </TableRow>
-              </Table>
-            </Page>
-          );
-        } else if (current_invoice.has_submeter == "n" && current_invoice.tenant_id == this.state.tenant_list[i].tenant_id) {
-          meter_number++;
-          meter_total_charge = meter_total_charge + current_invoice.total_charge;
-          total_tenant_share = total_tenant_share + current_invoice.meter_amt_due;
-          this.res[i].push(
-            <Page>
-              <Table>
-                <TableRow>
-                  <TableCell>{current_invoice.meter_id}</TableCell>
-                  <TableCell>{current_invoice.rubs}</TableCell>
-                  <TableCell>{current_invoice.total_charge}</TableCell>
-                  <TableCell>{current_invoice.meter_amt_due}</TableCell>
-                </TableRow>
-              </Table>
-            </Page>
+          <div>        
+
+            <table>    
+                <tr class="spaceUnder">
+                <tr>{this.state.tenant_list[i].name}</tr>
+                <td></td>
+                </tr>
+    
+                <tr class="spaceUnder">
+                <tr>{this.state.tenant_list[i].address}</tr>
+                <td></td>
+                </tr>
+
+                <tr>Electrical Charges as Metered</tr>
+                <td></td>
+    
+                <tr class="spaceUnder">
+                <tr>{this.state.invoice_list[0].from_date.split("T")[0]} to {this.state.invoice_list[0].to_date.split("T")[0]}</tr>
+                <td></td>
+                </tr>    
+            </table>
+
+            </div>
+
           );
         }
+        
+        for ( var j =0;  j<this.state.invoice_list.length; j++){
+          
+          var current_invoice = this.state.invoice_list[j];
+          if(current_invoice.has_submeter == 'y' && current_invoice.tenant_id == this.state.tenant_list[i].tenant_id){
+            // submeter second part of table
+            sub_total_charge = current_invoice.total_charge;
+            submeter_number++;
+            this.res[i].push(
+
+            <table>
+            <tr>
+            <th class = "unbolden">{current_invoice.submeter_id}--</th>
+            <th class = "unbolden">{current_invoice.prior_read}--</th>
+            <th class = "unbolden">{current_invoice.cur_read}------</th>
+            <th class = "unbolden">{current_invoice.cur_read - current_invoice.prior_read}----</th>
+            <th class = "unbolden">{current_invoice.unit_charge}----</th>
+            <th class = "unbolden">$ {current_invoice.submeter_charge}</th>
+            </tr>
+            </table>
+          
+          );
+          }else if(current_invoice.has_submeter == 'n' && current_invoice.tenant_id == this.state.tenant_list[i].tenant_id){
+            meter_number++;
+            meter_total_charge = meter_total_charge + current_invoice.total_charge;
+            total_tenant_share = total_tenant_share + current_invoice.meter_amt_due;
+            
+          //   this.res[i].push(
+          //   <Page>
+          //   <Table>
+          //   <TableRow >
+          //   <TableCell>{current_invoice.meter_id}</TableCell>
+          //   <TableCell>{current_invoice.rubs}</TableCell>
+          //   <TableCell>{current_invoice.total_charge}</TableCell>
+          //   <TableCell>{current_invoice.meter_amt_due}</TableCell>
+          //   </TableRow>
+          //   </Table>
+          //   </Page>            
+          // );
+
+          }
+
+        }; 
+        if(this.state.tenant_list[i].rubs == 0){
+          // submeter table at end of submeters charge list
+          this.res[i].push(
+            <table>
+            <tr>
+            <th class="topline">Total Amount:................................................................................................................. </th>
+            <th class="topline"></th>
+            <th class="topline">$ {sub_total_charge}</th>
+            <th class="topline" ></th>
+            </tr>
+            </table>
+          );
+
+          this.res[i].push(
+            <table>
+            <tr>
+            <th class="top_and_bottom_line">Enclosed_______________________________________________________________________________________________</th>
+            <td></td>
+            </tr>
+            </table>
+  
+          );
+
+        }else if(this.state.tenant_list[i].rubs != 0){
+          // meter table at end of meter charge
+          this.res[i].push(
+            <table class="place_in_center">
+
+                <tr class="spaceUnder">
+                <tr>Total Building Monthly Electrical Bill</tr>
+                <tr>$ {meter_total_charge}</tr>
+                <td></td>
+                </tr>
+
+                <tr class="spaceUnder">
+                <tr>Tenant Square Footage Share</tr>
+                <tr>{this.state.tenant_list[i].rubs * 100} %</tr>
+                <td></td>
+                </tr>
+
+                <tr class="spaceUnder">
+                <tr>Tenant Share of Electric Bill</tr>
+                <tr>$ {total_tenant_share}</tr>
+                <td></td>
+                </tr>
+
+                <tr class="spaceUnder">
+                <tr>Please make check payable to Property Tech LLc</tr>
+                <td></td>
+                </tr>
+            </table>
+    
+            );
+
+          this.res[i].push(
+            <table>
+
+                <tr class="spaceUnder">
+                <tr>Due upon recipt</tr>
+                <td></td>
+                </tr>
+
+                <tr class="spaceUnder">
+                <tr>Thank You,</tr>
+                <td></td>
+                </tr>
+
+                <tr class="spaceUnder">
+                <tr>Property Tech LLC</tr>
+                <td></td>
+                </tr>
+
+                <tr>
+                <th class="top_and_bottom_line">Enclosed_______________________________________________________________________________________________</th>
+                <td></td>
+                </tr>
+                </table>  
+          );
+          
+          
+            
+        }     
+
       }
-      if (current_invoice.has_submeter == "y") {
-        this.res[i].push(
-          <Table>
-            <TableRow>
-              <TableCell>
-                <tr class="spaceUnder">Total Amount</tr>
-              </TableCell>
-              <TableCell>
-                <tr class="spaceUnder">{"$" + sub_total_charge}</tr>
-              </TableCell>
-            </TableRow>
+      this.setState({sub_meter_size : submeter_number});
+      this.setState({meter_size : meter_number});
 
-            <TableRow>
-              <TableCell>Enclosed</TableCell>
-              <TableCell></TableCell>
-            </TableRow>
-          </Table>
-        );
-      } else if (current_invoice.has_submeter == "n") {
-        this.res[i].push(
-          <Table>
-            <TableRow>
-              <TableCell>
-                <tr class="spaceUnder">Total Building Monthly Electrical Bill</tr>
-              </TableCell>
-              <TableCell>
-                <tr class="spaceUnder">{"$" + meter_total_charge}</tr>
-              </TableCell>
-            </TableRow>
-
-            <TableRow>
-              <TableCell>
-                <tr class="spaceUnder">Tenant Square Footage Share</tr>
-              </TableCell>
-              <TableCell>
-                <tr class="spaceUnder">{current_invoice.rubs * 100 + "%"}</tr>
-              </TableCell>
-            </TableRow>
-
-            <TableRow>
-              <TableCell>
-                <tr class="spaceUnder">Tenant Share of Electric Bill</tr>
-              </TableCell>
-              <TableCell>
-                <tr class="spaceUnder">{"$" + total_tenant_share}</tr>
-              </TableCell>
-            </TableRow>
-
-            <TableRow>
-              <TableCell>Enclosed</TableCell>
-              <TableCell></TableCell>
-            </TableRow>
-          </Table>
-        );
-      }
-    }
-    this.setState({ sub_meter_size: submeter_number });
-    this.setState({ meter_size: meter_number });
-    this.forceUpdate();
   };
 
-  generateIndividual = () => {
+  generateIndividual = () =>{
     var matrix = [];
     var tenant_list_size = this.state.tenant_list.length;
 
-    for (var i = 0; i < tenant_list_size; i++) {
-      matrix[i] = [];
+    for ( var i = 0; i < tenant_list_size; i++ ) {
+        matrix[i] = []; 
     }
     this.print = matrix;
 
-    for (var c = 0; c < tenant_list_size; c++) {
-      this.print[c].push(<div id={c}>{this.res[c]}</div>);
+
+    for(var c=0; c< tenant_list_size; c++){
+      var i_d = this.res[c][0];
+
+      this.print[c].push(
+        <div id={'pdf'+c+this.state.tenant_list[c].tenant_id}>{this.res[c]}</div>
+      )
     }
-  };
+
+  }
+  
 
   printDocument() {
-    for (var a = 0; a < this.state.tenant_list.length; a++) {
-      const input = document.getElementById(a);
-      html2canvas(input).then((canvas) => {
-        const imgData = canvas.toDataURL("image/png");
-        const pdf = new jsPDF("p", "mm", "a4");
-        var width = pdf.internal.pageSize.getWidth();
-        var height = pdf.internal.pageSize.getHeight();
-
-        if (this.sub_meter_size > 12) {
-          pdf.addImage(imgData, "JPEG", 0, 0, width * 0.9, height);
-        }
-
-        if ((this.sub_meter_size <= 12) & (this.sub_meter_size > 9)) {
-          pdf.addImage(imgData, "JPEG", 0, 0, width, height * 0.8);
-        }
-
-        if ((this.sub_meter_size <= 9) & (this.sub_meter_size > 6)) {
-          pdf.addImage(imgData, "JPEG", 0, 0, width, height * 0.55);
-        }
-
-        if ((this.sub_meter_size <= 6) & (this.sub_meter_size >= 0)) {
-          pdf.addImage(imgData, "JPEG", 0, 0, width, height * 0.4);
-        }
-
-        pdf.save("download.pdf");
+    for(var i = 0; i < this.state.tenant_list.length; i++){
+      htmlToImage.toPng(document.getElementById('pdf'+i+this.state.tenant_list[i].tenant_id), { quality: 0.95 })
+      .then(function (dataUrl) {
+        var link = document.createElement('a');
+        link.download = 'my-image-name.jpeg';
+        const pdf = new jsPDF();          
+        pdf.addImage(dataUrl, 'PNG', 0, 0);
+        pdf.save("download.pdf");  //'pdf+'tenant_id+from_date+to_date
       });
-    }
+
+    // for(var a = 0; a<this.state.tenant_list.length; a++){
+    // const input = document.getElementById(a+this.state.tenant_list[a].tenant_id);
+    // html2canvas(input)
+    //   .then((canvas) => {
+    //     const imgData = canvas.toDataURL('image/png');
+    //     const pdf = new jsPDF("p", "mm", "a4");
+    //     var width = pdf.internal.pageSize.getWidth();
+    //     var height = pdf.internal.pageSize.getHeight();
+        
+
+        
+    //     if(this.sub_meter_size >=10){
+    //       pdf.addImage(imgData, 'JPEG', 0, 0, width, height*0.75);
+    //     }
+    //     else if (this.sub_meter_size <10 && this.sub_meter_size >=5){
+    //       pdf.addImage(imgData, 'JPEG', 0, 0, width, height*0.5);
+    //     }
+    //     else if (this.sub_meter_size < 5 && this.sub_meter_size >=0){
+    //       pdf.addImage(imgData, 'JPEG', 0, 0, width, height*0.3);
+    //     }
+
+    //     // pdf.addImage(imgData, 'JPEG', 0, 0, width, height*0.85);
+    //     pdf.save("download.pdf");
+
+          
+    //   });
+    // }
+  }
+
   }
 
   render() {
     return (
-      <div className="main">
-        <a href="#" onClick={this.handleClickOpen}>
-          gggg
-        </a>
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow></TableRow>
-            </TableHead>
-            <button onClick={this.printDocument}>Generate PDF</button>
-            <button>Send Invoces to Tenants</button>
-
-            <TableBody>
-              <div>{this.print}</div>
-            </TableBody>
-          </Table>
-        </TableContainer>
+      <div>
+        <Button color="primary" onClick={this.handleClickOpen}>
+          View PDF in dialog window
+        </Button>
+        <Dialog fullScreen open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
+          <DialogContent>
+            <DialogContentText></DialogContentText>
+            <div>{this.print}</div>
+            <button onClick={this.printDocument}>PDF</button>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="primary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }

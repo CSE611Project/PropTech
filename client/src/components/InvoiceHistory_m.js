@@ -11,7 +11,7 @@ import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import { Divider } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
-import IndividualTenantInvoice from "./new_IndividualTenantInvoice"
+import IndividualTenantInvoice from "./IndividualTenantInvoice"
 
 class InvoiceHistory_m extends React.Component {
   constructor(props) {
