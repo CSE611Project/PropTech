@@ -14,6 +14,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { DialogContent } from "@material-ui/core";
+import { makeStyles } from '@material-ui/core/styles';
 
 class PropertyInfo extends Component {
   constructor(props) {

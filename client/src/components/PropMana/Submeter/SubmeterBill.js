@@ -198,7 +198,7 @@ class SubmeterBill extends React.Component {
               Cancel
             </Button>
             <Button onClick={this.onSubmit} color="primary">
-              Update Bill
+              Upload
             </Button>
           </DialogActions>
         </Dialog>

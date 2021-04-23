@@ -124,11 +124,11 @@ class LoginPage extends React.Component {
 }
 
 function adminAfterSign() {
-  window.location = `/Admin`;
+  window.location = `/Admin/propertyManagers`;
 }
 
 function propManaAfterSign() {
-  window.location = `/PropMana/${sessionStorage.getItem("sub")}`;
+  window.location = `/PropMana/${sessionStorage.getItem("sub")}/property`;
 }
 
 export default LoginPage;

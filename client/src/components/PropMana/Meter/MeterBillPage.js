@@ -180,11 +180,11 @@ class MeterBillPage extends React.Component {
               Cancel
             </Button>
             <Button onClick={this.onSubmit} color="primary">
-              Update Bill
+              Upload
             </Button>
-            <Button onClick={this.onSubmit} color="primary">
+            {/* <Button onClick={this.onSubmit} color="primary">
               Fetch Bill by API
-            </Button>
+            </Button> */}
           </DialogActions>
         </Dialog>
       </div>

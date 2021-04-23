@@ -24,6 +24,8 @@ class TenantInfo extends Component {
     this.state = {
       tenant_list: [],
       meter_list: [],
+      is_meter_tenant: false,
+      is_submeter_tenant: false,
     };
     this.generateTableData = this.generateTableData.bind(this);
     this.getTenantList = this.getTenantList.bind(this);
@@ -49,17 +51,35 @@ class TenantInfo extends Component {
     });
   }
 
+  validate_tenant() {
+    var isValidate = true;
+
+    return isValidate;
+  }
+
   generateTableData() {
     this.getTenantList().then(() => {
       this.res = [];
       for (var i = 0; i < this.state.tenant_list.length; i++) {
+        if (this.state.tenant_list[i].rubs === 0) {
+          this.setState({
+            is_meter_tenant: false,
+            is_submeter_tenant: true,
+          })
+        } else {
+          this.setState({
+            is_meter_tenant: true,
+            is_submeter_tenant: false,
+          })
+        }
+        console.log(this.state.tenant_list[i])
         this.res.push(
           <TableRow key={i} id={i}>
             <TableCell>{this.state.tenant_list[i].name}</TableCell>
             <TableCell>{this.state.tenant_list[i].email}</TableCell>
             <TableCell>{this.state.tenant_list[i].address}</TableCell>
             <TableCell>{this.state.tenant_list[i].landlord_phone}</TableCell>
-            <TableCell>{this.state.tenant_list[i].rubs + "%"}</TableCell>
+            <TableCell>{this.state.tenant_list[i].rubs * 100 + "%"}</TableCell>
             <TableCell>
               <EditTenant
                 sub={this.props.sub}
@@ -76,10 +96,25 @@ class TenantInfo extends Component {
             <TableCell>
               <DeleteTenant sub={this.props.sub} tenant_id={this.state.tenant_list[i].tenant_id} property_id={this.props.property_id} generateTableData={this.generateTableData} />
             </TableCell>
-            <TableCell>
-              <Submeters sub={this.props.sub} tenant_id={this.state.tenant_list[i].tenant_id} info={this} property_id={this.props.property_id} />
-            </TableCell>
-            <CollapseSubmeter tenant_id={this.state.tenant_list[i].tenant_id} property_id={this.props.property_id} info={this} />
+            <React.Fragment>
+              {this.state.is_submeter_tenant ? (
+                <React.Fragment>
+                  <TableCell>
+                    <Submeters sub={this.props.sub} tenant_id={this.state.tenant_list[i].tenant_id} info={this} property_id={this.props.property_id} />
+                  </TableCell>
+                  <TableCell>
+                    <CollapseSubmeter tenant_id={this.state.tenant_list[i].tenant_id} property_id={this.props.property_id} info={this} />
+                  </TableCell>
+                </React.Fragment>
+              ) : 
+                <React.Fragment>
+                  <TableCell>
+                  </TableCell>
+                  <TableCell>
+                  </TableCell>
+                </React.Fragment>
+              }
+            </React.Fragment>
           </TableRow>
         );
       }
@@ -91,20 +126,20 @@ class TenantInfo extends Component {
     return (
       <div className="main">
 
-          <TableHead>
-            <TableCell component={Paper}>
-              <AddTenant
-                className="display_item"
-                sub={this.props.sub}
-                property_id={this.props.property_id}
-                total_footage={sessionStorage.getItem("total_footage")}
-                generateTableData={this.generateTableData}
-              />
-            </TableCell>
-            <TableCell component={Paper}>
-              <Meters className="display_item" sub={this.props.sub} property_id={this.props.property_id} />
-            </TableCell>
-          </TableHead>
+        <TableHead>
+          <TableCell component={Paper}>
+            <AddTenant
+              className="display_item"
+              sub={this.props.sub}
+              property_id={this.props.property_id}
+              total_footage={sessionStorage.getItem("total_footage")}
+              generateTableData={this.generateTableData}
+            />
+          </TableCell>
+          <TableCell component={Paper}>
+            <Meters className="display_item" sub={this.props.sub} property_id={this.props.property_id} />
+          </TableCell>
+        </TableHead>
         <DialogContent />
         <TableContainer component={Paper}>
           <Table>
@@ -115,7 +150,7 @@ class TenantInfo extends Component {
                 <TableCell>Address</TableCell>
                 <TableCell>Landlord Phone</TableCell>
                 <TableCell>RUBS</TableCell>
-                <TableCell />
+                <TableCell></TableCell>
                 <TableCell />
                 <TableCell />
                 <TableCell />
