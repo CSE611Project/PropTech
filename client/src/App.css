@@ -254,22 +254,52 @@ label {
 
 
 tr.spaceUnder>td {
-  padding-bottom: 5em;
+  padding-bottom: 4em;
 }
 
 /***************************CSS for the new format of submeter invoce PDF**************************************/
 
 .underline {
   border-bottom: 1px solid #000000;
-  padding:0 20px;
+  border-spacing: 25px;
+  font-size: 15px;
 }
 
 .unbolden {
 
     font-weight:normal;
     padding:0 20px;
-
+    font-size: 10px;
 }
+
+.unbolden2 {
+
+  font-weight:normal;
+  padding:0 40px;
+  font-size: 10px;
+}
+
+.unbolden3 {
+
+  font-weight:normal;
+  padding:0 50px;
+  font-size: 10px;
+}
+
+.unbolden4 {
+
+  font-weight:normal;
+  padding:0 70px;
+  font-size: 10px;
+}
+
+.unbolden5 {
+
+  font-weight:normal;
+  padding:0 1px;
+  font-size: 10px;
+}
+
 
 .topline{
   border-top: 1px solid #000000;  
@@ -277,12 +307,29 @@ tr.spaceUnder>td {
 
 .top_and_bottom_line{
   border-top: 1px solid #000000;
-  border-bottom: 1px solid #000000;  
+  padding-bottom: 50%;  
 
+}
+
+.meter_top_and_bottom_line{
+  border-top: 1px solid #000000;
+  border-bottom: 1px solid #000000;;
 }
 
 /***************************CSS for the new format of meter invoce PDF**************************************/
 
 .place_in_center{
-  padding-left:20%
+  padding-left:5%
+}
+.small{
+  font-size: 10px;
+}
+
+.enclose{
+  padding-bottom: 30%;
+}
+
+.amt{
+  border-top: 1px solid #000000;
+  padding-right: 0px;
 }
