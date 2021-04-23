@@ -15,6 +15,7 @@ import FormLabel from "@material-ui/core/FormLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormHelperText from "@material-ui/core/FormHelperText";
 import NumberFormat from 'react-number-format';
 
 {
@@ -38,6 +39,8 @@ class AddTenant extends React.Component {
       meter_list: [],
       yes: false,
       no: false,
+      yesprorata: false,
+      noprorata: false,
       tenantFt: "",
       nameError: "",
       addressError: "",
@@ -47,6 +50,12 @@ class AddTenant extends React.Component {
       address_errors: false,
       email_errors: false,
       phone_errors: false,
+      choice_errors: false,
+      helper_text: "",
+      rubs_errors: false,
+      rubs_helper_text: "",
+      percent_errors: false,
+      percent_helper_text: "",
     };
 
     this.handleClickOpen = this.handleClickOpen.bind(this);
@@ -66,6 +75,8 @@ class AddTenant extends React.Component {
     this.calculate = this.calculate.bind(this);
     this.changeMeter_List = this.changeMeter_List.bind(this);
     this.validation = this.validation.bind(this);
+    this.onChangeYesProrata = this.onChangeYesProrata.bind(this);
+    this.onChangeNoProrata = this.onChangeNoProrata.bind(this);
   }
 
   addTenant(tenant_info) {
@@ -86,6 +97,8 @@ class AddTenant extends React.Component {
       address: "",
       email: "",
       landlord_phone: "",
+      rubs: "",
+      tenantFt: "",
       nameError: "",
       addressError: "",
       emailError: "",
@@ -94,6 +107,16 @@ class AddTenant extends React.Component {
       address_errors: false,
       email_errors: false,
       phone_errors: false,
+      choice_errors: false,
+      helper_text: "",
+      rubs_errors: false,
+      rubs_helper_text: "",
+      yesprorata: false,
+      noprorata: false,
+      yes: false,
+      no: false,
+      percent_errors: false,
+      percent_helper_text: "",
     });
   }
 
@@ -144,30 +167,102 @@ class AddTenant extends React.Component {
     }
     event.preventDefault();
     if (this.validation()) {
-      var tenant_info = {
-        name: this.state.name,
-        email: this.state.email,
-        address: this.state.address,
-        landlord_phone: this.state.landlord_phone,
-        rubs: this.state.rubs,
-      };
-      this.addTenant(tenant_info);
-      this.setState({
-        meter_list: [],
-        open: false,
-        name: "",
-        address: "",
-        email: "",
-        landlord_phone: "",
-        nameError: "",
-        addressError: "",
-        emailError: "",
-        phoneError: "",
-        name_errors: false,
-        address_errors: false,
-        email_errors: false,
-        phone_errors: false,
-      });
+      if (this.state.yesprorata && !this.state.yes && !this.state.no) {
+        var rubs_message = "Please choose an option"
+        this.setState({
+          rubs_errors: true,
+          rubs_helper_text: rubs_message
+        })
+      } else if (this.state.yesprorata) {
+        if (this.state.tenantFt === "" && (this.state.rubs === "" || this.state.rubs > 1)) {
+          var rubs_message = "Please enter a valid number"
+          this.setState({
+            percent_errors: true,
+            percent_helper_text: rubs_message
+          })
+        } else if (this.state.rubs === "" && (this.state.tenantFt === "" || this.state.tenantFt > this.props.total_footage)) {
+          var rubs_message = "Please enter a valid number"
+          this.setState({
+            percent_errors: true,
+            percent_helper_text: rubs_message
+          })
+        } else {
+          var tenant_info = {
+            name: this.state.name,
+            email: this.state.email,
+            address: this.state.address,
+            landlord_phone: this.state.landlord_phone,
+            rubs: this.state.rubs,
+          };
+          this.addTenant(tenant_info);
+          this.setState({
+            meter_list: [],
+            open: false,
+            name: "",
+            address: "",
+            email: "",
+            landlord_phone: "",
+            rubs: "",
+            tenantFt: "",
+            nameError: "",
+            addressError: "",
+            emailError: "",
+            phoneError: "",
+            name_errors: false,
+            address_errors: false,
+            email_errors: false,
+            phone_errors: false,
+            choice_errors: false,
+            helper_text: "",
+            rubs_errors: false,
+            rubs_helper_text: "",
+            yesprorata: false,
+            noprorata: false,
+            yes: false,
+            no: false,
+            percent_errors: false,
+            percent_helper_text: "",
+          });
+        }
+
+      } else {
+        var tenant_info = {
+          name: this.state.name,
+          email: this.state.email,
+          address: this.state.address,
+          landlord_phone: this.state.landlord_phone,
+          rubs: this.state.rubs,
+        };
+        this.addTenant(tenant_info);
+        this.setState({
+          meter_list: [],
+          open: false,
+          name: "",
+          address: "",
+          email: "",
+          landlord_phone: "",
+          rubs: "",
+          tenantFt: "",
+          nameError: "",
+          addressError: "",
+          emailError: "",
+          phoneError: "",
+          name_errors: false,
+          address_errors: false,
+          email_errors: false,
+          phone_errors: false,
+          choice_errors: false,
+          helper_text: "",
+          rubs_errors: false,
+          rubs_helper_text: "",
+          yesprorata: false,
+          noprorata: false,
+          yes: false,
+          no: false,
+          percent_errors: false,
+          percent_helper_text: "",
+        });
+      }
     }
     // this.forceUpdate();
   }
@@ -180,15 +275,28 @@ class AddTenant extends React.Component {
 
   changeRUBS(event) {
     event.preventDefault();
+    var value = parseInt(event.target.value) / 100
     this.setState({
-      rubs: event.target.value,
+      rubs: value,
+      percent_errors: false,
+      percent_helper_text: ""
     });
   }
 
   changeTenantFt(event) {
     event.preventDefault();
+    var totalBuildingFt = this.props.total_footage;
+    var tenantft = event.target.value;
+    if (tenantft != "") {
+      var rubs = tenantft / totalBuildingFt;
+      this.setState({
+        rubs: rubs,
+      });
+    }
     this.setState({
       tenantFt: event.target.value,
+      percent_errors: false,
+      percent_helper_text: ""
     });
   }
 
@@ -200,7 +308,7 @@ class AddTenant extends React.Component {
       this.setState({
         rubs: rubs,
       });
-
+      this.forceUpdate();
       /* should specify a way to calculate rubs based on tenantFt and then save into rubs variable*/
       console.log(tenantft / totalBuildingFt);
     }
@@ -212,6 +320,8 @@ class AddTenant extends React.Component {
     this.setState({
       yes: event.target.checked,
       no: false,
+      rubs_errors: false,
+      rubs_helper_text: "",
     });
   }
 
@@ -220,7 +330,29 @@ class AddTenant extends React.Component {
     this.setState({
       no: event.target.checked,
       yes: false,
+      rubs_errors: false,
+      rubs_helper_text: "",
     });
+  }
+
+  onChangeYesProrata(event) {
+    event.preventDefault();
+    this.setState({
+      yesprorata: event.target.checked,
+      noprorata: false,
+      choice_errors: false,
+      helper_text: ""
+    })
+  }
+
+  onChangeNoProrata(event) {
+    event.preventDefault();
+    this.setState({
+      noprorata: event.target.checked,
+      yesprorata: false,
+      choice_errors: false,
+      helper_text: ""
+    })
   }
 
   validation() {
@@ -235,7 +367,7 @@ class AddTenant extends React.Component {
       })
       isValidate = false;
     }
-    if (this.state.email === "" ) {
+    if (this.state.email === "") {
       var emailMessage = "Please enter a valid email address"
       this.setState({
         emailError: emailMessage,
@@ -268,12 +400,22 @@ class AddTenant extends React.Component {
       })
       isValidate = false;
     }
+    if (!this.state.yesprorata && !this.state.noprorata) {
+      var message = "Please choose an option"
+      this.setState({
+        choice_errors: true,
+        helper_text: message
+      })
+      isValidate = false;
+    }
     return isValidate;
   }
 
   render() {
     const isYes = this.state.yes;
     const isNo = this.state.no;
+    const isYesProrata = this.state.yesprorata;
+    const isNoProrata = this.state.noprorata;
     var is_validate_name = this.state.name_errors;
     var is_validate_address = this.state.address_errors;
     var is_validate_email = this.state.email_errors;
@@ -282,6 +424,12 @@ class AddTenant extends React.Component {
     var address_message = this.state.addressError;
     var email_message = this.state.emailError;
     var phone_message = this.state.phoneError;
+    var is_validate_choice = this.state.choice_errors;
+    var helper = this.state.helper_text;
+    var is_validate_rubs = this.state.rubs_errors;
+    var helper_rubs = this.state.rubs_helper_text;
+    var is_validate_percent = this.state.percent_errors;
+    var helper_percent = this.state.percent_helper_text;
     return (
       <div>
         <Button color="primary" onClick={this.handleClickOpen}>
@@ -303,86 +451,131 @@ class AddTenant extends React.Component {
               fullWidth
               required
             />
-            <TextField 
-              autoFocus 
-              margin="dense" 
-              id="email" 
-              label="Email Address" 
-              type="email" 
-              onChange={this.changeEmail} 
+            <TextField
+              autoFocus
+              margin="dense"
+              id="email"
+              label="Email Address"
+              type="email"
+              onChange={this.changeEmail}
               helperText={is_validate_email ? email_message : null}
               error={this.state.email_errors}
-              fullWidth 
+              fullWidth
               required
             />
-            <TextField 
-              autoFocus 
-              margin="dense" 
-              id="address" 
-              label="Address" 
-              type="text" 
-              onChange={this.changeAddress} 
+            <TextField
+              autoFocus
+              margin="dense"
+              id="address"
+              label="Address"
+              type="text"
+              onChange={this.changeAddress}
               helperText={is_validate_address ? address_message : null}
               error={this.state.address_errors}
-              fullWidth 
+              fullWidth
               required
             />
-            <NumberFormat 
-              customInput={TextField} 
-              autoFocus 
+            <NumberFormat
+              customInput={TextField}
+              autoFocus
               margin="dense"
-              id="landlord_phone" 
-              label="Landlord Phone" 
-              type="text" 
-              onChange={this.changeLandlordPhone} 
+              id="landlord_phone"
+              label="Landlord Phone"
+              type="text"
+              onChange={this.changeLandlordPhone}
               helperText={is_validate_phone ? phone_message : null}
               error={this.state.phone_errors}
-              fullWidth 
-              format="(###) ###-####" 
+              fullWidth
+              format="(###) ###-####"
               required
             />
             {/* 
                             After import meter_list, assign meter_list to the MeterCheckBox variable
                         */}
             <DialogContent />
-            <MeterCheckBox property_id={this.props.property_id} onlyOption={false} methodfromparent={this.getAssociatedMeter} />
-            {/* <TextField autoFocus margin="dense" id="multiplier" label="Is there a multiplier?" type="text" onChange={this.changeMultiplier} fullWidth />
-            <WhatIsMultiplier /> */}
-            <DialogContent></DialogContent>
-            <FormControl>
+            <FormControl error={is_validate_choice}>
               <FormLabel>
                 Is this Tenant Billed based off a Percentage (Pro-Rata) Share of Building?
                 <DialogContentText />
                 <WhatIsProRataShare />
               </FormLabel>
+              <FormHelperText>{helper}</FormHelperText>
               <FormGroup row>
-                <FormControlLabel control={<Checkbox checked={this.state.yes} onChange={this.onChangeYes} name="yes" color="primary" />} label="yes" />
-                <FormControlLabel control={<Checkbox checked={this.state.no} onChange={this.onChangeNo} name="no" color="primary" />} label="no" />
+                <FormControlLabel control={<Checkbox checked={this.state.yesprorata} onChange={this.onChangeYesProrata} name="yes" color="primary" />} label="yes" />
+                <FormControlLabel control={<Checkbox checked={this.state.noprorata} onChange={this.onChangeNoProrata} name="no" color="primary" />} label="no" />
               </FormGroup>
               <DialogContent></DialogContent>
               <div>
-                {isYes ? (
+                {isYesProrata ? (
                   <div>
-                    <NumberFormat
-                      customInput={TextField}
-                      autoFocus
-                      margin="dense"
-                      id="rubs"
-                      label="Enter Percentage Share of Building"
-                      type="text"
-                      fullWidth
-                      onChange={this.changeRUBS}
-                      suffix="%"
-                    />
+                    <MeterCheckBox property_id={this.props.property_id} onlyOption={false} methodfromparent={this.getAssociatedMeter} />
+                    {/* <TextField autoFocus margin="dense" id="multiplier" label="Is there a multiplier?" type="text" onChange={this.changeMultiplier} fullWidth />
+                    <WhatIsMultiplier /> */}
+                    <DialogContent></DialogContent>
+                    <FormControl error={is_validate_rubs}>
+                      <FormLabel>
+                        Do you have the percentage share of building of this tenant?
+                        <DialogContentText />
+                        <WhatIsProRataShare />
+                      </FormLabel>
+                      <FormHelperText>{helper_rubs}</FormHelperText>
+                      <FormGroup row>
+                        <FormControlLabel control={<Checkbox checked={this.state.yes} onChange={this.onChangeYes} name="yes" color="primary" />} label="yes" />
+                        <FormControlLabel control={<Checkbox checked={this.state.no} onChange={this.onChangeNo} name="no" color="primary" />} label="no" />
+                      </FormGroup>
+                      <DialogContent></DialogContent>
+                      <div>
+                        {isYes ? (
+                          <div>
+                            <NumberFormat
+                              customInput={TextField}
+                              autoFocus
+                              margin="dense"
+                              id="rubs"
+                              label="Enter Percentage Share of Building"
+                              type="text"
+                              fullWidth
+                              onChange={this.changeRUBS}
+                              helperText={is_validate_percent ? helper_percent : null}
+                              error={this.state.percent_errors}
+                              suffix="%"
+                            />
+                          </div>
+                        ) : null}
+                        {isNo ? (
+                          <div>
+                            <div>Total buildings square footage: {this.props.total_footage}</div>
+                            <NumberFormat
+                              customInput={TextField}
+                              autoFocus
+                              margin="dense"
+                              id="tenantFt"
+                              label="Enter tenant square footage"
+                              type="text"
+                              onChange={this.changeTenantFt}
+                              fullWidth
+                              helperText={is_validate_percent ? helper_percent : null}
+                              error={this.state.percent_errors}
+                            />
+                            <TextField
+                              autoFocus
+                              margin="dense"
+                              label="Percentage share"
+                              fullWidth
+                              value={this.state.rubs * 100 + "%"}
+                            />
+                            {/* <Button onClick={this.calculate} color="primary">
+                              Calculate
+                            </Button> */}
+                          </div>
+                        ) : null}
+                      </div>
+                    </FormControl>
                   </div>
                 ) : null}
-                {isNo ? (
+                {isNoProrata ? (
                   <div>
-                    <div>Total buildings square footage: {this.props.total_footage}</div>
-                    <TextField autoFocus margin="dense" id="tenantFt" label="Enter tenant square footage" type="text" onChange={this.changeTenantFt} fullWidth />
-                    <Button onClick={this.calculate} color="primary">
-                      Calculate
-                    </Button>
+
                   </div>
                 ) : null}
               </div>

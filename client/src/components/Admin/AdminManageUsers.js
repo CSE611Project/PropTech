@@ -140,7 +140,7 @@ class AcceptButton extends Component {
 class ViewPropManager extends Component {
   viewManager = (sub, username) => {
     sessionStorage.setItem("username", username);
-    window.location = `/Admin/PropMana/${sub}`;
+    window.location = `/Admin/PropMana/${sub}/property`;
   };
 
   render() {

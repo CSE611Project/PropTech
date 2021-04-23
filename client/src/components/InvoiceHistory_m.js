@@ -117,7 +117,7 @@ class InvoiceHistory_m extends React.Component {
               <TableCell>{tableData[i].from_date.split("T")[0]}</TableCell>
               <TableCell>{tableData[i].to_date.split("T")[0]}</TableCell>
               <TableCell>{tableData[i].meter_amt_due}</TableCell>
-              <TableCell>{rubs}</TableCell>
+              <TableCell>{rubs * 100 + "%"}</TableCell>
               <TableCell>{total_footage}</TableCell>
               <TableCell>{tableDataProperty[0].total_footage}</TableCell>
               <TableCell>{total_building_amt_due}</TableCell>
