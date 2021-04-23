@@ -89,7 +89,7 @@ class BillTimeCheckBox extends React.Component {
             // name={Number(tableData[i].bill_id)}
             value={String(tableData[i].bill_id)}
             control={<Radio />}
-            label={String(tableData[i].from_date + " to " + tableData[i].to_date)}
+            label={String(tableData[i].from_date.split("T")[0] + " to " + tableData[i].to_date.split("T")[0])}
           />
         );
       }
