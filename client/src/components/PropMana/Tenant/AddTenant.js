@@ -175,12 +175,18 @@ class AddTenant extends React.Component {
         })
       } else if (this.state.yesprorata) {
         if (this.state.tenantFt === "" && (this.state.rubs === "" || this.state.rubs > 1)) {
-          var rubs_message = "Please enter a valid number"
+          var rubs_message = "Please enter a valid percentage"
           this.setState({
             percent_errors: true,
             percent_helper_text: rubs_message
           })
         } else if (this.state.rubs === "" && (this.state.tenantFt === "" || this.state.tenantFt > this.props.total_footage)) {
+          var rubs_message = "Please enter a valid number"
+          this.setState({
+            percent_errors: true,
+            percent_helper_text: rubs_message
+          })
+        } else if (this.state.rubs !== "" && this.state.rubs > 1) {
           var rubs_message = "Please enter a valid number"
           this.setState({
             percent_errors: true,

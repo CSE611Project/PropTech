@@ -79,7 +79,7 @@ class TenantInfo extends Component {
             <TableCell>{this.state.tenant_list[i].email}</TableCell>
             <TableCell>{this.state.tenant_list[i].address}</TableCell>
             <TableCell>{this.state.tenant_list[i].landlord_phone}</TableCell>
-            <TableCell>{this.state.tenant_list[i].rubs * 100 + "%"}</TableCell>
+            <TableCell>{(this.state.tenant_list[i].rubs * 100).toFixed(2) + "%"}</TableCell>
             <TableCell>
               <EditTenant
                 sub={this.props.sub}
