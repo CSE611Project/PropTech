@@ -91,6 +91,8 @@ class TenantInfo extends Component {
                 rubs={this.state.tenant_list[i].rubs}
                 property_id={this.props.property_id}
                 generateTableData={this.generateTableData}
+                meter_list={this.state.meter_list}
+                total_footage={sessionStorage.getItem("total_footage")}
               />
             </TableCell>
             <TableCell>

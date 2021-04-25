@@ -281,7 +281,8 @@ class AddTenant extends React.Component {
 
   changeRUBS(event) {
     event.preventDefault();
-    var value = parseInt(event.target.value) / 100
+    var value = parseFloat(event.target.value) / 100
+    console.log("rubs is " + value)
     this.setState({
       rubs: value,
       percent_errors: false,
@@ -442,7 +443,7 @@ class AddTenant extends React.Component {
           Add Tenant
         </Button>
         <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">Enter Tenant Info</DialogTitle>
+          <DialogTitle id="form-dialog-title">Enter Tenant Information</DialogTitle>
           <DialogContent>
             <DialogContentText></DialogContentText>
             <TextField
