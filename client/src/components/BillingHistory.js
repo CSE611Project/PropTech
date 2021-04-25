@@ -200,8 +200,8 @@ class BillingHistory extends React.Component {
             <TableRow>
               <TableCell>Meter Bill ID</TableCell>
               <TableCell>Meter</TableCell>
-              <TableCell>From</TableCell>
-              <TableCell>To</TableCell>
+              <TableCell>Billing Start Date</TableCell>
+              <TableCell>Billing End Date</TableCell>
               <TableCell>Total KWH Usage</TableCell>
               <TableCell>Unit Charge</TableCell>
               <TableCell>Total Charge</TableCell>
