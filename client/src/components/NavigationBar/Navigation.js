@@ -27,9 +27,9 @@ class Navigation extends React.Component {
               </Grid>
               <Grid item>
                 <ul>
-                  <Link href="/" onClick={this.home}>
+                  {/* <Link href="/" onClick={this.home}>
                     <li>Home</li>
-                  </Link>
+                  </Link> */}
                   <Link href="/About" onClick={this.about}>
                     <li>About</li>
                   </Link>
