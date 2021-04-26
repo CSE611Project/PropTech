@@ -13,8 +13,11 @@ import PropManaAfterSign from "./components/PropMana/PropManaAfterSign.js";
 import IndividualTenantInvoice from "./components/IndividualTenantInvoice";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import axios from "axios";
-
+// For local testing and development
 axios.defaults.baseURL = "http://localhost:3000";
+
+// For build
+// axios.defaults.baseURL = "http://3.131.169.6:3000/";
 axios.defaults.withCredentials = true;
 function App() {
   return (

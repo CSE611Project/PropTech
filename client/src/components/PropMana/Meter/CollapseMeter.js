@@ -37,7 +37,7 @@ class CollapseMeter extends React.Component {
 
   getMeterList() {
     return new Promise((resolve, reject) => {
-      axios.get(`/ass_meter/${this.props.property_id}`).then((response) => {
+      axios.get(`/ass_meter/${this.state.property_id}`).then((response) => {
         this.setState({ submeter_list: response.data });
         resolve();
       });
@@ -49,16 +49,16 @@ class CollapseMeter extends React.Component {
     // see hardcode below in render() function
     var res = [];
     this.getMeterList().then(() => {
-    //   let tableData = this.state.submeter_list;
-    //   for (var i = 0; i < tableData.length; i++) {
-    //     res.push(
-    //       <TableRow key={i} id={i}>
-    //         <TableCell>{tableData[i].submeter_id}</TableCell>
-    //       </TableRow>
-    //     );
-    //   }
-    //   this.res = res;
-    //   this.forceUpdate();
+      //   let tableData = this.state.submeter_list;
+      //   for (var i = 0; i < tableData.length; i++) {
+      //     res.push(
+      //       <TableRow key={i} id={i}>
+      //         <TableCell>{tableData[i].submeter_id}</TableCell>
+      //       </TableRow>
+      //     );
+      //   }
+      //   this.res = res;
+      //   this.forceUpdate();
     });
   }
 

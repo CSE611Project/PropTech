@@ -6,6 +6,10 @@ const databaseRouter = require("./database_router");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
+// For local testing and development
+app.use(cors({ credentials: true, origin: "http://localhost:3001" }));
+
+// For build
 // app.use(cors({ credentials: true, origin: "http://3.131.169.6" }));
 app.use(express.json());
 app.use(cookieParser());

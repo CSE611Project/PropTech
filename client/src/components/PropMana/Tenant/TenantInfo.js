@@ -66,14 +66,14 @@ class TenantInfo extends Component {
           this.setState({
             is_meter_tenant: false,
             is_submeter_tenant: true,
-          })
+          });
         } else {
           this.setState({
             is_meter_tenant: true,
             is_submeter_tenant: false,
-          })
+          });
         }
-        console.log(this.state.tenant_list[i])
+        console.log(this.state.tenant_list[i]);
         this.res.push(
           <TableRow key={i} id={i}>
             <TableCell>{this.state.tenant_list[i].name}</TableCell>
@@ -109,14 +109,14 @@ class TenantInfo extends Component {
                     <CollapseSubmeter tenant_id={this.state.tenant_list[i].tenant_id} property_id={this.props.property_id} info={this} />
                   </TableCell>
                 </React.Fragment>
-              ) : 
+              ) : (
                 <React.Fragment>
                   <TableCell>Associated Meters : </TableCell>
                   <TableCell>
-                  <CollaspseMeter tenant_id={this.state.tenant_list[i].tenant_id} property_id={this.props.property_id} info={this} />
+                    <CollaspseMeter tenant_id={this.state.tenant_list[i].tenant_id} property_id={this.props.property_id} info={this} />
                   </TableCell>
                 </React.Fragment>
-              }
+              )}
             </React.Fragment>
           </TableRow>
         );
@@ -128,7 +128,6 @@ class TenantInfo extends Component {
   render() {
     return (
       <div className="main">
-
         <TableHead>
           <TableCell component={Paper}>
             <AddTenant
