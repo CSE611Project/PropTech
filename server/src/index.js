@@ -6,7 +6,7 @@ const databaseRouter = require("./database_router");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
-app.use(cors({ credentials: true, origin: "http://3.131.169.6" }));
+// app.use(cors({ credentials: true, origin: "http://3.131.169.6" }));
 app.use(express.json());
 app.use(cookieParser());
 app.use("", routesUrls);

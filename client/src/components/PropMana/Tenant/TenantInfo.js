@@ -6,6 +6,7 @@ import DeleteTenant from "./DeleteTenant";
 import Submeters from "./../Submeter/Submeters";
 import Meters from "./../Meter/Meters";
 import CollapseSubmeter from "./../Submeter/CollapseSubmeter";
+import CollaspseMeter from "./../Meter/CollapseMeter";
 import { Component } from "react";
 import axios from "axios";
 import Table from "@material-ui/core/Table";
@@ -110,9 +111,9 @@ class TenantInfo extends Component {
                 </React.Fragment>
               ) : 
                 <React.Fragment>
+                  <TableCell>Associated Meters : </TableCell>
                   <TableCell>
-                  </TableCell>
-                  <TableCell>
+                  <CollaspseMeter tenant_id={this.state.tenant_list[i].tenant_id} property_id={this.props.property_id} info={this} />
                   </TableCell>
                 </React.Fragment>
               }
