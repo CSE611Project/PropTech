@@ -36,6 +36,14 @@ class SideMenu extends Component {
       window.location = `/PropMana/${this.props.sub}/property/${this.props.property_id}/invoice_history`;
     }
   };
+  view_detail = () => {
+    if (this.props.is_admin === true) {
+      window.location = `/Admin/PropMana/${this.props.sub}/property/${this.props.property_id}`;
+    } else {
+      window.location = `/PropMana/${this.props.sub}/property/${this.props.property_id}`;
+    }
+
+  };
 
   manage_users = () => {
     sessionStorage.removeItem("sub");
@@ -81,6 +89,9 @@ class SideMenu extends Component {
 
             {this.props.display_more_options ? (
               <div>
+                <a href="#" onClick={this.view_detail}>
+                  Back to Property Details
+                </a>
                 <a href="#" onClick={this.manage_utility}>
                   Manage Utility Bill
                 </a>
