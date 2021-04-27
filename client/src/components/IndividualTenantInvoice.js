@@ -118,17 +118,18 @@ class IndividualTenantInvoice extends React.Component {
 
             </table>
 
-        <table class="underline">
+        <table striped bordered hover class="underline">
           <thead>
-          <tr className>
-            <th className ="small">Sub-Unit</th>
-            <th className ="small">Prior Amount (KwH)</th>
-            <th className ="small">Current Amount(KwH)</th>
-            <th className ="small">Current Usage(KwH)</th>
-            <th className ="small">Unit Charge</th>
-            <th className ="small">Amount</th>
+          <tr>
+            <th >Sub-Unit</th>
+            <th >Prior Amount (KwH)</th>
+            <th >Current Amount(KwH)</th>
+            <th >Current Usage(KwH)</th>
+            <th >Unit Charge</th>
+            <th >Amount</th>
           </tr>
           </thead>
+          <tbody></tbody>
         </table>
         </div>
 
@@ -173,15 +174,19 @@ class IndividualTenantInvoice extends React.Component {
             submeter_number++;
             this.res[i].push(
 
-            <table>
+            <table striped bordered hover class='underline'>
+            <thread></thread>
+            <tbody>
             <tr>
-            <th class = "unbolden">{current_invoice.submeter_id}</th>
-            <th class = "unbolden2">{current_invoice.prior_read}</th>
-            <th class = "unbolden3">{current_invoice.cur_read}</th>
-            <th class = "unbolden4">{current_invoice.cur_read - current_invoice.prior_read}</th>
-            <th class = "unbolden5">{current_invoice.unit_charge}</th>
-            <th class = "unbolden2">{'$'+current_invoice.submeter_charge}</th>
+            <th class='s'>{current_invoice.submeter_id}</th>
+            <th class='s'>{current_invoice.prior_read}</th>
+            <th class='s'>{current_invoice.cur_read}</th>
+            <th class='s'>{current_invoice.cur_read - current_invoice.prior_read}</th>
+            <th class='s'>{current_invoice.unit_charge}</th>
+            <th class='s'>{'$'+current_invoice.submeter_charge}</th>
             </tr>
+            </tbody>
+
             </table>
           
           );
