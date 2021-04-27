@@ -106,7 +106,7 @@ class TenantInfo extends Component {
                     <Submeters sub={this.props.sub} tenant_id={this.state.tenant_list[i].tenant_id} info={this} property_id={this.props.property_id} />
                   </TableCell>
                   <TableCell>
-                    <CollapseSubmeter tenant_id={this.state.tenant_list[i].tenant_id} property_id={this.props.property_id} info={this} />
+                    {/* <CollapseSubmeter tenant_id={this.state.tenant_list[i].tenant_id} property_id={this.props.property_id} info={this} /> */}
                   </TableCell>
                 </React.Fragment>
               ) : (

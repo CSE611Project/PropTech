@@ -22,8 +22,6 @@ class CollapseMeter extends React.Component {
       email: this.props.email,
       address: this.props.address,
       phone_number: this.props.phone_number,
-      submeter_list: [],
-      submeter: "",
       multiplier_list: [],
       multiplier: "",
       property_id: this.props.property_id,
@@ -38,7 +36,14 @@ class CollapseMeter extends React.Component {
   getMeterList() {
     return new Promise((resolve, reject) => {
       axios.get(`/ass_meter/${this.state.property_id}`).then((response) => {
-        this.setState({ submeter_list: response.data });
+          var list = []
+          for(var i = 0; i < response.data.length; i++){
+            if(response.data[i].tenant_id == this.state.tenant_id){
+                list.push(response.data[i].meter_id)
+            }
+          }
+        this.setState({ meter_list: list });
+        // console.log("list  ", list);
         resolve();
       });
     });
@@ -49,16 +54,17 @@ class CollapseMeter extends React.Component {
     // see hardcode below in render() function
     var res = [];
     this.getMeterList().then(() => {
-      //   let tableData = this.state.submeter_list;
-      //   for (var i = 0; i < tableData.length; i++) {
-      //     res.push(
-      //       <TableRow key={i} id={i}>
-      //         <TableCell>{tableData[i].submeter_id}</TableCell>
-      //       </TableRow>
-      //     );
-      //   }
-      //   this.res = res;
-      //   this.forceUpdate();
+        let tableData = this.state.meter_list;
+        console.log("table", tableData);
+        for (var i = 0; i < tableData.length; i++) {
+          res.push(
+            <TableRow key={i} id={i}>
+              <TableCell>{tableData[i]}</TableCell>
+            </TableRow>
+          );
+        }
+        this.res = res;
+        this.forceUpdate();
     });
   }
 
@@ -97,7 +103,7 @@ function CollapseRow(props) {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
-              <Table size="small" aria-label="submeter">
+              <Table size="small" aria-label="meter">
                 <TableHead>
                   <TableRow>
                     <TableCell>Meter</TableCell>
