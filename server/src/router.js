@@ -698,6 +698,33 @@ router.get("/history_meterbill_list/:property_id?/:from_date?/:to_date?/:sub?", 
   });
 });
 
+//use this function to get all time period for certain property
+router.get("/alltime_period/:property_id?", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.params.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+    var filter = {
+      property_id: Number(req.params.property_id),
+    };
+    db.selectAllTime_WithProperty(filter, (result) => {
+      console.log(result);
+      res.json(result);
+    });
+  });
+});
+
+
 router.get("/history_submeterbill_list/:property_id?/:from_date?/:to_date?/:sub?", (req, res) => {
   verifyClient(req, res, (accessData, idData) => {
     var sub;
