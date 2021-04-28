@@ -130,7 +130,7 @@ class BillingHistory extends React.Component {
             <TableCell>{tableData[i].from_date.split("T")[0]}</TableCell>
             <TableCell>{tableData[i].to_date.split("T")[0]}</TableCell>
             <TableCell>{tableData[i].total_kwh_usage}</TableCell>
-            <TableCell>{tableData[i].unit_charge}</TableCell>
+            {/* <TableCell>{tableData[i].unit_charge}</TableCell> */}
             <TableCell>{tableData[i].total_charge}</TableCell>
           </TableRow>
         );
@@ -154,6 +154,7 @@ class BillingHistory extends React.Component {
             <TableCell>{tableData[i].submeter_id}</TableCell>
             <TableCell>{tableData[i].prior_read}</TableCell>
             <TableCell>{tableData[i].cur_read}</TableCell>
+            <TableCell>{tableData[i].unit_charge}</TableCell>
             <TableCell>{tableData[i].amt_due}</TableCell>
           </TableRow>
         );
@@ -203,7 +204,7 @@ class BillingHistory extends React.Component {
               <TableCell>Billing Start Date</TableCell>
               <TableCell>Billing End Date</TableCell>
               <TableCell>Total KWH Usage</TableCell>
-              <TableCell>Unit Charge</TableCell>
+              {/* <TableCell>Unit Charge</TableCell> */}
               <TableCell>Total Charge</TableCell>
             </TableRow>
           </TableHead>
@@ -225,6 +226,7 @@ class BillingHistory extends React.Component {
               <TableCell>Submeter</TableCell>
               <TableCell>Prior Read</TableCell>
               <TableCell>Current Read</TableCell>
+              <TableCell>Unit Charge</TableCell>
               <TableCell>Amount Due</TableCell>
             </TableRow>
           </TableHead>
