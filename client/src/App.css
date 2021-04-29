@@ -260,10 +260,10 @@ tr.spaceUnder > td {
 
 table.underline {
   border-bottom: 1px solid #000000;
-  border-spacing: 5px;
-  font-size: 15px;
+  border-spacing: 2px;
+  font-size: 13px;
   table-layout: fixed ;
-  width: 35% ;
+  width: 30% ;
 }
 .s {
   border: 0px solid black;
