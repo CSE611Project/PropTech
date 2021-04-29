@@ -368,10 +368,14 @@ router.patch("/tenant", (req, res) => {
       });
       return;
     }
-
-    db.updateTenant(req.body.tenant_id, req.body.tenant_info, (result) => {
-      res.json(result);
+    db.deleteAllMeterTenantRelation(req.body.tenant_id, (pre_result)=>{
+      db.updateTenant(req.body.tenant_id, req.body.tenant_info, (result) => {
+        res.json(result);
+      });
     });
+      for (var i = 0; i < req.body.meter_list.length; i++) {
+        db.associateMeterWithTenant(Number(req.body.meter_list[i]), Number(req.body.tenant_id), (result3) => {});
+      }
   });
 });
 

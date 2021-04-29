@@ -878,6 +878,18 @@ function deleteMeterTenantRelation(meter_id, tenant_id, callback) {
     }
   });
 }
+//delete all meter tenant relation 
+function deleteAllMeterTenantRelation(tenant_id, callback) {
+  let sql = `DELETE FROM meter_tenant WHERE tenant_id = ?`;
+  let inserts = [meter_id, tenant_id];
+  connection.query(sql, inserts, function (err, result) {
+    if (err) {
+      callback(false);
+    } else {
+        callback(true);
+      } 
+  });
+}
 
 // this function will return a list of meter-tenant relations existed in given property_id
 function selectMeterTenantListByProperty(property_id, callback) {
@@ -1042,6 +1054,7 @@ exports.deleteMeter = deleteMeter;
 
 exports.associateMeterWithTenant = associateMeterWithTenant;
 exports.deleteMeterTenantRelation = deleteMeterTenantRelation;
+exports.deleteAllMeterTenantRelation = deleteAllMeterTenantRelation;
 
 exports.selectAllSubmeters = selectAllSubmeters;
 exports.insertSubmeter = insertSubmeter;
