@@ -17,13 +17,16 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import NumberFormat from 'react-number-format';
 import axios from "axios";
+import { is } from "date-fns/locale";
+import { Typography } from "@material-ui/core";
 
 class EditTenant extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       open: false,
-      meter_list: this.props.meter_list,
+      meter_list: [],
+      cur_meter_list: [],
       tenant_id: this.props.tenant_id,
       name: this.props.name,
       email: this.props.email,
@@ -50,6 +53,10 @@ class EditTenant extends React.Component {
       rubs_helper_text: "",
       percent_errors: false,
       percent_helper_text: "",
+      meter_errors: false,
+      meter_helper_text: "",
+      is_meter_tenant: this.props.is_meter_tenant,
+      is_submeter_tenant: this.props.is_submeter_tenant,
     };
 
     this.handleClickOpen = this.handleClickOpen.bind(this);
@@ -69,6 +76,7 @@ class EditTenant extends React.Component {
     this.onChangeYesProrata = this.onChangeYesProrata.bind(this);
     this.onChangeNoProrata = this.onChangeNoProrata.bind(this);
     this.calculate = this.calculate.bind(this);
+    this.getMeterList = this.getMeterList.bind(this);
   }
   componentDidUpdate() {
     if (this.props.tenant_id !== this.state.tenant_id) {
@@ -95,8 +103,20 @@ class EditTenant extends React.Component {
   }
 
   handleClickOpen() {
+    var cur = [];
+    this.getMeterList().then(() => {
+        let tableData = this.state.meter_list;
+        // console.log("table", tableData);
+        for (var i = 0; i < tableData.length; i++) {
+          cur.push(tableData[i]);
+        }
+        this.cur = cur;
+        this.forceUpdate();
+        console.log("meterlist: " + this.cur)
+    });
     this.setState({
       open: true,
+      cur_meter_list: this.cur
     });
   }
 
@@ -111,6 +131,8 @@ class EditTenant extends React.Component {
       address_errors: false,
       email_errors: false,
       phone_errors: false,
+      meter_errors: false,
+      meter_helper_text: "",
     });
   }
 
@@ -195,10 +217,25 @@ class EditTenant extends React.Component {
     event.preventDefault();
   }
   
-  getAssociatedMeter(meter_list) {
-    this.setState((prevState) => ({
-      meter_list: [meter_list, ...prevState.meter_list],
-    }));
+  getAssociatedMeter(new_meter) {
+    var temp_list = this.state.meter_list;
+    console.log("aaaaaaa", temp_list)
+    var remove = false;
+    for (var i = 0; i < temp_list.length; i++) {
+      if (temp_list[i] === new_meter) {
+        temp_list.splice(i, 1);
+        remove = true;
+      }
+    }
+    if (remove) {
+      this.setState({
+        meter_list: temp_list
+      })
+    } else {
+      this.setState((prevState) => ({
+        meter_list: [new_meter, ...prevState.meter_list],
+      }));
+    }
   }
 
   onChangeYes(event) {
@@ -297,29 +334,64 @@ class EditTenant extends React.Component {
     return isValidate;
   }
 
+  getMeterList() {
+    return new Promise((resolve, reject) => {
+      axios.get(`/ass_meter/${this.state.property_id}`).then((response) => {
+          var list = []
+          console.log(this.state.tenant_id, response.data);
+          for(var i = 0; i < response.data.length; i++){
+            // console.log("tenant_id  ", this.state.tenant_id);
+            if(response.data[i].tenant_id == this.state.tenant_id){
+                list.push(response.data[i].meter_id)
+            }
+          }
+        this.setState({ meter_list: list });
+        resolve();
+      });
+    });
+  }
+
   onSubmit(event) {
     event.preventDefault();
+    var res = [];
+    // this.getMeterList().then(() => {
+    //     let tableData = this.state.meter_list;
+    //     console.log("meter list is: " + tableData)
+    // });
+    if (this.state.meter_list.length !== 0) {
+      this.setState({
+        meter_errors: true,
+        meter_helper_text: "",
+      })
+    }
     if (this.validation()) {
-      if (this.state.yesprorata && !this.state.yes && !this.state.no) {
+      if (this.state.meter_list.length === 0) {
+        console.log("meter_list length: " + this.state.meter_list)
+        var meter_message = "Please select at least one meter number"
+        this.setState({
+          meter_errors: true,
+          meter_helper_text: meter_message
+        })
+      } else if (this.state.yesprorata && !this.state.yes && !this.state.no) {
         var rubs_message = "Please choose an option"
         this.setState({
           rubs_errors: true,
           rubs_helper_text: rubs_message
         })
       } else if (this.state.yesprorata) {
-        if (this.state.tenantFt === "" && (this.state.rubs === "" || this.state.rubs > 1)) {
+        if (this.state.tenantFt === "" && (this.state.rubs === "" || this.state.rubs > 1 || this.state.rubs < 0)) {
           var rubs_message = "Please enter a valid percentage"
           this.setState({
             percent_errors: true,
             percent_helper_text: rubs_message
           })
-        } else if (this.state.rubs === "" && (this.state.tenantFt === "" || this.state.tenantFt > this.props.total_footage)) {
+        } else if ((this.state.rubs === "" || !this.state.rubs) && (this.state.tenantFt === "" || this.state.tenantFt > this.props.total_footage)) {
           var rubs_message = "Please enter a valid number"
           this.setState({
             percent_errors: true,
             percent_helper_text: rubs_message
           })
-        } else if (this.state.rubs !== "" && this.state.rubs > 1) {
+        } else if (this.state.rubs !== "" && (this.state.rubs > 1 || this.state.rubs < 0)) {
           var rubs_message = "Please enter a valid number"
           this.setState({
             percent_errors: true,
@@ -342,6 +414,8 @@ class EditTenant extends React.Component {
             rubs_helper_text: "",
             percent_errors: false,
             percent_helper_text: "",
+            meter_errors: false,
+            meter_helper_text: "",
           });
           var tenant_info = {
             name: this.state.name,
@@ -371,6 +445,8 @@ class EditTenant extends React.Component {
           rubs_helper_text: "",
           percent_errors: false,
           percent_helper_text: "",
+          meter_errors: false,
+          meter_helper_text: "",
         });
         var tenant_info = {
           name: this.state.name,
@@ -405,6 +481,8 @@ class EditTenant extends React.Component {
     var helper_rubs = this.state.rubs_helper_text;
     var is_validate_percent = this.state.percent_errors;
     var helper_percent = this.state.percent_helper_text;
+    var is_validate_meter = this.state.meter_errors;
+    var helper_meter = this.state.meter_helper_text;
     return (
       <div>
         <Button color="primary" onClick={this.handleClickOpen}>
@@ -479,7 +557,16 @@ class EditTenant extends React.Component {
               <div>
                 {isYesProrata ? (
                   <div>
-                    <MeterCheckBox property_id={this.props.property_id} onlyOption={false} methodfromparent={this.getAssociatedMeter} />
+                    <FormControl error={is_validate_meter}>
+                      <MeterCheckBox 
+                        property_id={this.props.property_id} 
+                        onlyOption={false} 
+                        cur_meter_list={this.state.cur_meter_list}
+                        tenant_id={this.state.tenant_id}
+                        methodfromparent={this.getAssociatedMeter} 
+                      />
+                      <FormHelperText>{helper_meter}</FormHelperText>
+                    </FormControl>
                     {/* <TextField autoFocus margin="dense" id="multiplier" label="Is there a multiplier?" type="text" onChange={this.changeMultiplier} fullWidth />
                     <WhatIsMultiplier /> */}
                     <DialogContent></DialogContent>

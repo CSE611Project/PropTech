@@ -37,13 +37,14 @@ class CollapseMeter extends React.Component {
     return new Promise((resolve, reject) => {
       axios.get(`/ass_meter/${this.state.property_id}`).then((response) => {
           var list = []
+          // console.log(this.state.tenant_id, response.data);
           for(var i = 0; i < response.data.length; i++){
+            // console.log("tenant_id  ", this.state.tenant_id);
             if(response.data[i].tenant_id == this.state.tenant_id){
                 list.push(response.data[i].meter_id)
             }
           }
         this.setState({ meter_list: list });
-        // console.log("list  ", list);
         resolve();
       });
     });
@@ -55,7 +56,7 @@ class CollapseMeter extends React.Component {
     var res = [];
     this.getMeterList().then(() => {
         let tableData = this.state.meter_list;
-        console.log("table", tableData);
+        // console.log("table", tableData);
         for (var i = 0; i < tableData.length; i++) {
           res.push(
             <TableRow key={i} id={i}>

@@ -35,7 +35,7 @@ class AddTenant extends React.Component {
       landlord_phone: "",
       rubs: "",
       multiplier: "",
-      meter: "",
+      meter_id: "",
       meter_list: [],
       yes: false,
       no: false,
@@ -56,6 +56,8 @@ class AddTenant extends React.Component {
       rubs_helper_text: "",
       percent_errors: false,
       percent_helper_text: "",
+      meter_errors: false,
+      meter_helper_text: "",
     };
 
     this.handleClickOpen = this.handleClickOpen.bind(this);
@@ -99,6 +101,7 @@ class AddTenant extends React.Component {
       landlord_phone: "",
       rubs: "",
       tenantFt: "",
+      meter_list: [],
       nameError: "",
       addressError: "",
       emailError: "",
@@ -117,6 +120,8 @@ class AddTenant extends React.Component {
       no: false,
       percent_errors: false,
       percent_helper_text: "",
+      meter_errors: false,
+      meter_helper_text: "",
     });
   }
 
@@ -166,27 +171,41 @@ class AddTenant extends React.Component {
       /* tenant_info update to new requirements */
     }
     event.preventDefault();
+    console.log(this.state.meter_list)
+    if (this.state.meter_list.length !== 0) {
+      this.setState({
+        meter_errors: true,
+        meter_helper_text: "",
+      })
+    }
     if (this.validation()) {
-      if (this.state.yesprorata && !this.state.yes && !this.state.no) {
+      if (this.state.meter_list.length === 0) {
+        console.log("meter_list length: " + this.state.meter_list)
+        var meter_message = "Please select at least one meter number"
+        this.setState({
+          meter_errors: true,
+          meter_helper_text: meter_message
+        })
+      } else if (this.state.yesprorata && !this.state.yes && !this.state.no) {
         var rubs_message = "Please choose an option"
         this.setState({
           rubs_errors: true,
           rubs_helper_text: rubs_message
         })
       } else if (this.state.yesprorata) {
-        if (this.state.tenantFt === "" && (this.state.rubs === "" || this.state.rubs > 1)) {
+        if (this.state.tenantFt === "" && (this.state.rubs === "" || this.state.rubs > 1 || this.state.rubs < 0)) {
           var rubs_message = "Please enter a valid percentage"
           this.setState({
             percent_errors: true,
             percent_helper_text: rubs_message
           })
-        } else if (this.state.rubs === "" && (this.state.tenantFt === "" || this.state.tenantFt > this.props.total_footage)) {
+        } else if ((this.state.rubs === "" || !this.state.rubs) && (this.state.tenantFt === "" || this.state.tenantFt > this.props.total_footage)) {
           var rubs_message = "Please enter a valid number"
           this.setState({
             percent_errors: true,
             percent_helper_text: rubs_message
           })
-        } else if (this.state.rubs !== "" && this.state.rubs > 1) {
+        } else if (this.state.rubs !== "" && (this.state.rubs > 1 || this.state.rubs < 0)) {
           var rubs_message = "Please enter a valid number"
           this.setState({
             percent_errors: true,
@@ -228,6 +247,8 @@ class AddTenant extends React.Component {
             no: false,
             percent_errors: false,
             percent_helper_text: "",
+            meter_errors: false,
+            meter_helper_text: "",
           });
         }
 
@@ -267,16 +288,32 @@ class AddTenant extends React.Component {
           no: false,
           percent_errors: false,
           percent_helper_text: "",
+          meter_errors: false,
+          meter_helper_text: "",
         });
       }
     }
     // this.forceUpdate();
   }
 
-  getAssociatedMeter(meter_list) {
-    this.setState((prevState) => ({
-      meter_list: [meter_list, ...prevState.meter_list],
-    }));
+  getAssociatedMeter(new_meter) {
+    var temp_list = this.state.meter_list;
+    var remove = false;
+    for (var i = 0; i < temp_list.length; i++) {
+      if (temp_list[i] === new_meter) {
+        temp_list.splice(i, 1);
+        remove = true;
+      }
+    }
+    if (remove) {
+      this.setState({
+        meter_list: temp_list
+      })
+    } else {
+      this.setState((prevState) => ({
+        meter_list: [new_meter, ...prevState.meter_list],
+      }));
+    }
   }
 
   changeRUBS(event) {
@@ -437,6 +474,8 @@ class AddTenant extends React.Component {
     var helper_rubs = this.state.rubs_helper_text;
     var is_validate_percent = this.state.percent_errors;
     var helper_percent = this.state.percent_helper_text;
+    var is_validate_meter = this.state.meter_errors;
+    var helper_meter = this.state.meter_helper_text;
     return (
       <div>
         <Button color="primary" onClick={this.handleClickOpen}>
@@ -515,7 +554,10 @@ class AddTenant extends React.Component {
               <div>
                 {isYesProrata ? (
                   <div>
-                    <MeterCheckBox property_id={this.props.property_id} onlyOption={false} methodfromparent={this.getAssociatedMeter} />
+                    <FormControl error={is_validate_meter}>
+                      <MeterCheckBox property_id={this.props.property_id} onlyOption={false} methodfromparent={this.getAssociatedMeter} />
+                      <FormHelperText>{helper_meter}</FormHelperText>
+                    </FormControl>
                     {/* <TextField autoFocus margin="dense" id="multiplier" label="Is there a multiplier?" type="text" onChange={this.changeMultiplier} fullWidth />
                     <WhatIsMultiplier /> */}
                     <DialogContent></DialogContent>

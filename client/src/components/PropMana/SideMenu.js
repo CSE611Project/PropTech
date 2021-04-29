@@ -89,9 +89,6 @@ class SideMenu extends Component {
 
             {this.props.display_more_options ? (
               <div>
-                <a href="#" onClick={this.view_detail}>
-                  Back to Property Details
-                </a>
                 <a href="#" onClick={this.manage_utility}>
                   Manage Utility Bill
                 </a>
@@ -99,6 +96,9 @@ class SideMenu extends Component {
                   Manage Invoice History
                 </a>
                 <GenerateInvoice property_id={this.props.property_id} />
+                <a href="#" onClick={this.view_detail}>
+                  Back to Property Details
+                </a>
               </div>
             ) : null}
 

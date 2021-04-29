@@ -35,7 +35,7 @@ class UtilityBillingHistory extends React.Component {
       },
     }));
     return (
-      <div className="main">
+      <div className="leftOffset">
         <React.Fragment>
           <Container maxWidth="lg" className={useStyles.container}>
             <Grid container spacing={3}>

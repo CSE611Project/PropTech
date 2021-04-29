@@ -11,10 +11,12 @@ class AdminAfterSign extends Component {
   constructor(props) {
     super(props);
     var page;
+    var sub = this.props.match.params.sub;
     if (matchPath(this.props.location.pathname, { path: "/Admin/propertyManagers", exact: true, strict: false })) {
       page = "manage_users";
     }
     this.state = {
+      sub: sub,
       page: (() => {
         switch (page) {
           case "manage_users":
@@ -28,11 +30,16 @@ class AdminAfterSign extends Component {
         }
       })(),
     };
+    sessionStorage.setItem("admin_sub", sub);
   }
   render() {
     return (
       <div className="topOffset leftOffset">
         <Typography component="h1" variant="h5" color="primary">
+          Welcome, Admin
+          {" " + sessionStorage.getItem("admin_username")}
+          <br></br>
+          <br></br>
           {this.state.page_name}
         </Typography>
         <DialogContent />

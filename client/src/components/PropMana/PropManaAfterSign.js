@@ -10,6 +10,7 @@ import UserProfile from "./../UserProfile";
 import SideMenu from "./SideMenu";
 import Typography from "@material-ui/core/Typography";
 import { DialogContent } from "@material-ui/core";
+import Paper from "@material-ui/core/Paper";
 
 class PropManaAfterSign extends Component {
   constructor(props) {
@@ -18,6 +19,7 @@ class PropManaAfterSign extends Component {
     var sub = this.props.match.params.sub;
     var property_id;
     var user_type;
+    var role_message;
     if (
       matchPath(this.props.location.pathname, { path: "/PropMana/:sub/user_info", exact: true, strict: false }) ||
       matchPath(this.props.location.pathname, { path: "/Admin/PropMana/:sub/user_info", exact: true, strict: false })
@@ -50,8 +52,10 @@ class PropManaAfterSign extends Component {
 
     if (matchPath(this.props.location.pathname, { path: "/Admin", exact: false })) {
       user_type = "Admin";
+      role_message = "Welcome, Admin " + sessionStorage.getItem("admin_username");
     } else {
       user_type = "PropMana";
+      role_message = "Welcome, Property Manager " + sessionStorage.getItem("username");
     }
     this.state = {
       sub: sub,
@@ -73,8 +77,17 @@ class PropManaAfterSign extends Component {
       page_name: (() => {
         switch (page) {
           case "property":
-            return sessionStorage.getItem("username") + " Properties";
+            switch (user_type) {
+              case "Admin":
+                return sessionStorage.getItem("username") + ": " + sessionStorage.getItem("custom:company_name") + "'s Properties";
+              case "PropMana":
+                return sessionStorage.getItem("custom:company_name") + "'s Properties";
+            }
           case "tenant":
+            return sessionStorage.getItem("property_name") + " Information";
+          case "invoice_history":
+            return sessionStorage.getItem("property_name") + " Information";
+          case "utility_bill":
             return sessionStorage.getItem("property_name") + " Information";
         }
       })(),
@@ -98,6 +111,14 @@ class PropManaAfterSign extends Component {
             return false;
         }
       })(),
+      role_message: (() => {
+        switch (user_type) {
+          case "Admin":
+            return role_message;
+          case "PropMana":
+            return role_message;
+        }
+      })(),
     };
     sessionStorage.setItem("sub", sub);
   }
@@ -106,7 +127,12 @@ class PropManaAfterSign extends Component {
     return (
       <div className="topOffset leftOffset">
         <Typography component="h1" variant="h5" color="primary">
+          {this.state.role_message}
+          <br></br>
+          <br></br>
           {this.state.page_name}
+          <br></br>
+          <br></br>
         </Typography>
         <DialogContent />
         <div className="Info_Page_Split">

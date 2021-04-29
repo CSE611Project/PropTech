@@ -5,6 +5,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
+import { matchPath } from "react-router-dom";
 
 class Navigation extends React.Component {
   home = () => {
@@ -26,14 +27,9 @@ class Navigation extends React.Component {
                 </Typography>
               </Grid>
               <Grid item>
-                <ul>
-                  {/* <Link href="/" onClick={this.home}>
-                    <li>Home</li>
-                  </Link> */}
-                  <Link href="/About" onClick={this.about}>
-                    <li>About</li>
-                  </Link>
-                </ul>
+                {/* <Typography variant="h6" color="inherit">
+                  {sessionStorage.getItem("admin_username")}
+                </Typography> */}
               </Grid>
             </Grid>
           </Toolbar>
