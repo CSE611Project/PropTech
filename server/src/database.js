@@ -881,7 +881,8 @@ function deleteMeterTenantRelation(meter_id, tenant_id, callback) {
 //delete all meter tenant relation 
 function deleteAllMeterTenantRelation(tenant_id, callback) {
   let sql = `DELETE FROM meter_tenant WHERE tenant_id = ?`;
-  let inserts = [meter_id, tenant_id];
+  let inserts = [tenant_id];
+  console.log(sql);
   connection.query(sql, inserts, function (err, result) {
     if (err) {
       callback(false);

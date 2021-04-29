@@ -97,7 +97,7 @@ class EditTenant extends React.Component {
     }
   }
   updateTenantInfo(tenant_id, tenant_info) {
-    axios.patch("/tenant", { sub: this.props.sub, tenant_id: tenant_id, tenant_info: tenant_info }).then((response) => {
+    axios.patch("/tenant", { sub: this.props.sub, tenant_id: tenant_id, tenant_info: tenant_info, meter_list: this.state.meter_list }).then((response) => {
       this.props.generateTableData();
     });
   }
@@ -112,7 +112,7 @@ class EditTenant extends React.Component {
         }
         this.cur = cur;
         this.forceUpdate();
-        console.log("meterlist: " + this.cur)
+        // console.log("meterlist: " + this.cur)
     });
     this.setState({
       open: true,
@@ -219,7 +219,6 @@ class EditTenant extends React.Component {
   
   getAssociatedMeter(new_meter) {
     var temp_list = this.state.meter_list;
-    console.log("aaaaaaa", temp_list)
     var remove = false;
     for (var i = 0; i < temp_list.length; i++) {
       if (temp_list[i] === new_meter) {
@@ -458,6 +457,9 @@ class EditTenant extends React.Component {
         };
         var tenant_id = this.state.tenant_id;
         this.updateTenantInfo(tenant_id, tenant_info);
+        this.setState({
+          meter_list: []
+        });
       }
     }
   }
