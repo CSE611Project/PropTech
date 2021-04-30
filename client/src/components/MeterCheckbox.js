@@ -29,6 +29,8 @@ class MeterCheckBox extends React.Component {
     };
     this.onChangeOnlyOption = this.onChangeOnlyOption.bind(this);
     this.onChangeMultiOption = this.onChangeMultiOption.bind(this);
+    this.get_current_meter_list = this.get_current_meter_list.bind(this);
+    this.get_current_meter_list();
     this.generateTable();
   }
 
@@ -74,24 +76,37 @@ class MeterCheckBox extends React.Component {
 
   onChangeMultiOption(event) {
     event.preventDefault();
-    console.log("event target name", event.target.name);
-    this.getCurrentMeterList().then(() => {
-      let current = this.state.cur_meter_list;
-      for (var i = 0; i < current.length; i++) {
-        if (event.target.name === current[i]) {
-          console.log("current meter is !!!!"+current[i])
-          this.setState({
-            chosen: event.target.checked,
-          })
-        }
-      }
-    });
+    // console.log("event target name", event.target.name);
+    // this.getCurrentMeterList().then(() => {
+    //   let current = this.state.cur_meter_list;
+    //   for (var i = 0; i < current.length; i++) {
+    //     if (event.target.name === current[i]) {
+    //       console.log("current meter is !!!!"+current[i], "newstate: " + this.state.newState[i])
+    //       this.setState({
+    //         newState: event.target.checked,
+    //       })
+    //     }
+    //   }
+    // });
     this.setState({
       [event.target.name]: event.target.checked,
     }, function () {
       this.props.methodfromparent(event.target.name);
     });
     this.generateTable();
+  }
+
+  get_current_meter_list() {
+    this.getCurrentMeterList().then(() => {
+      let current = this.state.cur_meter_list;
+      for (var i = 0; i < current.length; i++) {
+        this.setState({
+          [current[i]]: true
+        })
+        console.log(current[i])
+      }
+    });
+    this.forceUpdate();
   }
 
   meter_submeter_validate() {
@@ -132,13 +147,10 @@ class MeterCheckBox extends React.Component {
               }
             }
             if (isChosen) {
-              // this.setState({
-              //   chosen: true
-              // })
               res.push(
                 <FormControlLabel 
                   key={tableData[i].meter_id} 
-                  control={<Checkbox checked={!this.state.chosen} 
+                  control={<Checkbox checked={this.state[tableData[i].meter_id]}
                                      onChange={this.onChangeMultiOption}
                                      name={tableData[i].meter_id} color="primary" 
                           />} 

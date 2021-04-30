@@ -12,6 +12,7 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
 import DialogContentText from "@material-ui/core/DialogContentText";
+import { isThisISOWeek } from "date-fns";
 
 class BillingHistory extends React.Component {
   constructor(props) {
@@ -31,12 +32,18 @@ class BillingHistory extends React.Component {
       submeter_bill_list: [],
       unit_charge: "",
       meter_id: this.props.meter_id,
+      billing_dates: [],
+      current_resm: [],
+      current_res: [],
     };
     this.handleFromDateChange = this.handleFromDateChange.bind(this);
     this.handleToDateChange = this.handleToDateChange.bind(this);
     this.getMeterBillList = this.getMeterBillList.bind(this);
     this.getSubmeterBillList = this.getSubmeterBillList.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.getBillingDates = this.getBillingDates.bind(this);
+    this.getCurrentBill = this.getCurrentBill.bind(this);
+    this.generateBillingDateTable();
   }
 
   componentDidMount() {
@@ -64,6 +71,19 @@ class BillingHistory extends React.Component {
         console.log(this.state.to_date);
       }
     );
+  }
+
+  getBillingDates() {
+    return new Promise((resolve, reject) => {
+      axios.get(`/alltime_period/${this.state.property_id}`).then((response) => {
+        this.setState({
+          billing_dates: response.data
+        }, () => {
+          console.log("response from database: ", response.data);
+          resolve();
+        });
+      });
+    });
   }
 
   getMeterBillList() {
@@ -111,6 +131,14 @@ class BillingHistory extends React.Component {
     this.generateSubmeterTable();
     console.log("bill list length:", this.state.bill_list.length);
     console.log(this.state.from_date, this.state.to_date, this.state.bill_list, this.state.submeter_bill_list);
+  }
+
+  getCurrentBill(cur_resm, cur_res) {
+    console.log("test test:", cur_resm)
+    this.setState({
+      current_resm: cur_resm,
+      current_res: cur_res,
+    });
   }
 
   generateMeterTable() {
@@ -164,6 +192,43 @@ class BillingHistory extends React.Component {
     });
   }
 
+  generateBillingDateTable() {
+    var resb = [];
+    this.getBillingDates().then(() => {
+      var tableData = this.state.billing_dates;
+      console.log(this.state.billing_dates)
+      for (var i = 0; i < tableData.length; i++) {
+        var temp_from = tableData[i].from_date.split("T")[0];
+        var temp_to = tableData[i].to_date.split("T")[0];
+        resb.push(
+          <TableRow key={i} id={i}>
+            <TableCell>{tableData[i].from_date.split("T")[0]}</TableCell>
+            <TableCell>{tableData[i].to_date.split("T")[0]}</TableCell>
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell>
+              <ShowDate
+                property_id={this.props.property_id}
+                // tenant_list={this.props.tenant_list}
+                from_date={tableData[i].from_date.split("T")[0]}
+                to_date={tableData[i].to_date.split("T")[0]}
+                methodfromparent={this.getCurrentBill}
+              />
+            </TableCell>
+            <TableCell />
+          </TableRow>
+        )
+      }
+      this.resb = resb;
+      this.forceUpdate();
+    });
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -196,6 +261,30 @@ class BillingHistory extends React.Component {
         <Button onClick={this.onSubmit} color="primary">
           Show
         </Button>
+        <TableHead>
+          <TableRow>
+            <TableCell>Billing Start Date</TableCell>
+            <TableCell>Billing End Date</TableCell>
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
+          </TableRow>
+        </TableHead>
+        <TableBody>{this.resb}</TableBody>
+        <Divider />
+        <Divider />
+        <Divider />
+        <Divider />
+        <Divider />
+        <Divider />
+        <Divider />
+        <Divider />
         <Table>
           <TableHead>
             <TableRow>
@@ -208,7 +297,7 @@ class BillingHistory extends React.Component {
               <TableCell>Total Charge</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>{this.resm}</TableBody>
+          <TableBody>{this.state.current_resm}</TableBody>
         </Table>
         <Divider />
         <Divider />
@@ -230,8 +319,148 @@ class BillingHistory extends React.Component {
               <TableCell>Amount Due</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>{this.res}</TableBody>
+          <TableBody>{this.state.current_res}</TableBody>
         </Table>
+      </React.Fragment>
+    );
+  }
+}
+
+class ShowDate extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      property_id: this.props.property_id,
+      // tenant_list: this.props.tenant_list,
+      from_date: this.props.from_date,
+      to_date: this.props.to_date,
+      current_resm: [],
+      current_res: [],
+      bill_list: [],
+      submeter_bill_list: [],
+    }
+    this.onSubmit = this.onSubmit.bind(this);
+    this.getMeterBillList = this.getMeterBillList.bind(this);
+    this.getSubmeterBillList = this.getSubmeterBillList.bind(this);
+  }
+
+  getMeterBillList() {
+    return new Promise((resolve, reject) => {
+      axios
+        .get(
+          `/history_meterbill_list/${this.state.property_id}/${this.state.from_date}/${this.state.to_date}
+            `
+        )
+        .then((response) => {
+          this.setState({ bill_list: response.data }, () => {
+            resolve();
+          });
+        });
+      //  console.log("bill list:", this.state.bill_list);
+    });
+  }
+
+  getSubmeterBillList() {
+    return new Promise((resolve, reject) => {
+      axios
+        .get(
+          `/history_submeterbill_list/${this.state.property_id}/${this.state.from_date}/${this.state.to_date}
+            `
+        )
+        .then((response) => {
+          this.setState({ submeter_bill_list: response.data }, () => {
+            resolve();
+          });
+        });
+      //  console.log("bill list:", this.state.bill_list);
+    });
+  }
+
+  generateMeterTable() {
+    var resm = [];
+    this.getMeterBillList().then(() => {
+      var tableData = this.state.bill_list;
+      if (tableData.length == 0) {
+        alert("No bills in current time period, please manually input !");
+        return;
+      }
+      for (var i = 0; i < tableData.length; i++) {
+        resm.push(
+          <TableRow key={i} id={i}>
+            <TableCell>{tableData[i].bill_id}</TableCell>
+            <TableCell>{tableData[i].meter_id}</TableCell>
+            <TableCell>{tableData[i].from_date.split("T")[0]}</TableCell>
+            <TableCell>{tableData[i].to_date.split("T")[0]}</TableCell>
+            <TableCell>{tableData[i].total_kwh_usage}</TableCell>
+            {/* <TableCell>{tableData[i].unit_charge}</TableCell> */}
+            <TableCell>{tableData[i].total_charge}</TableCell>
+          </TableRow>
+        );
+      }
+      this.resm = resm;
+      // this.setState({
+      //   current_resm: resm
+      // })
+      console.log("tryone"+this.state.current_resm)
+      // this.forceUpdate();
+    });
+    this.setState({
+      current_resm: resm
+    })
+    console.log("tryonepointfive", resm)
+    this.forceUpdate();
+    console.log("trytwo", this.state.current_resm)
+    // return resm;
+  }
+
+  generateSubmeterTable() {
+    var res = [];
+    this.getSubmeterBillList().then(() => {
+      var tableData = this.state.submeter_bill_list;
+      for (var i = 0; i < tableData.length; i++) {
+        res.push(
+          <TableRow key={i} id={i}>
+            <TableCell>{tableData[i].submeter_bill_id}</TableCell>
+            <TableCell>{tableData[i].bill_id}</TableCell>
+            <TableCell>{tableData[i].submeter_id}</TableCell>
+            <TableCell>{tableData[i].prior_read}</TableCell>
+            <TableCell>{tableData[i].cur_read}</TableCell>
+            <TableCell>{tableData[i].unit_charge}</TableCell>
+            <TableCell>{tableData[i].amt_due}</TableCell>
+          </TableRow>
+        );
+      }
+      this.res = res;
+      this.forceUpdate();
+    });
+    // this.setState({
+    //   current_res: res
+    // })
+  }
+
+  onSubmit() {
+    console.log(this.state.property_id, this.state.from_date, this.state.to_date)
+    this.generateMeterTable();
+    this.generateSubmeterTable();
+    this.forceUpdate();
+    // this.setState({
+
+    // }, function () {
+    //   console.log("current resm: "+this.state.current_resm)
+    //   this.props.methodfromparent(this.state.current_resm, this.state.current_res);
+    // })
+    console.log("cirrent:", );
+    this.props.methodfromparent(this.state.current_resm, this.res);
+  }
+
+  render() {
+    return (
+      <React.Fragment>
+        <Button color="primary" onClick={this.onSubmit}>
+          Show
+        </Button>
+        {/* {this.resm} */}
+        {/* {this.state.current_resm} */}
       </React.Fragment>
     );
   }
