@@ -13,11 +13,8 @@ class AdminSideMenu extends Component {
   };
 
   log_out = () => {
-    sessionStorage.removeItem("accessToken");
-    sessionStorage.removeItem("username");
     sessionStorage.removeItem("admin_username");
     sessionStorage.removeItem("admin_sub");
-    sessionStorage.removeItem("custom:company_name");
     axios.post("/logout").then((response) => {
       window.location = "/";
     });

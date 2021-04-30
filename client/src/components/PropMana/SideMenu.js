@@ -42,7 +42,6 @@ class SideMenu extends Component {
     } else {
       window.location = `/PropMana/${this.props.sub}/property/${this.props.property_id}`;
     }
-
   };
 
   manage_users = () => {
@@ -51,6 +50,7 @@ class SideMenu extends Component {
     sessionStorage.removeItem("property_id");
     sessionStorage.removeItem("property_name");
     sessionStorage.removeItem("total_footage");
+    sessionStorage.removeItem("custom:company_name", company_name);
     window.location = "/Admin/propertyManagers";
   };
 
