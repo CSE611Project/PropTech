@@ -133,11 +133,11 @@ class BillingHistory extends React.Component {
     console.log(this.state.from_date, this.state.to_date, this.state.bill_list, this.state.submeter_bill_list);
   }
 
-  getCurrentBill(cur_resm, cur_res) {
+  getCurrentBill(cur_resm) {
     console.log("test test:", cur_resm)
     this.setState({
       current_resm: cur_resm,
-      current_res: cur_res,
+      // current_res: cur_res,
     });
   }
 
@@ -401,15 +401,18 @@ class ShowDate extends React.Component {
       // this.setState({
       //   current_resm: resm
       // })
+      this.setState({current_resm: resm}, () => {
+        this.props.methodfromparent(resm);
+      });
       console.log("tryone"+this.state.current_resm)
       // this.forceUpdate();
     });
-    this.setState({
-      current_resm: resm
-    })
-    console.log("tryonepointfive", resm)
-    this.forceUpdate();
-    console.log("trytwo", this.state.current_resm)
+    // this.setState({
+    //   current_resm: resm
+    // })
+    // console.log("tryonepointfive", resm)
+    // this.forceUpdate();
+    // console.log("trytwo", this.state.current_resm)
     // return resm;
   }
 
@@ -449,8 +452,8 @@ class ShowDate extends React.Component {
     //   console.log("current resm: "+this.state.current_resm)
     //   this.props.methodfromparent(this.state.current_resm, this.state.current_res);
     // })
-    console.log("cirrent:", );
-    this.props.methodfromparent(this.state.current_resm, this.res);
+    // console.log("cirrent:", );
+    // this.props.methodfromparent(this.state.current_resm, this.res);
   }
 
   render() {
