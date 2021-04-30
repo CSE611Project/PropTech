@@ -878,6 +878,18 @@ function deleteMeterTenantRelation(meter_id, tenant_id, callback) {
     }
   });
 }
+//delete all meter tenant relation 
+function deleteAllMeterTenantRelation(tenant_id, callback) {
+  let sql = `DELETE FROM meter_tenant WHERE tenant_id = ?`;
+  let inserts = [meter_id, tenant_id];
+  connection.query(sql, inserts, function (err, result) {
+    if (err) {
+      callback(false);
+    } else {
+        callback(true);
+      } 
+  });
+}
 
 // this function will return a list of meter-tenant relations existed in given property_id
 function selectMeterTenantListByProperty(property_id, callback) {
@@ -996,6 +1008,28 @@ function selectBillWithProperty(filter, callback) {
   });
 }
 
+
+//use this function to get all avaiable time period for certain property 
+function selectAllTime_WithProperty(filter, callback) {
+  let sql = `select distinct from_date, to_date from meter left join bill on meter.meter_id = bill.meter_id WHERE `;
+  let keys = Object.keys(filter);
+  keys.forEach(function (key, index) {
+    if (index + 1 == keys.length) {
+      sql += `${key} = "${filter[key]}"`;
+    } else {
+      sql += `${key} = "${filter[key]}" AND `;
+    }
+  });
+  console.log(sql);
+  connection.query(sql, function (err, time_list) {
+    if (err) {
+      callback(false);
+    } else {
+      callback(time_list);
+    }
+  });
+}
+
 exports.establishDatabaseConnection = establishDatabaseConnection;
 exports.connection = connection;
 
@@ -1020,6 +1054,7 @@ exports.deleteMeter = deleteMeter;
 
 exports.associateMeterWithTenant = associateMeterWithTenant;
 exports.deleteMeterTenantRelation = deleteMeterTenantRelation;
+exports.deleteAllMeterTenantRelation = deleteAllMeterTenantRelation;
 
 exports.selectAllSubmeters = selectAllSubmeters;
 exports.insertSubmeter = insertSubmeter;
@@ -1047,3 +1082,4 @@ exports.selectMeterSubmeterBillByProperty = selectMeterSubmeterBillByProperty;
 exports.selectAllMetersSubmetersByProperty = selectAllMetersSubmetersByProperty;
 exports.selectBillInfoAssociateWithProperty = selectBillInfoAssociateWithProperty;
 exports.selectBillWithProperty = selectBillWithProperty;
+exports.selectAllTime_WithProperty = selectAllTime_WithProperty;

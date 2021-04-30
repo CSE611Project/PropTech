@@ -11,12 +11,19 @@ const cognito = new aws.CognitoIdentityServiceProvider({
   region: config.aws_region,
 });
 
+// const bodyParser = require("body-parser");
+
+
+// express.use(express.json({ limit: '80mb' }));
+// express.use(express.urlencoded({ limit: '80mb', extended: true }));
+
 const accessVerifier = new verifier({
   region: "us-east-2",
   cognitoUserPoolId: config.cognito.userPoolId,
   tokenUse: "access",
   tokenExpiration: 3600000,
 });
+
 
 const idVerifier = new verifier({
   region: "us-east-2",
@@ -368,10 +375,14 @@ router.patch("/tenant", (req, res) => {
       });
       return;
     }
-
-    db.updateTenant(req.body.tenant_id, req.body.tenant_info, (result) => {
-      res.json(result);
+    db.deleteAllMeterTenantRelation(req.body.tenant_id, (pre_result)=>{
+      db.updateTenant(req.body.tenant_id, req.body.tenant_info, (result) => {
+        res.json(result);
+      });
     });
+      for (var i = 0; i < req.body.meter_list.length; i++) {
+        db.associateMeterWithTenant(Number(req.body.meter_list[i]), Number(req.body.tenant_id), (result3) => {});
+      }
   });
 });
 
@@ -498,6 +509,29 @@ router.get("/meter/:property_id?/:sub?", (req, res) => {
     });
   });
 });
+
+router.get("/ass_meter/:property_id?/:sub?", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.params.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+    db.selectMeterTenantListByProperty(req.params.property_id, (results) => {
+      res.json(JSON.parse(JSON.stringify(results)));
+    });
+  });
+});
+
+
 
 router.post("/meter", (req, res) => {
   verifyClient(req, res, (accessData, idData) => {
@@ -674,6 +708,33 @@ router.get("/history_meterbill_list/:property_id?/:from_date?/:to_date?/:sub?", 
     });
   });
 });
+
+//use this function to get all time period for certain property
+router.get("/alltime_period/:property_id?", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.params.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+    var filter = {
+      property_id: Number(req.params.property_id),
+    };
+    db.selectAllTime_WithProperty(filter, (result) => {
+      console.log(result);
+      res.json(result);
+    });
+  });
+});
+
 
 router.get("/history_submeterbill_list/:property_id?/:from_date?/:to_date?/:sub?", (req, res) => {
   verifyClient(req, res, (accessData, idData) => {
@@ -885,8 +946,10 @@ router.get("/history_meterinvoice_list/:property_id?/:from_date?/:to_date?/:sub?
   });
 });
 
-router.post('/sendPDFToTenant', (req, res) => {
-  verifyClient(req, res, (accessData, idData) => {
+router.post("/sendPDFToTenant", (req, res) => {
+  console.log(req.body.receiver+"RUNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn");
+  verifyClient(req, res,
+    (accessData, idData) => {
     var sub;
     if (accessData["cognito:groups"][0] == "Admin") {
       sub = req.body.sub;
@@ -901,25 +964,33 @@ router.post('/sendPDFToTenant', (req, res) => {
       return;
     }
 
-    //console.log(req.body.data);
+
 
     let subject = "invoice";
-    let html = "<p>Invoice attached<\p>"
+    let html = "<p>Invoice attached<p>";
+    let emailBody = {
+      receiver: req.body.receiver,
+      subject: subject,
+      html: html,
+      path: req.body.path
+    }
 
-    req.body.data.forEach(function(obj){
-      let emailBody = {
-        receiver: obj.receiver,
-        subject: subject,
-        html: html,
-        path: obj.path
-      }
-      emailer.sentEmailWithAttachment(emailBody, (results) => {
-        res.json(results);
-      });
-    })
+    emailer.sentEmailWithAttachment(emailBody, (results) => {
+      res.json(results);
+    });
+    // req.body.data.forEach(function (obj) {
+    //   let emailBody = {
+    //     receiver: obj.receiver,
+    //     subject: subject,
+    //     html: html,
+    //     path: obj.path,
+    //   };
+    //   emailer.sentEmailWithAttachment(emailBody, (results) => {
+    //     res.json(results);
+    //   });
+    // });
 
   });
-
 });
 
 module.exports = router;
