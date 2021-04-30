@@ -43,6 +43,7 @@ class BillingHistory extends React.Component {
     this.onSubmit = this.onSubmit.bind(this);
     this.getBillingDates = this.getBillingDates.bind(this);
     this.getCurrentBill = this.getCurrentBill.bind(this);
+    this.getCurrentSubBill = this.getCurrentSubBill.bind(this);
     this.generateBillingDateTable();
   }
 
@@ -141,6 +142,14 @@ class BillingHistory extends React.Component {
     });
   }
 
+  getCurrentSubBill(cur_res) {
+    console.log("test test:", cur_res)
+    this.setState({
+      current_res: cur_res,
+      // current_res: cur_res,
+    });
+  }
+
   generateMeterTable() {
     var resm = [];
     this.getMeterBillList().then(() => {
@@ -164,6 +173,9 @@ class BillingHistory extends React.Component {
         );
       }
       this.resm = resm;
+      this.setState({
+        current_resm: resm
+      })
       this.forceUpdate();
     });
   }
@@ -188,6 +200,9 @@ class BillingHistory extends React.Component {
         );
       }
       this.res = res;
+      this.setState({
+        current_res: res
+      })
       this.forceUpdate();
     });
   }
@@ -218,6 +233,7 @@ class BillingHistory extends React.Component {
                 from_date={tableData[i].from_date.split("T")[0]}
                 to_date={tableData[i].to_date.split("T")[0]}
                 methodfromparent={this.getCurrentBill}
+                methodfromparenttwo={this.getCurrentSubBill}
               />
             </TableCell>
             <TableCell />
