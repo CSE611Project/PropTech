@@ -998,4 +998,46 @@ router.post("/sendPDFToTenant", (req, res) => {
     });
 });
 
+router.delete("/deletebill", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.body.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+    console.log("router bill id",req.body.bill_in)
+    db.deleteBill(req.body.bill_id, (results) => {
+      res.json(results);
+    });
+  });
+});
+router.delete("/deletesub_bill", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.body.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+    console.log("router bill id",req.body.bill_in)
+    db.deleteSubmeterBill(req.body.bill_id, (results) => {
+      res.json(results);
+    });
+  });
+});
 module.exports = router;

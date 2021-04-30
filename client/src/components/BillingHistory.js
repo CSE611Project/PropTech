@@ -12,7 +12,9 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
 import DialogContentText from "@material-ui/core/DialogContentText";
+import DeleteMetersBill from "./DeleteMeterBill";
 import { isThisISOWeek } from "date-fns";
+import DeleteSubMeterBill from "./DeleteSubMeterBill";
 
 class BillingHistory extends React.Component {
   constructor(props) {
@@ -210,11 +212,12 @@ class BillingHistory extends React.Component {
   generateBillingDateTable() {
     var resb = [];
     this.getBillingDates().then(() => {
+      if(this.state.billing_dates[0].from_date != null){
       var tableData = this.state.billing_dates;
       console.log(this.state.billing_dates)
       for (var i = 0; i < tableData.length; i++) {
-        var temp_from = tableData[i].from_date.split("T")[0];
-        var temp_to = tableData[i].to_date.split("T")[0];
+        // var temp_from = tableData[i].from_date.split("T")[0];
+        // var temp_to = tableData[i].to_date.split("T")[0];
         resb.push(
           <TableRow key={i} id={i}>
             <TableCell>{tableData[i].from_date.split("T")[0]}</TableCell>
@@ -242,7 +245,9 @@ class BillingHistory extends React.Component {
       }
       this.resb = resb;
       this.forceUpdate();
+      }
     });
+
   }
 
   render() {
@@ -410,7 +415,11 @@ class ShowDate extends React.Component {
             <TableCell>{tableData[i].total_kwh_usage}</TableCell>
             {/* <TableCell>{tableData[i].unit_charge}</TableCell> */}
             <TableCell>{tableData[i].total_charge}</TableCell>
+            <TableCell>
+              <DeleteMetersBill bill_id={tableData[i].bill_id} generateTableData={this.onSubmit} />
+            </TableCell>
           </TableRow>
+        
         );
       }
       this.resm = resm;
@@ -446,6 +455,9 @@ class ShowDate extends React.Component {
             <TableCell>{tableData[i].cur_read}</TableCell>
             <TableCell>{tableData[i].unit_charge}</TableCell>
             <TableCell>{tableData[i].amt_due}</TableCell>
+            <TableCell>
+              <DeleteSubMeterBill bill_id={tableData[i].submeter_bill_id} generateTableData={this.onSubmit} />
+            </TableCell>
           </TableRow>
         );
       }
