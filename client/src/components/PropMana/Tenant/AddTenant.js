@@ -32,7 +32,7 @@ class AddTenant extends React.Component {
       name: "",
       email: "",
       address: "",
-      landlord_phone: this.props.landlord_phone,
+      landlord_phone: sessionStorage.getItem("landlord_phone"),
       rubs: "",
       multiplier: "",
       meter_id: "",
@@ -98,7 +98,7 @@ class AddTenant extends React.Component {
       name: "",
       address: "",
       email: "",
-      landlord_phone: "",
+      landlord_phone: sessionStorage.getItem("landlord_phone"),
       rubs: "",
       tenantFt: "",
       meter_list: [],
@@ -179,38 +179,119 @@ class AddTenant extends React.Component {
       })
     }
     if (this.validation()) {
-      if (this.state.meter_list.length === 0) {
-        console.log("meter_list length: " + this.state.meter_list)
-        var meter_message = "Please select at least one meter number"
+      if (this.state.noprorata && !this.state.yesprorata) {
+        var tenant_info = {
+          name: this.state.name,
+          email: this.state.email,
+          address: this.state.address,
+          landlord_phone: this.state.landlord_phone,
+          rubs: this.state.rubs,
+        };
+        this.addTenant(tenant_info);
         this.setState({
-          meter_errors: true,
-          meter_helper_text: meter_message
-        })
-      } else if (this.state.yesprorata && !this.state.yes && !this.state.no) {
-        var rubs_message = "Please choose an option"
-        this.setState({
-          rubs_errors: true,
-          rubs_helper_text: rubs_message
-        })
-      } else if (this.state.yesprorata) {
-        if (this.state.tenantFt === "" && (this.state.rubs === "" || this.state.rubs > 1 || this.state.rubs < 0)) {
-          var rubs_message = "Please enter a valid percentage"
+          meter_list: [],
+          open: false,
+          name: "",
+          address: "",
+          email: "",
+          landlord_phone: sessionStorage.getItem("landlord_phone"),
+          rubs: "",
+          tenantFt: "",
+          nameError: "",
+          addressError: "",
+          emailError: "",
+          phoneError: "",
+          name_errors: false,
+          address_errors: false,
+          email_errors: false,
+          phone_errors: false,
+          choice_errors: false,
+          helper_text: "",
+          rubs_errors: false,
+          rubs_helper_text: "",
+          yesprorata: false,
+          noprorata: false,
+          yes: false,
+          no: false,
+          percent_errors: false,
+          percent_helper_text: "",
+          meter_errors: false,
+          meter_helper_text: "",
+        });
+      } else {
+        if (this.state.meter_list.length === 0) {
+          console.log("meter_list length: " + this.state.meter_list)
+          var meter_message = "Please select at least one meter number"
           this.setState({
-            percent_errors: true,
-            percent_helper_text: rubs_message
+            meter_errors: true,
+            meter_helper_text: meter_message
           })
-        } else if ((this.state.rubs === "" || !this.state.rubs) && (this.state.tenantFt === "" || this.state.tenantFt > this.props.total_footage)) {
-          var rubs_message = "Please enter a valid number"
+        } else if (this.state.yesprorata && !this.state.yes && !this.state.no) {
+          var rubs_message = "Please choose an option"
           this.setState({
-            percent_errors: true,
-            percent_helper_text: rubs_message
+            rubs_errors: true,
+            rubs_helper_text: rubs_message
           })
-        } else if (this.state.rubs !== "" && (this.state.rubs > 1 || this.state.rubs < 0)) {
-          var rubs_message = "Please enter a valid number"
-          this.setState({
-            percent_errors: true,
-            percent_helper_text: rubs_message
-          })
+        } else if (this.state.yesprorata) {
+          if (this.state.tenantFt === "" && (this.state.rubs === "" || this.state.rubs > 1 || this.state.rubs < 0)) {
+            var rubs_message = "Please enter a valid percentage"
+            this.setState({
+              percent_errors: true,
+              percent_helper_text: rubs_message
+            })
+          } else if ((this.state.rubs === "" || !this.state.rubs) && (this.state.tenantFt === "" || this.state.tenantFt > this.props.total_footage)) {
+            var rubs_message = "Please enter a valid number"
+            this.setState({
+              percent_errors: true,
+              percent_helper_text: rubs_message
+            })
+          } else if (this.state.rubs !== "" && (this.state.rubs > 1 || this.state.rubs < 0)) {
+            var rubs_message = "Please enter a valid number"
+            this.setState({
+              percent_errors: true,
+              percent_helper_text: rubs_message
+            })
+          } else {
+            var tenant_info = {
+              name: this.state.name,
+              email: this.state.email,
+              address: this.state.address,
+              landlord_phone: this.state.landlord_phone,
+              rubs: this.state.rubs,
+            };
+            this.addTenant(tenant_info);
+            this.setState({
+              meter_list: [],
+              open: false,
+              name: "",
+              address: "",
+              email: "",
+              landlord_phone: sessionStorage.getItem("landlord_phone"),
+              rubs: "",
+              tenantFt: "",
+              nameError: "",
+              addressError: "",
+              emailError: "",
+              phoneError: "",
+              name_errors: false,
+              address_errors: false,
+              email_errors: false,
+              phone_errors: false,
+              choice_errors: false,
+              helper_text: "",
+              rubs_errors: false,
+              rubs_helper_text: "",
+              yesprorata: false,
+              noprorata: false,
+              yes: false,
+              no: false,
+              percent_errors: false,
+              percent_helper_text: "",
+              meter_errors: false,
+              meter_helper_text: "",
+            });
+          }
+  
         } else {
           var tenant_info = {
             name: this.state.name,
@@ -226,7 +307,7 @@ class AddTenant extends React.Component {
             name: "",
             address: "",
             email: "",
-            landlord_phone: "",
+            landlord_phone: sessionStorage.getItem("landlord_phone"),
             rubs: "",
             tenantFt: "",
             nameError: "",
@@ -251,46 +332,6 @@ class AddTenant extends React.Component {
             meter_helper_text: "",
           });
         }
-
-      } else {
-        var tenant_info = {
-          name: this.state.name,
-          email: this.state.email,
-          address: this.state.address,
-          landlord_phone: this.state.landlord_phone,
-          rubs: this.state.rubs,
-        };
-        this.addTenant(tenant_info);
-        this.setState({
-          meter_list: [],
-          open: false,
-          name: "",
-          address: "",
-          email: "",
-          landlord_phone: "",
-          rubs: "",
-          tenantFt: "",
-          nameError: "",
-          addressError: "",
-          emailError: "",
-          phoneError: "",
-          name_errors: false,
-          address_errors: false,
-          email_errors: false,
-          phone_errors: false,
-          choice_errors: false,
-          helper_text: "",
-          rubs_errors: false,
-          rubs_helper_text: "",
-          yesprorata: false,
-          noprorata: false,
-          yes: false,
-          no: false,
-          percent_errors: false,
-          percent_helper_text: "",
-          meter_errors: false,
-          meter_helper_text: "",
-        });
       }
     }
     // this.forceUpdate();
@@ -528,7 +569,7 @@ class AddTenant extends React.Component {
               id="landlord_phone"
               label="Landlord Phone"
               type="text"
-              value={sessionStorage.getItem("landlord_phone")}
+              value={this.state.landlord_phone}
               onChange={this.changeLandlordPhone}
               helperText={is_validate_phone ? phone_message : null}
               error={this.state.phone_errors}
