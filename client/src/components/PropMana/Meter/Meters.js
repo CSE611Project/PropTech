@@ -134,7 +134,7 @@ class Meters extends React.Component {
     return (
       <div>
         <Button color="primary" onClick={this.handleClickOpen}>
-          Meters
+          Manage Meters
         </Button>
         <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Manage Meters</DialogTitle>
