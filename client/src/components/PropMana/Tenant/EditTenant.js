@@ -97,6 +97,7 @@ class EditTenant extends React.Component {
     }
   }
   updateTenantInfo(tenant_id, tenant_info) {
+    console.log("meterlistttttt" + this.state.meter_list)
     axios.patch("/tenant", { sub: this.props.sub, tenant_id: tenant_id, tenant_info: tenant_info, meter_list: this.state.meter_list }).then((response) => {
       this.props.generateTableData();
     });
@@ -105,15 +106,27 @@ class EditTenant extends React.Component {
   handleClickOpen() {
     var cur = [];
     this.getMeterList().then(() => {
-        let tableData = this.state.meter_list;
-        // console.log("table", tableData);
-        for (var i = 0; i < tableData.length; i++) {
-          cur.push(tableData[i]);
-        }
-        this.cur = cur;
-        this.forceUpdate();
-        // console.log("meterlist: " + this.cur)
+      let tableData = this.state.meter_list;
+      // console.log("table", tableData);
+      for (var i = 0; i < tableData.length; i++) {
+        cur.push(tableData[i]);
+      }
+      this.cur = cur;
+      this.forceUpdate();
+      // console.log("meterlist: " + this.cur)
     });
+    if (this.state.rubs === 0) {
+      this.setState({
+        yesprorata: false,
+        noprorata: true,
+      })
+    } else {
+      this.setState({
+        yesprorata: true,
+        noprorata: false,
+        yes: true,
+      })
+    }
     this.setState({
       open: true,
       cur_meter_list: this.cur
@@ -216,7 +229,7 @@ class EditTenant extends React.Component {
     }
     event.preventDefault();
   }
-  
+
   getAssociatedMeter(new_meter) {
     var temp_list = this.state.meter_list;
     var remove = false;
@@ -336,14 +349,14 @@ class EditTenant extends React.Component {
   getMeterList() {
     return new Promise((resolve, reject) => {
       axios.get(`/ass_meter/${this.state.property_id}`).then((response) => {
-          var list = []
-          console.log(this.state.tenant_id, response.data);
-          for(var i = 0; i < response.data.length; i++){
-            // console.log("tenant_id  ", this.state.tenant_id);
-            if(response.data[i].tenant_id == this.state.tenant_id){
-                list.push(response.data[i].meter_id)
-            }
+        var list = []
+        console.log(this.state.tenant_id, response.data);
+        for (var i = 0; i < response.data.length; i++) {
+          // console.log("tenant_id  ", this.state.tenant_id);
+          if (response.data[i].tenant_id == this.state.tenant_id) {
+            list.push(response.data[i].meter_id)
           }
+        }
         this.setState({ meter_list: list });
         resolve();
       });
@@ -353,10 +366,6 @@ class EditTenant extends React.Component {
   onSubmit(event) {
     event.preventDefault();
     var res = [];
-    // this.getMeterList().then(() => {
-    //     let tableData = this.state.meter_list;
-    //     console.log("meter list is: " + tableData)
-    // });
     if (this.state.meter_list.length !== 0) {
       this.setState({
         meter_errors: true,
@@ -364,38 +373,100 @@ class EditTenant extends React.Component {
       })
     }
     if (this.validation()) {
-      if (this.state.meter_list.length === 0) {
-        console.log("meter_list length: " + this.state.meter_list)
-        var meter_message = "Please select at least one meter number"
+      if (this.state.noprorata && !this.state.yesprorata) {
         this.setState({
-          meter_errors: true,
-          meter_helper_text: meter_message
-        })
-      } else if (this.state.yesprorata && !this.state.yes && !this.state.no) {
-        var rubs_message = "Please choose an option"
-        this.setState({
-          rubs_errors: true,
-          rubs_helper_text: rubs_message
-        })
-      } else if (this.state.yesprorata) {
-        if (this.state.tenantFt === "" && (this.state.rubs === "" || this.state.rubs > 1 || this.state.rubs < 0)) {
-          var rubs_message = "Please enter a valid percentage"
+          open: false,
+          nameError: "",
+          addressError: "",
+          emailError: "",
+          phoneError: "",
+          name_errors: false,
+          address_errors: false,
+          email_errors: false,
+          phone_errors: false,
+          choice_errors: false,
+          helper_text: "",
+          rubs_errors: false,
+          rubs_helper_text: "",
+          percent_errors: false,
+          percent_helper_text: "",
+          meter_errors: false,
+          meter_helper_text: "",
+        });
+        var tenant_info = {
+          name: this.state.name,
+          email: this.state.email,
+          address: this.state.address,
+          landlord_phone: this.state.landlord_phone,
+          rubs: this.state.rubs,
+          property_id: this.state.property_id,
+        };
+        var tenant_id = this.state.tenant_id;
+        this.updateTenantInfo(tenant_id, tenant_info);
+      } else {
+        if (this.state.meter_list.length === 0) {
+          console.log("meter_list length: " + this.state.meter_list)
+          var meter_message = "Please select at least one meter number"
           this.setState({
-            percent_errors: true,
-            percent_helper_text: rubs_message
+            meter_errors: true,
+            meter_helper_text: meter_message
           })
-        } else if ((this.state.rubs === "" || !this.state.rubs) && (this.state.tenantFt === "" || this.state.tenantFt > this.props.total_footage)) {
-          var rubs_message = "Please enter a valid number"
+        } else if (this.state.yesprorata && !this.state.yes && !this.state.no) {
+          var rubs_message = "Please choose an option"
           this.setState({
-            percent_errors: true,
-            percent_helper_text: rubs_message
+            rubs_errors: true,
+            rubs_helper_text: rubs_message
           })
-        } else if (this.state.rubs !== "" && (this.state.rubs > 1 || this.state.rubs < 0)) {
-          var rubs_message = "Please enter a valid number"
-          this.setState({
-            percent_errors: true,
-            percent_helper_text: rubs_message
-          })
+        } else if (this.state.yesprorata) {
+          if (this.state.tenantFt === "" && (this.state.rubs === "" || this.state.rubs > 1 || this.state.rubs < 0)) {
+            var rubs_message = "Please enter a valid percentage"
+            this.setState({
+              percent_errors: true,
+              percent_helper_text: rubs_message
+            })
+          } else if ((this.state.rubs === "" || !this.state.rubs) && (this.state.tenantFt === "" || this.state.tenantFt > this.props.total_footage)) {
+            var rubs_message = "Please enter a valid number"
+            this.setState({
+              percent_errors: true,
+              percent_helper_text: rubs_message
+            })
+          } else if (this.state.rubs !== "" && (this.state.rubs > 1 || this.state.rubs < 0)) {
+            var rubs_message = "Please enter a valid number"
+            this.setState({
+              percent_errors: true,
+              percent_helper_text: rubs_message
+            })
+          } else {
+            this.setState({
+              open: false,
+              nameError: "",
+              addressError: "",
+              emailError: "",
+              phoneError: "",
+              name_errors: false,
+              address_errors: false,
+              email_errors: false,
+              phone_errors: false,
+              choice_errors: false,
+              helper_text: "",
+              rubs_errors: false,
+              rubs_helper_text: "",
+              percent_errors: false,
+              percent_helper_text: "",
+              meter_errors: false,
+              meter_helper_text: "",
+            });
+            var tenant_info = {
+              name: this.state.name,
+              email: this.state.email,
+              address: this.state.address,
+              landlord_phone: this.state.landlord_phone,
+              rubs: this.state.rubs,
+              property_id: this.state.property_id,
+            };
+            var tenant_id = this.state.tenant_id;
+            this.updateTenantInfo(tenant_id, tenant_info);
+          }
         } else {
           this.setState({
             open: false,
@@ -421,45 +492,15 @@ class EditTenant extends React.Component {
             email: this.state.email,
             address: this.state.address,
             landlord_phone: this.state.landlord_phone,
-            rubs: this.state.rubs,
+            rubs: 0,
             property_id: this.state.property_id,
           };
           var tenant_id = this.state.tenant_id;
-          this.updateTenantInfo(tenant_id, tenant_info); 
+          this.updateTenantInfo(tenant_id, tenant_info);
+          this.setState({
+            meter_list: []
+          });
         }
-      } else {
-        this.setState({
-          open: false,
-          nameError: "",
-          addressError: "",
-          emailError: "",
-          phoneError: "",
-          name_errors: false,
-          address_errors: false,
-          email_errors: false,
-          phone_errors: false,
-          choice_errors: false,
-          helper_text: "",
-          rubs_errors: false,
-          rubs_helper_text: "",
-          percent_errors: false,
-          percent_helper_text: "",
-          meter_errors: false,
-          meter_helper_text: "",
-        });
-        var tenant_info = {
-          name: this.state.name,
-          email: this.state.email,
-          address: this.state.address,
-          landlord_phone: this.state.landlord_phone,
-          rubs: 0,
-          property_id: this.state.property_id,
-        };
-        var tenant_id = this.state.tenant_id;
-        this.updateTenantInfo(tenant_id, tenant_info);
-        this.setState({
-          meter_list: []
-        });
       }
     }
   }
@@ -493,56 +534,56 @@ class EditTenant extends React.Component {
         <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Enter Tenant Information</DialogTitle>
           <DialogContent>
-            <TextField 
-              autoFocus 
-              margin="dense" 
-              id="name" 
-              label="Name" 
-              type="text" 
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Name"
+              type="text"
               value={this.state.name}
-              onChange={this.changeName} 
+              onChange={this.changeName}
               helperText={is_validate_name ? name_message : null}
               error={this.state.name_errors}
-              fullWidth 
+              fullWidth
             />
-            <TextField 
-              autoFocus 
-              margin="dense" 
-              id="email" 
-              label="Email Address" 
-              type="email" 
-              value={this.state.email} 
-              onChange={this.changeEmail} 
+            <TextField
+              autoFocus
+              margin="dense"
+              id="email"
+              label="Email Address"
+              type="email"
+              value={this.state.email}
+              onChange={this.changeEmail}
               helperText={is_validate_email ? email_message : null}
               error={this.state.email_errors}
-              fullWidth 
+              fullWidth
             />
-            <TextField 
-              autoFocus 
-              margin="dense" 
-              id="address" 
-              label="Address" 
-              type="text" 
-              value={this.state.address} 
-              onChange={this.changeAddress} 
+            <TextField
+              autoFocus
+              margin="dense"
+              id="address"
+              label="Address"
+              type="text"
+              value={this.state.address}
+              onChange={this.changeAddress}
               helperText={is_validate_address ? address_message : null}
               error={this.state.address_errors}
-              fullWidth 
+              fullWidth
             />
-            <NumberFormat 
+            <NumberFormat
               customInput={TextField}
-              autoFocus 
-              margin="dense" 
-              id="landlord_phone" 
-              label="Landlord Phone" 
-              type="text" 
-              value={this.state.landlord_phone} 
-              onChange={this.changeLandlordPhone} 
+              autoFocus
+              margin="dense"
+              id="landlord_phone"
+              label="Landlord Phone"
+              type="text"
+              value={this.state.landlord_phone}
+              onChange={this.changeLandlordPhone}
               helperText={is_validate_phone ? phone_message : null}
               error={this.state.phone_errors}
-              fullWidth 
-              format="(###) ###-####" 
-            />    
+              fullWidth
+              format="(###) ###-####"
+            />
             <DialogContent />
             <FormControl error={is_validate_choice}>
               <FormLabel>
@@ -552,20 +593,20 @@ class EditTenant extends React.Component {
               </FormLabel>
               <FormHelperText>{helper}</FormHelperText>
               <FormGroup row>
-                <FormControlLabel control={<Checkbox checked={this.state.yesprorata} onChange={this.onChangeYesProrata} name="yes" color="primary" />} label="yes" />
-                <FormControlLabel control={<Checkbox checked={this.state.noprorata} onChange={this.onChangeNoProrata} name="no" color="primary" />} label="no" />
+                <FormControlLabel disabled control={<Checkbox checked={this.state.yesprorata} onChange={this.onChangeYesProrata} name="yes" color="primary" />} label="yes" />
+                <FormControlLabel disabled control={<Checkbox checked={this.state.noprorata} onChange={this.onChangeNoProrata} name="no" color="primary" />} label="no" />
               </FormGroup>
               <DialogContent></DialogContent>
               <div>
                 {isYesProrata ? (
                   <div>
                     <FormControl error={is_validate_meter}>
-                      <MeterCheckBox 
-                        property_id={this.props.property_id} 
-                        onlyOption={false} 
+                      <MeterCheckBox
+                        property_id={this.props.property_id}
+                        onlyOption={false}
                         cur_meter_list={this.state.cur_meter_list}
                         tenant_id={this.state.tenant_id}
-                        methodfromparent={this.getAssociatedMeter} 
+                        methodfromparent={this.getAssociatedMeter}
                       />
                       <FormHelperText>{helper_meter}</FormHelperText>
                     </FormControl>
@@ -640,7 +681,7 @@ class EditTenant extends React.Component {
                   </div>
                 ) : null}
               </div>
-            </FormControl>      
+            </FormControl>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">

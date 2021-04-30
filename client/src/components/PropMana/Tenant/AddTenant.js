@@ -32,7 +32,7 @@ class AddTenant extends React.Component {
       name: "",
       email: "",
       address: "",
-      landlord_phone: "",
+      landlord_phone: this.props.landlord_phone,
       rubs: "",
       multiplier: "",
       meter_id: "",
@@ -528,6 +528,7 @@ class AddTenant extends React.Component {
               id="landlord_phone"
               label="Landlord Phone"
               type="text"
+              value={sessionStorage.getItem("landlord_phone")}
               onChange={this.changeLandlordPhone}
               helperText={is_validate_phone ? phone_message : null}
               error={this.state.phone_errors}

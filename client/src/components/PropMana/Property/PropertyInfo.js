@@ -53,6 +53,7 @@ class PropertyInfo extends Component {
                 property_id={this.state.property_list[i].property_id}
                 name={this.state.property_list[i].name}
                 total_footage={this.state.property_list[i].total_footage}
+                landlord_phone={this.state.property_list[i].landlord_phone}
               />
             </TableCell>
             <TableCell>
@@ -111,6 +112,7 @@ class ManageTenants extends Component {
     sessionStorage.setItem("property_name", this.props.name);
     sessionStorage.setItem("property_id", this.props.property_id);
     sessionStorage.setItem("total_footage", this.props.total_footage);
+    sessionStorage.setItem("landlord_phone", this.props.landlord_phone)
     if (this.props.is_admin == true) {
       window.location = `/Admin/PropMana/${this.props.sub}/property/${this.props.property_id}`;
     } else {

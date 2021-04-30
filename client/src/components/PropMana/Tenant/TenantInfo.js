@@ -5,6 +5,7 @@ import AddTenant from "./AddTenant";
 import DeleteTenant from "./DeleteTenant";
 import Submeters from "./../Submeter/Submeters";
 import Meters from "./../Meter/Meters";
+import MeterTable from "./../Meter/MeterTable";
 import CollapseSubmeter from "./../Submeter/CollapseSubmeter";
 import CollaspseMeter from "./../Meter/CollapseMeter";
 import { Component } from "react";
@@ -18,6 +19,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import { DialogContent } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
 
 class TenantInfo extends Component {
   constructor(props) {
@@ -127,6 +129,7 @@ class TenantInfo extends Component {
   }
 
   render() {
+    console.log("property id is " + this.props.property_id)
     return (
       <div className="main">
         <TableHead>
@@ -144,7 +147,13 @@ class TenantInfo extends Component {
           </TableCell>
         </TableHead>
         <DialogContent />
+        <MeterTable className="display_item" sub={this.props.sub} property_id={this.props.property_id} />
+        <DialogContent />
+        <DialogContent />
         <TableContainer component={Paper}>
+          <Typography component="h2" variant="h6" color="primary" gutterBottom>
+            Tenant Information
+          </Typography>
           <Table>
             <TableHead>
               <TableRow>
