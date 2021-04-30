@@ -804,6 +804,32 @@ function deleteInvoice(invoice_id, callback) {
     }
   });
 }
+function TimePeriod_Invoice(filter, callback) {
+  let sql = `SELECT distinct from_date, to_date FROM invoice WHERE `;
+  let keys = Object.keys(filter);
+  keys.forEach(function (key, index) {
+    if (index + 1 == keys.length) {
+
+      sql += `${key} = "${filter[key]}"`;
+    } else {
+      if(key == "tenant_id"){
+        sql += `${key} in (${filter[key]}) AND `;
+      }else {
+      sql += `${key} = "${filter[key]}" AND `;
+      }
+    }
+  });
+  console.log("new sql:",sql);
+  connection.query(sql, function (err, time_list) {
+    if (err) {
+      console.log(`not able to select time_list of ${filter} from database`);
+      callback(false);
+    } else {
+      console.log(`${filter} time_list returned`);
+      callback(time_list);
+    }
+  });
+}
 
 // filter is a JSON with an list of filter wants to apply when query invoice table
 // return a list of JSON contains invoice list
@@ -1077,6 +1103,7 @@ exports.insertInvoice = insertInvoice;
 exports.updateInvoice = updateInvoice;
 exports.deleteInvoice = deleteInvoice;
 exports.selectInvoice = selectInvoice;
+exports.TimePeriod_Invoice = TimePeriod_Invoice;
 
 exports.selectMeterTenantListByProperty = selectMeterTenantListByProperty;
 exports.selectMeterSubmeterBillByProperty = selectMeterSubmeterBillByProperty;
