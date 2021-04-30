@@ -16,6 +16,7 @@ import html2canvas from 'html2canvas';
 import { jsPDF } from "jspdf";
 import * as htmlToImage from 'html-to-image';
 import {toPng, toJpeg, toBlob, toPixelData, toSvg} from 'html-to-image';
+import { CognitoUserPool } from "amazon-cognito-identity-js";
 ///////////////////////////////////////////////
 class IndividualTenantInvoice extends React.Component {
   constructor(props) {
@@ -39,6 +40,11 @@ class IndividualTenantInvoice extends React.Component {
     // this.EmailPdf = this.EmailPdf.bind(this);
     this.printall = this.printall.bind(this);
     //////////////////////////////////////////
+
+    ////////////////// download pdf
+    this.downloadPDF = this.downloadPDF.bind(this);
+    this.downloadall = this.downloadall.bind(this);
+    /////////////
 
 
     this.handleClickOpen = this.handleClickOpen.bind(this);
@@ -324,6 +330,7 @@ class IndividualTenantInvoice extends React.Component {
   printDocument(i) {
     const pdf = new jsPDF();  
     var name = this.props.tenant_list[i].name;
+    var email = this.props.tenant_list[i].email;
     htmlToImage.toPng(document.getElementById('pdf'+i+this.props.tenant_list[i].tenant_id), { quality: 1 })
     .then(function (dataUrl) {
       var link = document.createElement('a');
@@ -334,16 +341,62 @@ class IndividualTenantInvoice extends React.Component {
     //   axios.post("/sendPDFToTenant", { pdfcontent: pdfData }).then((response) => {
     //     //   this.props.generateMeter();
     //     });
-      pdf.save(name+".pdf"); 
-      // console.log("121");
+      var path = pdf.output('datauristring');
+      console.log(path);
+      
+      var res = {
+        receiver: email,
+        path: path
+      }
+
+      axios.post('/sendPDFToTenant', res).then((response) => {
+        // console.log(response + "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL")
+        // if(response.status === 'ok') console.log("Yeah!");
+        // else console.log(":(");
+    });
+
+
+      // pdf.save(name+".pdf"); 
+
     });
 
 };
+
+
+downloadPDF(i){
+
+  const pdf = new jsPDF();  
+  var name = this.props.tenant_list[i].name;
+  var email = this.props.tenant_list[i].email;
+  htmlToImage.toPng(document.getElementById('pdf'+i+this.props.tenant_list[i].tenant_id), { quality: 1 })
+  .then(function (dataUrl) {
+    var link = document.createElement('a');
+    link.download = 'my-image-name.jpeg';        
+    pdf.addImage(dataUrl, 'PNG', 0, 0); //'pdf+'tenant_id+from_date+to_date
+
+   pdf.save(name+".pdf"); 
+
+  });
+
+
+};
+
+
+
+
 printall =() =>{
   for(var i = 0; i < this.props.tenant_list.length; i++){
     this.printDocument(i);
 }
 }
+
+downloadall = () => {
+  for(var i = 0; i < this.props.tenant_list.length; i++){
+    this.downloadPDF(i);
+}
+  
+}
+
   render() {
     return (
       <div>
@@ -354,8 +407,12 @@ printall =() =>{
           <DialogContent>
             <DialogContentText></DialogContentText>
             <div>{this.print}</div>
-            <button onClick={this.printall}>PDF</button>
+            <button onClick={this.printall}>Send PDFs to each tenant</button>
+            <table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>
+            <button onClick={this.downloadall}>Download all invoices</button>
           </DialogContent>
+
+        
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">
               Close
