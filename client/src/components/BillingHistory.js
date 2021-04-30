@@ -450,6 +450,9 @@ class ShowDate extends React.Component {
         );
       }
       this.res = res;
+      this.setState({current_res: res}, () => {
+        this.props.methodfromparenttwo(res);
+      });
       this.forceUpdate();
     });
     // this.setState({
