@@ -50,7 +50,7 @@ class SideMenu extends Component {
     sessionStorage.removeItem("property_id");
     sessionStorage.removeItem("property_name");
     sessionStorage.removeItem("total_footage");
-    sessionStorage.removeItem("custom:company_name", company_name);
+    sessionStorage.removeItem("custom:company_name");
     window.location = "/Admin/propertyManagers";
   };
 
