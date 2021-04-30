@@ -346,13 +346,11 @@ class IndividualTenantInvoice extends React.Component {
       
       var res = {
         receiver: email,
-        path: path
+        path: path,
       }
 
       axios.post('/sendPDFToTenant', res).then((response) => {
-        // console.log(response + "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL")
-        // if(response.status === 'ok') console.log("Yeah!");
-        // else console.log(":(");
+
     });
 
 
@@ -394,6 +392,8 @@ downloadall = () => {
   for(var i = 0; i < this.props.tenant_list.length; i++){
     this.downloadPDF(i);
 }
+  alert("Done !!!!");
+  return;
   
 }
 

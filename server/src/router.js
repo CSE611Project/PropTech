@@ -986,18 +986,16 @@ router.post("/sendPDFToTenant", (req, res) => {
     let subject = "invoice";
     let html = "<p>Invoice attached<p>";
 
-    req.body.data.forEach(function (obj) {
       let emailBody = {
-        receiver: obj.receiver,
+        receiver: req.body.receiver,
         subject: subject,
         html: html,
-        path: obj.path,
+        path: req.body.path,
       };
       emailer.sentEmailWithAttachment(emailBody, (results) => {
         res.json(results);
       });
     });
-  });
 });
 
 module.exports = router;
