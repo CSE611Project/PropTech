@@ -947,7 +947,6 @@ router.get("/history_meterinvoice_list/:property_id?/:from_date?/:to_date?/:sub?
 });
 
 router.post("/sendPDFToTenant", (req, res) => {
-  console.log(req.body.receiver+"RUNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn");
   verifyClient(req, res,
     (accessData, idData) => {
     var sub;
@@ -964,8 +963,6 @@ router.post("/sendPDFToTenant", (req, res) => {
       return;
     }
 
-
-
     let subject = "invoice";
     let html = "<p>Invoice attached<p>";
     let emailBody = {
@@ -978,18 +975,6 @@ router.post("/sendPDFToTenant", (req, res) => {
     emailer.sentEmailWithAttachment(emailBody, (results) => {
       res.json(results);
     });
-    // req.body.data.forEach(function (obj) {
-    //   let emailBody = {
-    //     receiver: obj.receiver,
-    //     subject: subject,
-    //     html: html,
-    //     path: obj.path,
-    //   };
-    //   emailer.sentEmailWithAttachment(emailBody, (results) => {
-    //     res.json(results);
-    //   });
-    // });
-
   });
 });
 

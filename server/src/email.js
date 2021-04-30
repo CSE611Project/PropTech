@@ -43,7 +43,7 @@ function sentEmailWithAttachment(content, callback) {
   });
   let mailOptions = {
     from: "umbrella.email.alert@gmail.com",
-    to: "mdong3@buffalo.edu",
+    to: receiver,
     subject: subject,
     html: html,
     attachments: [
