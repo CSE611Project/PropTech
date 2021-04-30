@@ -184,6 +184,7 @@ class BillingHistory extends React.Component {
 
   generateSubmeterTable() {
     var res = [];
+    console.log("where are you" ,this.state.submeter_bill_list)
     this.getSubmeterBillList().then(() => {
       var tableData = this.state.submeter_bill_list;
 
@@ -212,9 +213,11 @@ class BillingHistory extends React.Component {
   generateBillingDateTable() {
     var resb = [];
     this.getBillingDates().then(() => {
-      if(this.state.billing_dates[0].from_date != null){
       var tableData = this.state.billing_dates;
-      console.log(this.state.billing_dates)
+      console.log("bill date::", this.state.billing_dates)
+      if (tableData[0].from_date == null) {     
+        return;
+      }
       for (var i = 0; i < tableData.length; i++) {
         // var temp_from = tableData[i].from_date.split("T")[0];
         // var temp_to = tableData[i].to_date.split("T")[0];
@@ -245,7 +248,7 @@ class BillingHistory extends React.Component {
       }
       this.resb = resb;
       this.forceUpdate();
-      }
+      
     });
 
   }

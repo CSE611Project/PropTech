@@ -51,39 +51,46 @@ class UtilityBillSubmeter extends React.Component {
   generateTable() {
     //call updateTable everytime when we need to generate a list of submeter and multiplier
     // see hardcode below in render() function
+    var res = [];
     this.getTenantList().then(() => {
-      var res = [];
       let tableData = this.state.tenant_list;
+      console.log("tenant list is: ", tableData)
       var gg = 0;
       for (var i = 0; i < tableData.length; i++) {
-        this.state.tenant_id = tableData[i].tenant_id;
-        this.getSubmeterList().then(() => {
-          let tableDataSub = this.state.submeter_list;
-          for (var j = 0; j < tableDataSub.length; j++) {
-            res.push(
-              <TableRow key={gg} id={gg}>
-                <TableCell>{tableDataSub[j].submeter_id}</TableCell>
-                <TableCell>{tableDataSub[j].multiplier}</TableCell>
-                <TableCell>{tableDataSub[j].meter_id}</TableCell>
-                <TableCell>
-                  <SubmeterBill
-                    submeter_id={tableDataSub[j].submeter_id}
-                    tenant_id={tableDataSub[j].tenant_id}
-                    info={this}
-                    meter_id={tableDataSub[j].meter_id}
-                    property_id={this.state.property_id}
-                    multiplier={tableDataSub[j].multiplier}
-                  />
-                </TableCell>
-              </TableRow>
-            );
-            gg++;
-          }
-        });
+        if (tableData[i].rubs === 0) {
+          this.setState({
+            tenant_id: tableData[i].tenant_id
+          })
+          console.log("tenant id: ", this.state.tenant_id)
+          this.getSubmeterList().then(() => {
+            let tableDataSub = this.state.submeter_list;
+            console.log()
+            for (var j = 0; j < tableDataSub.length; j++) {
+              res.push(
+                <TableRow key={gg} id={gg}>
+                  <TableCell>{tableDataSub[j].submeter_id}</TableCell>
+                  <TableCell>{tableDataSub[j].multiplier}</TableCell>
+                  <TableCell>{tableDataSub[j].meter_id}</TableCell>
+                  <TableCell>
+                    <SubmeterBill
+                      submeter_id={tableDataSub[j].submeter_id}
+                      tenant_id={tableDataSub[j].tenant_id}
+                      info={this}
+                      meter_id={tableDataSub[j].meter_id}
+                      property_id={this.state.property_id}
+                      multiplier={tableDataSub[j].multiplier}
+                    />
+                  </TableCell>
+                </TableRow>
+              );
+              gg++;
+            }
+            console.log("ressfsafas", res.length);
+            this.res = res;
+            this.forceUpdate();
+          });
+        }
       }
-      console.log("ressfsafas", res.length);
-      this.res = res;
-      this.forceUpdate();
     });
   }
 

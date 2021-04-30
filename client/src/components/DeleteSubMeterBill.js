@@ -24,8 +24,8 @@ class DeleteSubMeterBill extends React.Component {
     return new Promise((resolve, reject) => {
         axios.delete("/deletesub_bill", {data: {bill_id : this.props.bill_id}}).then((response) => {
             });
-            window.location.reload();
             resolve();
+            alert("please click show to see updates");
       });
   }
 

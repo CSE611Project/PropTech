@@ -24,7 +24,7 @@ class DeleteMetersBill extends React.Component {
     return new Promise((resolve, reject) => {
         axios.delete("/deletebill", {data: {bill_id : this.props.bill_id}}).then((response) => {
             });
-            window.location.reload();
+            alert("please click show to see updates");
             resolve();
       });
   }
