@@ -757,30 +757,30 @@ router.get("/history_submeterbill_list/:property_id?/:from_date?/:to_date?/:sub?
   });
 });
 //use this function to get all time_period for invoices , input: teant_id list
-router.post("/select_timePeriod_invoice", (req,res) => {
-  verifyClient(req, res, (accessData, idData) => {
-    var sub;
-    if (accessData["cognito:groups"][0] == "Admin") {
-      sub = req.body.sub;
-    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
-      sub = accessData.sub;
-    } else {
-      res.json({
-        error: {
-          message: "Improper permissions: not Admin",
-        },
-      });
-      return;
-    }
-    var filter = {
-      tenant_id: req.body.final_invoice_list[0].tenant_id,
-    };
-    db.TimePeriod_Invoice(filter, (results) => {
-      res.json(JSON.parse(JSON.stringify(results)));
-    });
-
+router.post("/select_timePeriod_invoice/:tenant_id?", (req,res) => {
+    verifyClient(req, res, (accessData, idData) => {
+      var sub;
+      if (accessData["cognito:groups"][0] == "Admin") {
+        sub = req.body.sub;
+      } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+        sub = accessData.sub;
+      } else {
+        res.json({
+          error: {
+            message: "Improper permissions: not Admin",
+          },
+        });
+        return;
+      }
+      var filter = {
+        tenant_id: Number(req.params.tenant_id),
+      };
+      db.TimePeriod_Invoice(filter, (results) => {
+        res.json(JSON.parse(JSON.stringify(results)));
+      });
+  
+    });
   });
-});
 
 router.post("/upload_invoice", (req, res) => {
   verifyClient(req, res, (accessData, idData) => {
