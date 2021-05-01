@@ -129,8 +129,8 @@ class IndividualTenantInvoice extends React.Component {
           <tr>
             <th >Sub-Unit</th>
             <th >Prior Amount (KwH)</th>
-            <th >Current Amount(KwH)</th>
-            <th >Current Usage(KwH)</th>
+            <th >Current Amount (KwH)</th>
+            <th >Current Usage (KwH)</th>
             <th >Unit Charge</th>
             <th >Amount</th>
           </tr>
@@ -386,13 +386,17 @@ printall =() =>{
   for(var i = 0; i < this.props.tenant_list.length; i++){
     this.printDocument(i);
 }
+
+  alert("Emails are on the way.");
+  return;
+  
 }
 
 downloadall = () => {
   for(var i = 0; i < this.props.tenant_list.length; i++){
     this.downloadPDF(i);
 }
-  alert("Done !!!!");
+  alert("Downloads will be completed very soon.");
   return;
   
 }
