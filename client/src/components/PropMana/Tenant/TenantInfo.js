@@ -20,6 +20,8 @@ import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import { DialogContent } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
+import { makeStyles } from '@material-ui/core/styles';
+import TablePagination from '@material-ui/core/TablePagination';
 
 class TenantInfo extends Component {
   constructor(props) {
@@ -150,29 +152,32 @@ class TenantInfo extends Component {
         <MeterTable className="display_item" sub={this.props.sub} property_id={this.props.property_id} />
         <DialogContent />
         <DialogContent />
-        <TableContainer component={Paper}>
-          <Typography component="h2" variant="h6" color="primary" gutterBottom>
-            Tenant Information
+        <Paper>
+          <TableContainer style={{ maxHeight: 700 }} component={Paper}>
+            <Typography component="h2" variant="h6" color="primary" gutterBottom>
+              Tenant Information
           </Typography>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Address</TableCell>
-                <TableCell>Landlord Phone</TableCell>
-                <TableCell>RUBS</TableCell>
-                <TableCell></TableCell>
-                <TableCell />
-                <TableCell />
-                <TableCell />
-              </TableRow>
-            </TableHead>
-            <TableBody>{this.res}</TableBody>
-          </Table>
-        </TableContainer>
+            <Table stickyHeader>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Email</TableCell>
+                  <TableCell>Address</TableCell>
+                  <TableCell>Landlord Phone</TableCell>
+                  <TableCell>RUBS</TableCell>
+                  <TableCell></TableCell>
+                  <TableCell />
+                  <TableCell />
+                  <TableCell />
+                </TableRow>
+              </TableHead>
+              <TableBody>{this.res}</TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
       </div>
     );
   }
 }
+
 export default TenantInfo;

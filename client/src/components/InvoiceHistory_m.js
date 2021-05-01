@@ -13,6 +13,8 @@ import { Divider } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import IndividualTenantInvoice from "./IndividualTenantInvoice";
 import Snackbar from '@material-ui/core/Snackbar';
+import { TableContainer } from "@material-ui/core";
+import Paper from "@material-ui/core/Paper";
 
 class InvoiceHistory_m extends React.Component {
   constructor(props) {
@@ -52,7 +54,7 @@ class InvoiceHistory_m extends React.Component {
     this.getCurrentInvoice_sub = this.getCurrentInvoice_sub.bind(this);
     this.handleClose = this.handleClose.bind(this);
     // this.generateMeterTable();
-    this.generateDateTable();  
+    this.generateDateTable();
   }
 
   handleFromDateChange(event) {
@@ -166,12 +168,12 @@ class InvoiceHistory_m extends React.Component {
               <TableCell />
               <TableCell>
                 <ShowDate
-                    property_id={this.props.property_id}
-                    from_date={tableDataDate[i].from_date.split("T")[0]}
-                    to_date={tableDataDate[i].to_date.split("T")[0]}
-                    methodfromparent={this.getCurrentInvoice}
-                    methodfromparenttwo={this.getCurrentInvoice_sub}
-                  />
+                  property_id={this.props.property_id}
+                  from_date={tableDataDate[i].from_date.split("T")[0]}
+                  to_date={tableDataDate[i].to_date.split("T")[0]}
+                  methodfromparent={this.getCurrentInvoice}
+                  methodfromparenttwo={this.getCurrentInvoice_sub}
+                />
               </TableCell>
               <TableCell />
             </TableRow>
@@ -292,65 +294,69 @@ class InvoiceHistory_m extends React.Component {
         <Typography component="h2" variant="h6" color="primary" gutterBottom>
           Invoice Statement History
         </Typography>
-        <form noValidate>
-          <TextField
-            id="from_date"
-            label="From"
-            type="date"
-            defaultValue={this.state.from_date}
-            InputLabelProps={{
-              shrink: true,
+        <TableContainer style={{ maxHeight: 600 }}>
+          <form noValidate>
+            <TextField
+              id="from_date"
+              label="From"
+              type="date"
+              defaultValue={this.state.from_date}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={this.handleFromDateChange}
+            />
+            <TextField
+              id="to_date"
+              label="To"
+              type="date"
+              defaultValue={this.state.to_date}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={this.handleToDateChange}
+            />
+          </form>
+          <Button onClick={this.onSubmit} color="primary">
+            Show
+          </Button>
+          <Snackbar
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
             }}
-            onChange={this.handleFromDateChange}
+            open={this.state.button_flag}
+            autoHideDuration={6000}
+            onClose={this.handleClose}
+            message={this.state.helper_text}
           />
-          <TextField
-            id="to_date"
-            label="To"
-            type="date"
-            defaultValue={this.state.to_date}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            onChange={this.handleToDateChange}
-          />
-        </form>
-        <Button onClick={this.onSubmit} color="primary">
-          Show
-        </Button>
-        <Snackbar
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-          }}
-          open={this.state.button_flag}
-          autoHideDuration={6000}
-          onClose={this.handleClose}
-          message={this.state.helper_text}
-        />
-        <TableHead>
-          <TableRow>
-            <TableCell>Invoice Start Date</TableCell>
-            <TableCell>Invoice End Date</TableCell>
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-          </TableRow>
-        </TableHead>
-        <TableBody>{this.resd}</TableBody>
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow>
+                <TableCell>Invoice Start Date</TableCell>
+                <TableCell>Invoice End Date</TableCell>
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+              </TableRow>
+            </TableHead>
+            <TableBody>{this.resd}</TableBody>
+          </Table>
+        </TableContainer>
         <Divider />
         <Divider />
         <Divider />
@@ -359,108 +365,55 @@ class InvoiceHistory_m extends React.Component {
         <Divider />
         <Divider />
         <Divider />
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Invoice ID</TableCell>
-              <TableCell>Tenant Name</TableCell>
-              <TableCell>Meter ID</TableCell>
-              <TableCell>From</TableCell>
-              <TableCell>To</TableCell>
-              <TableCell>Meter Amount Due</TableCell>
-              <TableCell>RUBS</TableCell>
-              <TableCell>User Footage</TableCell>
-              <TableCell>Total Footage</TableCell>
-              <TableCell>Total Building Amount Due</TableCell>
-              <TableCell>Total Tenant Amount Due</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>{this.state.current_res}</TableBody>
-          <TableRow>
-            <TableCell>
-              <Divider />
-              <Divider />
-              <Divider />
-              <Divider />
-            </TableCell>
-            <TableCell>
-              <Divider />
-              <Divider />
-              <Divider />
-              <Divider />
-            </TableCell>
-            <TableCell>
-              <Divider />
-              <Divider />
-              <Divider />
-              <Divider />
-            </TableCell>
-            <TableCell>
-              <Divider />
-              <Divider />
-              <Divider />
-              <Divider />
-            </TableCell>
-            <TableCell>
-              <Divider />
-              <Divider />
-              <Divider />
-              <Divider />
-            </TableCell>
-            <TableCell>
-              <Divider />
-              <Divider />
-              <Divider />
-              <Divider />
-            </TableCell>
-            <TableCell>
-              <Divider />
-              <Divider />
-              <Divider />
-              <Divider />
-            </TableCell>
-            <TableCell>
-              <Divider />
-              <Divider />
-              <Divider />
-              <Divider />
-            </TableCell>
-            <TableCell>
-              <Divider />
-              <Divider />
-              <Divider />
-              <Divider />
-            </TableCell>
-            <TableCell>
-              <Divider />
-              <Divider />
-              <Divider />
-              <Divider />
-            </TableCell>
-            <TableCell>
-              <Divider />
-              <Divider />
-              <Divider />
-              <Divider />
-            </TableCell>
-          </TableRow>
-          <TableHead>
-            <TableRow>
-              <TableCell>Invoice ID</TableCell>
-              <TableCell>Tenant Name</TableCell>
-              <TableCell>Submeter ID</TableCell>
-              <TableCell>From</TableCell>
-              <TableCell>To</TableCell>
-              <TableCell>Submeter Charge</TableCell>
-              <TableCell>Prior Read</TableCell>
-              <TableCell>Current Read</TableCell>
-              <TableCell>Total KWH Usage</TableCell>
-              <TableCell>Unit Charge</TableCell>
-              <TableCell>Total Amount Due</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>{this.state.current_resm}</TableBody>
-        </Table>
+        <TableContainer style={{ maxHeight: 500 }}>
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow>
+                <TableCell>Invoice ID</TableCell>
+                <TableCell>Tenant Name</TableCell>
+                <TableCell>Meter ID</TableCell>
+                <TableCell>From</TableCell>
+                <TableCell>To</TableCell>
+                <TableCell>Meter Amount Due</TableCell>
+                <TableCell>RUBS</TableCell>
+                <TableCell>User Footage</TableCell>
+                <TableCell>Total Footage</TableCell>
+                <TableCell>Total Building Amount Due</TableCell>
+                <TableCell>Total Tenant Amount Due</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>{this.state.current_res}</TableBody>
+          </Table>
+          </TableContainer>
+          <Divider />
+          <Divider />
+          <Divider />
+          <Divider />
+          <Divider />
+          <Divider />
+          <Divider />
+          <Divider />
+          <Divider />
+          <TableContainer style={{ maxHeight: 500 }}>
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow>
+                <TableCell>Invoice ID</TableCell>
+                <TableCell>Tenant Name</TableCell>
+                <TableCell>Submeter ID</TableCell>
+                <TableCell>From</TableCell>
+                <TableCell>To</TableCell>
+                <TableCell>Submeter Charge</TableCell>
+                <TableCell>Prior Read</TableCell>
+                <TableCell>Current Read</TableCell>
+                <TableCell>Total KWH Usage</TableCell>
+                <TableCell>Unit Charge</TableCell>
+                <TableCell>Total Amount Due</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>{this.state.current_resm}</TableBody>
+          </Table>
+        </TableContainer>
         <IndividualTenantInvoice
           property_info={this.state.property_info}
           tenant_list={this.state.tenant_list}
@@ -584,11 +537,11 @@ class ShowDate extends React.Component {
       }
       this.res = res;
       this.resm = resm;
-      this.setState({current_res: res, current_resm: resm}, () => {
+      this.setState({ current_res: res, current_resm: resm }, () => {
         this.props.methodfromparent(res);
         this.props.methodfromparenttwo(resm);
       });
-      console.log("tryone"+this.state.current_resm)
+      console.log("tryone" + this.state.current_resm)
       this.forceUpdate();
     });
   }

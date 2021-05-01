@@ -15,6 +15,8 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DeleteMetersBill from "./DeleteMeterBill";
 import { isThisISOWeek } from "date-fns";
 import DeleteSubMeterBill from "./DeleteSubMeterBill";
+import Paper from "@material-ui/core/Paper";
+import TableContainer from "@material-ui/core/TableContainer";
 import Snackbar from '@material-ui/core/Snackbar';
 
 class BillingHistory extends React.Component {
@@ -291,68 +293,72 @@ class BillingHistory extends React.Component {
         <Typography component="h2" variant="h6" color="primary" gutterBottom>
           Billing History
         </Typography>
-        <form noValidate>
-          <TextField
-            id="from_date"
-            label="From"
-            type="date"
-            defaultValue={this.state.from_date}
-            InputLabelProps={{
-              shrink: true,
+        <TableContainer style={{ maxHeight: 600 }}>
+          <form noValidate>
+            <TextField
+              id="from_date"
+              label="From"
+              type="date"
+              defaultValue={this.state.from_date}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={this.handleFromDateChange}
+            />
+            <TextField
+              id="to_date"
+              label="To"
+              type="date"
+              defaultValue={this.state.to_date}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={this.handleToDateChange}
+            />
+          </form>
+          <DialogContentText />
+          <Button onClick={this.onSubmit} color="primary">
+            Show
+          </Button>
+          <Snackbar
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
             }}
-            onChange={this.handleFromDateChange}
+            open={this.state.button_flag}
+            autoHideDuration={6000}
+            onClose={this.handleClose}
+            message={this.state.helper_text}
           />
-          <TextField
-            id="to_date"
-            label="To"
-            type="date"
-            defaultValue={this.state.to_date}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            onChange={this.handleToDateChange}
-          />
-        </form>
-        <DialogContentText />
-        <Button onClick={this.onSubmit} color="primary">
-          Show
-        </Button>
-        <Snackbar
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-          }}
-          open={this.state.button_flag}
-          autoHideDuration={6000}
-          onClose={this.handleClose}
-          message={this.state.helper_text}
-        />
-        <TableHead>
-          <TableRow>
-            <TableCell>Billing Start Date</TableCell>
-            <TableCell>Billing End Date</TableCell>
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {this.resb}
-        </TableBody>
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow>
+                <TableCell>Billing Start Date</TableCell>
+                <TableCell>Billing End Date</TableCell>
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {this.resb}
+            </TableBody>
+          </Table>
+        </TableContainer>
         <Divider />
         <Divider />
         <Divider />
@@ -361,21 +367,23 @@ class BillingHistory extends React.Component {
         <Divider />
         <Divider />
         <Divider />
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Meter Bill ID</TableCell>
-              <TableCell>Meter</TableCell>
-              <TableCell>Billing Start Date</TableCell>
-              <TableCell>Billing End Date</TableCell>
-              <TableCell>Total KWH Usage</TableCell>
-              {/* <TableCell>Unit Charge</TableCell> */}
-              <TableCell>Total Charge</TableCell>
-              <TableCell />
-            </TableRow>
-          </TableHead>
-          <TableBody>{this.state.current_resm}</TableBody>
-        </Table>
+        <TableContainer style={{ maxHeight: 400 }} component={Paper}>
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow>
+                <TableCell>Meter Bill ID</TableCell>
+                <TableCell>Meter</TableCell>
+                <TableCell>Billing Start Date</TableCell>
+                <TableCell>Billing End Date</TableCell>
+                <TableCell>Total KWH Usage</TableCell>
+                {/* <TableCell>Unit Charge</TableCell> */}
+                <TableCell>Total Charge</TableCell>
+                <TableCell />
+              </TableRow>
+            </TableHead>
+            <TableBody>{this.state.current_resm}</TableBody>
+          </Table>
+        </TableContainer>
         <Divider />
         <Divider />
         <Divider />
@@ -384,21 +392,23 @@ class BillingHistory extends React.Component {
         <Divider />
         <Divider />
         <Divider />
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Submeter Bill ID</TableCell>
-              <TableCell>Associate with Bill ID:</TableCell>
-              <TableCell>Submeter</TableCell>
-              <TableCell>Prior Read</TableCell>
-              <TableCell>Current Read</TableCell>
-              <TableCell>Unit Charge</TableCell>
-              <TableCell>Amount Due</TableCell>
-              <TableCell />
-            </TableRow>
-          </TableHead>
-          <TableBody>{this.state.current_res}</TableBody>
-        </Table>
+        <TableContainer style={{ maxHeight: 400 }} component={Paper}>
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow>
+                <TableCell>Submeter Bill ID</TableCell>
+                <TableCell>Associate with Bill ID:</TableCell>
+                <TableCell>Submeter</TableCell>
+                <TableCell>Prior Read</TableCell>
+                <TableCell>Current Read</TableCell>
+                <TableCell>Unit Charge</TableCell>
+                <TableCell>Amount Due</TableCell>
+                <TableCell />
+              </TableRow>
+            </TableHead>
+            <TableBody>{this.state.current_res}</TableBody>
+          </Table>
+        </TableContainer>
       </React.Fragment>
     );
   }

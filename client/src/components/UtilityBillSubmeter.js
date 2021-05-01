@@ -8,6 +8,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
+import { TableContainer } from "@material-ui/core";
 
 class UtilityBillSubmeter extends React.Component {
   constructor(props) {
@@ -101,18 +102,20 @@ class UtilityBillSubmeter extends React.Component {
         <Typography component="h2" variant="h6" color="primary" gutterBottom>
           Submeters
         </Typography>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>Submeter numbers</TableCell>
-              <TableCell>Multiplier</TableCell>
-              <TableCell>Associated Meter</TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>{this.res}</TableBody>
-        </Table>
+        <TableContainer style={{ maxHeight: 400 }}>
+          <Table size="small" stickyHeader>
+            <TableHead>
+              <TableRow>
+                <TableCell>Submeter numbers</TableCell>
+                <TableCell>Multiplier</TableCell>
+                <TableCell>Associated Meter</TableCell>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>{this.res}</TableBody>
+          </Table>
+        </TableContainer>
       </React.Fragment>
     );
   }
