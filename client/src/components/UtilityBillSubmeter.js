@@ -71,6 +71,7 @@ class UtilityBillSubmeter extends React.Component {
                   <TableCell>{tableDataSub[j].submeter_id}</TableCell>
                   <TableCell>{tableDataSub[j].multiplier}</TableCell>
                   <TableCell>{tableDataSub[j].meter_id}</TableCell>
+                  <TableCell />
                   <TableCell>
                     <SubmeterBill
                       submeter_id={tableDataSub[j].submeter_id}

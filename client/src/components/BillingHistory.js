@@ -15,6 +15,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DeleteMetersBill from "./DeleteMeterBill";
 import { isThisISOWeek } from "date-fns";
 import DeleteSubMeterBill from "./DeleteSubMeterBill";
+import Snackbar from '@material-ui/core/Snackbar';
 
 class BillingHistory extends React.Component {
   constructor(props) {
@@ -37,6 +38,8 @@ class BillingHistory extends React.Component {
       billing_dates: [],
       current_resm: [],
       current_res: [],
+      button_flag: false,
+      helper_text: "",
     };
     this.handleFromDateChange = this.handleFromDateChange.bind(this);
     this.handleToDateChange = this.handleToDateChange.bind(this);
@@ -46,6 +49,8 @@ class BillingHistory extends React.Component {
     this.getBillingDates = this.getBillingDates.bind(this);
     this.getCurrentBill = this.getCurrentBill.bind(this);
     this.getCurrentSubBill = this.getCurrentSubBill.bind(this);
+    this.getHelperText = this.getHelperText.bind(this);
+    this.handleClose = this.handleClose.bind(this);
     this.generateBillingDateTable();
   }
 
@@ -132,6 +137,11 @@ class BillingHistory extends React.Component {
     }
     this.generateMeterTable();
     this.generateSubmeterTable();
+    var text = "Viewing bill of " + this.state.from_date + " to " + this.state.to_date;
+    this.setState({
+      button_flag: true,
+      helper_text: text
+    })
     console.log("bill list length:", this.state.bill_list.length);
     console.log(this.state.from_date, this.state.to_date, this.state.bill_list, this.state.submeter_bill_list);
   }
@@ -151,6 +161,19 @@ class BillingHistory extends React.Component {
       // current_res: cur_res,
     });
   }
+
+  getHelperText(help) {
+    console.log("helper: ", help)
+    this.setState({
+      helper_text: help,
+    })
+  }
+
+  handleClose() {
+    this.setState({
+      button_flag: false
+    })
+  };
 
   generateMeterTable() {
     var resm = [];
@@ -184,7 +207,7 @@ class BillingHistory extends React.Component {
 
   generateSubmeterTable() {
     var res = [];
-    console.log("where are you" ,this.state.submeter_bill_list)
+    console.log("where are you", this.state.submeter_bill_list)
     this.getSubmeterBillList().then(() => {
       var tableData = this.state.submeter_bill_list;
 
@@ -215,7 +238,7 @@ class BillingHistory extends React.Component {
     this.getBillingDates().then(() => {
       var tableData = this.state.billing_dates;
       console.log("bill date::", this.state.billing_dates)
-      if (tableData[0].from_date == null) {     
+      if (tableData[0].from_date === null) {
         return;
       }
       for (var i = 0; i < tableData.length; i++) {
@@ -232,6 +255,14 @@ class BillingHistory extends React.Component {
             <TableCell />
             <TableCell />
             <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
             <TableCell>
               <ShowDate
                 property_id={this.props.property_id}
@@ -240,6 +271,7 @@ class BillingHistory extends React.Component {
                 to_date={tableData[i].to_date.split("T")[0]}
                 methodfromparent={this.getCurrentBill}
                 methodfromparenttwo={this.getCurrentSubBill}
+                methodfromparentthree={this.getHelperText}
               />
             </TableCell>
             <TableCell />
@@ -248,7 +280,7 @@ class BillingHistory extends React.Component {
       }
       this.resb = resb;
       this.forceUpdate();
-      
+
     });
 
   }
@@ -285,6 +317,16 @@ class BillingHistory extends React.Component {
         <Button onClick={this.onSubmit} color="primary">
           Show
         </Button>
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          open={this.state.button_flag}
+          autoHideDuration={6000}
+          onClose={this.handleClose}
+          message={this.state.helper_text}
+        />
         <TableHead>
           <TableRow>
             <TableCell>Billing Start Date</TableCell>
@@ -298,9 +340,19 @@ class BillingHistory extends React.Component {
             <TableCell />
             <TableCell />
             <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
           </TableRow>
         </TableHead>
-        <TableBody>{this.resb}</TableBody>
+        <TableBody>
+          {this.resb}
+        </TableBody>
         <Divider />
         <Divider />
         <Divider />
@@ -319,6 +371,7 @@ class BillingHistory extends React.Component {
               <TableCell>Total KWH Usage</TableCell>
               {/* <TableCell>Unit Charge</TableCell> */}
               <TableCell>Total Charge</TableCell>
+              <TableCell />
             </TableRow>
           </TableHead>
           <TableBody>{this.state.current_resm}</TableBody>
@@ -341,6 +394,7 @@ class BillingHistory extends React.Component {
               <TableCell>Current Read</TableCell>
               <TableCell>Unit Charge</TableCell>
               <TableCell>Amount Due</TableCell>
+              <TableCell />
             </TableRow>
           </TableHead>
           <TableBody>{this.state.current_res}</TableBody>
@@ -362,10 +416,13 @@ class ShowDate extends React.Component {
       current_res: [],
       bill_list: [],
       submeter_bill_list: [],
+      button_flag: false,
+      helper_text: "",
     }
     this.onSubmit = this.onSubmit.bind(this);
     this.getMeterBillList = this.getMeterBillList.bind(this);
     this.getSubmeterBillList = this.getSubmeterBillList.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   getMeterBillList() {
@@ -422,17 +479,17 @@ class ShowDate extends React.Component {
               <DeleteMetersBill bill_id={tableData[i].bill_id} generateTableData={this.onSubmit} />
             </TableCell>
           </TableRow>
-        
+
         );
       }
       this.resm = resm;
       // this.setState({
       //   current_resm: resm
       // })
-      this.setState({current_resm: resm}, () => {
+      this.setState({ current_resm: resm }, () => {
         this.props.methodfromparent(resm);
       });
-      console.log("tryone"+this.state.current_resm)
+      console.log("tryone" + this.state.current_resm)
       // this.forceUpdate();
     });
     // this.setState({
@@ -465,7 +522,7 @@ class ShowDate extends React.Component {
         );
       }
       this.res = res;
-      this.setState({current_res: res}, () => {
+      this.setState({ current_res: res }, () => {
         this.props.methodfromparenttwo(res);
       });
       this.forceUpdate();
@@ -479,6 +536,13 @@ class ShowDate extends React.Component {
     console.log(this.state.property_id, this.state.from_date, this.state.to_date)
     this.generateMeterTable();
     this.generateSubmeterTable();
+    var text = "Viewing bill of " + this.state.from_date + " to " + this.state.to_date;
+    this.setState({
+      button_flag: true,
+      helper_text: text
+    }, () => {
+      this.props.methodfromparentthree(text)
+    })
     this.forceUpdate();
     // this.setState({
 
@@ -490,14 +554,28 @@ class ShowDate extends React.Component {
     // this.props.methodfromparent(this.state.current_resm, this.res);
   }
 
+  handleClose() {
+    this.setState({
+      button_flag: false
+    })
+  };
+
   render() {
     return (
       <React.Fragment>
         <Button color="primary" onClick={this.onSubmit}>
           Show
         </Button>
-        {/* {this.resm} */}
-        {/* {this.state.current_resm} */}
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          open={this.state.button_flag}
+          autoHideDuration={6000}
+          onClose={this.handleClose}
+          message={this.state.helper_text}
+        />
       </React.Fragment>
     );
   }
