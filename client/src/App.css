@@ -258,18 +258,18 @@ tr.spaceUnder > td {
 
 /***************************CSS for the new format of submeter invoce PDF**************************************/
 
-.underline {
+table.underline {
   border-bottom: 1px solid #000000;
-  border-spacing: 3px;
+  border-spacing: 2px;
   font-size: 13px;
   table-layout: fixed ;
-  width: 30% ;
-  position: relative;
-  -webkit-box-orient: vertical;
-  flex-direction: column;
+  width: 45% ;
 }
 .s {
   border: 0px solid black;
+}
+.sbbb {
+  width: 70%;
 }
 
 

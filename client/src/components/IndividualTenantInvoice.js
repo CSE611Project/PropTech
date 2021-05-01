@@ -322,7 +322,7 @@ class IndividualTenantInvoice extends React.Component {
       var i_d = this.res[c][0];
 
       this.print[c].push(
-        <div id={'pdf'+c+this.props.tenant_list[c].tenant_id}>{this.res[c]}</div>
+        <div class="sbbb" id={'pdf'+c+this.props.tenant_list[c].tenant_id}>{this.res[c]}</div>
       )
     }
 
@@ -404,6 +404,7 @@ downloadall = () => {
   render() {
     return (
       <div>
+        <meta name="viewport" content="width=device-width" ></meta>
         <Button color="primary" onClick={this.handleClickOpen}>
           View PDF in dialog window
         </Button>
