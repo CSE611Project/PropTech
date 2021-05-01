@@ -17,6 +17,7 @@ import { jsPDF } from "jspdf";
 import * as htmlToImage from 'html-to-image';
 import {toPng, toJpeg, toBlob, toPixelData, toSvg} from 'html-to-image';
 import { CognitoUserPool } from "amazon-cognito-identity-js";
+import { format } from "date-fns";
 ///////////////////////////////////////////////
 class IndividualTenantInvoice extends React.Component {
   constructor(props) {
@@ -328,7 +329,11 @@ class IndividualTenantInvoice extends React.Component {
 
   }
   printDocument(i) {
-    const pdf = new jsPDF();  
+    const pdf = new jsPDF({
+      unit: "mm",
+      format: [297, 210]
+    });
+     
     var name = this.props.tenant_list[i].name;
     var email = this.props.tenant_list[i].email;
     htmlToImage.toPng(document.getElementById('pdf'+i+this.props.tenant_list[i].tenant_id), { quality: 1 })
