@@ -79,10 +79,13 @@ class InvoiceHistory_m extends React.Component {
     );
   }
 
-  getCurrentInvoice(cur_res) {
-    console.log("test test:", cur_res)
+  getCurrentInvoice(cur_res, invoice, tenant, property) {
+    console.log("test test:", cur_res, invoice, tenant, property)
     this.setState({
       current_res: cur_res,
+      invoice_list: invoice,
+      tenant_list: tenant,
+      property_info: property
     });
   }
 
@@ -538,7 +541,7 @@ class ShowDate extends React.Component {
       this.res = res;
       this.resm = resm;
       this.setState({ current_res: res, current_resm: resm }, () => {
-        this.props.methodfromparent(res);
+        this.props.methodfromparent(res, this.state.invoice_list, this.state.tenant_list, this.state.property_info);
         this.props.methodfromparenttwo(resm);
       });
       console.log("tryone" + this.state.current_resm)
@@ -547,7 +550,7 @@ class ShowDate extends React.Component {
   }
 
   onSubmit() {
-    console.log(this.state.property_id, this.state.from_date, this.state.to_date)
+    console.log(this.state.property_id, this.state.from_date, this.state.to_date, this.state.invoice_list, this.state.tenant_list)
     this.generateMeterTable();
     this.forceUpdate();
   }
