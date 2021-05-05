@@ -1,4 +1,4 @@
-const config = require("./config.json");
+const config = require("./../../config.json");
 
 const db = require("./database");
 const emailer = require("./email");
@@ -12,14 +12,14 @@ const cognito = new aws.CognitoIdentityServiceProvider({
 });
 
 const accessVerifier = new verifier({
-  region: "us-east-2",
+  region: config.aws_region,
   cognitoUserPoolId: config.cognito.userPoolId,
   tokenUse: "access",
   tokenExpiration: 3600000,
 });
 
 const idVerifier = new verifier({
-  region: "us-east-2",
+  region: config.aws_region,
   cognitoUserPoolId: config.cognito.userPoolId,
   tokenUse: "id",
   tokenExpiration: 3600000,
@@ -368,15 +368,15 @@ router.patch("/tenant", (req, res) => {
       });
       return;
     }
-    console.log()
-    db.deleteAllMeterTenantRelation(req.body.tenant_id, (pre_result)=>{
+    console.log();
+    db.deleteAllMeterTenantRelation(req.body.tenant_id, (pre_result) => {
       db.updateTenant(req.body.tenant_id, req.body.tenant_info, (result) => {
         res.json(result);
       });
     });
-      for (var i = 0; i < req.body.meter_list.length; i++) {
-        db.associateMeterWithTenant(Number(req.body.meter_list[i]), Number(req.body.tenant_id), (result3) => {});
-      }
+    for (var i = 0; i < req.body.meter_list.length; i++) {
+      db.associateMeterWithTenant(Number(req.body.meter_list[i]), Number(req.body.tenant_id), (result3) => {});
+    }
   });
 });
 
@@ -524,8 +524,6 @@ router.get("/ass_meter/:property_id?/:sub?", (req, res) => {
     });
   });
 });
-
-
 
 router.post("/meter", (req, res) => {
   verifyClient(req, res, (accessData, idData) => {
@@ -729,7 +727,6 @@ router.get("/alltime_period/:property_id?", (req, res) => {
   });
 });
 
-
 router.get("/history_submeterbill_list/:property_id?/:from_date?/:to_date?/:sub?", (req, res) => {
   verifyClient(req, res, (accessData, idData) => {
     var sub;
@@ -757,7 +754,7 @@ router.get("/history_submeterbill_list/:property_id?/:from_date?/:to_date?/:sub?
   });
 });
 //use this function to get all time_period for invoices , input: teant_id list
-router.post("/select_timePeriod_invoice", (req,res) => {
+router.post("/select_timePeriod_invoice", (req, res) => {
   verifyClient(req, res, (accessData, idData) => {
     var sub;
     if (accessData["cognito:groups"][0] == "Admin") {
@@ -778,7 +775,6 @@ router.post("/select_timePeriod_invoice", (req,res) => {
     db.TimePeriod_Invoice(filter, (results) => {
       res.json(JSON.parse(JSON.stringify(results)));
     });
-
   });
 });
 
@@ -986,16 +982,16 @@ router.post("/sendPDFToTenant", (req, res) => {
     let subject = "invoice";
     let html = "<p>Invoice attached<p>";
 
-      let emailBody = {
-        receiver: req.body.receiver,
-        subject: subject,
-        html: html,
-        path: req.body.path,
-      };
-      emailer.sentEmailWithAttachment(emailBody, (results) => {
-        res.json(results);
-      });
+    let emailBody = {
+      receiver: req.body.receiver,
+      subject: subject,
+      html: html,
+      path: req.body.path,
+    };
+    emailer.sentEmailWithAttachment(emailBody, (results) => {
+      res.json(results);
     });
+  });
 });
 
 module.exports = router;

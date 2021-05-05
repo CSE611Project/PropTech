@@ -5,12 +5,13 @@ const database = require("./database");
 const databaseRouter = require("./database_router");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const config = require("./../../config.json");
 
 // For local testing and development
-app.use(cors({ credentials: true, origin: "http://localhost:3001" }));
+// app.use(cors({ credentials: true, origin: "http://localhost:3001" }));
 
 // For build
-// app.use(cors({ credentials: true, origin: "http://3.131.169.6" }));
+app.use(cors({ credentials: true, origin: `http://${config.server_ip}` }));
 
 app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
