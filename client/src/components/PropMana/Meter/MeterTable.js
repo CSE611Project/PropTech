@@ -141,11 +141,11 @@ class MeterTable extends React.Component {
     render() {
         return (
             <div>
-                <TableContainer component={Paper}>
+                <TableContainer style={{ maxHeight: 300 }} component={Paper}>
                     <Typography component="h2" variant="h6" color="primary" gutterBottom>
                         Meter List
                     </Typography>
-                    <Table>
+                    <Table stickyHeader>
                         <TableHead>
                             <TableRow>
                                 <TableCell>Meters</TableCell>

@@ -549,6 +549,7 @@ function updateBill(bill_id, bill_info, callback) {
 function deleteBill(bill_id, callback) {
   let sql = `DELETE FROM bill WHERE bill_id = ?`;
   let inserts = [bill_id];
+  console.log("bbbb", bill_id)
   connection.query(sql, inserts, function (err, result) {
     if (err) {
       console.log(err);

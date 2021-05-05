@@ -17,6 +17,7 @@ import { jsPDF } from "jspdf";
 import * as htmlToImage from 'html-to-image';
 import {toPng, toJpeg, toBlob, toPixelData, toSvg} from 'html-to-image';
 import { CognitoUserPool } from "amazon-cognito-identity-js";
+import { format } from "date-fns";
 ///////////////////////////////////////////////
 class IndividualTenantInvoice extends React.Component {
   constructor(props) {
@@ -129,8 +130,8 @@ class IndividualTenantInvoice extends React.Component {
           <tr>
             <th >Sub-Unit</th>
             <th >Prior Amount (KwH)</th>
-            <th >Current Amount(KwH)</th>
-            <th >Current Usage(KwH)</th>
+            <th >Current Amount (KwH)</th>
+            <th >Current Usage (KwH)</th>
             <th >Unit Charge</th>
             <th >Amount</th>
           </tr>
@@ -322,13 +323,17 @@ class IndividualTenantInvoice extends React.Component {
       var i_d = this.res[c][0];
 
       this.print[c].push(
-        <div id={'pdf'+c+this.props.tenant_list[c].tenant_id}>{this.res[c]}</div>
+        <div class="sbbb" id={'pdf'+c+this.props.tenant_list[c].tenant_id}>{this.res[c]}</div>
       )
     }
 
   }
   printDocument(i) {
-    const pdf = new jsPDF();  
+    const pdf = new jsPDF({
+      unit: "mm",
+      format: [297, 210]
+    });
+     
     var name = this.props.tenant_list[i].name;
     var email = this.props.tenant_list[i].email;
     htmlToImage.toPng(document.getElementById('pdf'+i+this.props.tenant_list[i].tenant_id), { quality: 1 })
@@ -386,13 +391,17 @@ printall =() =>{
   for(var i = 0; i < this.props.tenant_list.length; i++){
     this.printDocument(i);
 }
+
+  alert("Emails are on the way.");
+  return;
+  
 }
 
 downloadall = () => {
   for(var i = 0; i < this.props.tenant_list.length; i++){
     this.downloadPDF(i);
 }
-  alert("Done !!!!");
+  alert("Downloads will be completed very soon.");
   return;
   
 }
@@ -400,6 +409,7 @@ downloadall = () => {
   render() {
     return (
       <div>
+        <meta name="viewport" content="width=device-width" ></meta>
         <Button color="primary" onClick={this.handleClickOpen}>
           View PDF in dialog window
         </Button>

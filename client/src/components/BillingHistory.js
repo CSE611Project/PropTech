@@ -12,7 +12,12 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
 import DialogContentText from "@material-ui/core/DialogContentText";
+import DeleteMetersBill from "./DeleteMeterBill";
 import { isThisISOWeek } from "date-fns";
+import DeleteSubMeterBill from "./DeleteSubMeterBill";
+import Paper from "@material-ui/core/Paper";
+import TableContainer from "@material-ui/core/TableContainer";
+import Snackbar from '@material-ui/core/Snackbar';
 
 class BillingHistory extends React.Component {
   constructor(props) {
@@ -35,6 +40,8 @@ class BillingHistory extends React.Component {
       billing_dates: [],
       current_resm: [],
       current_res: [],
+      button_flag: false,
+      helper_text: "",
     };
     this.handleFromDateChange = this.handleFromDateChange.bind(this);
     this.handleToDateChange = this.handleToDateChange.bind(this);
@@ -44,6 +51,8 @@ class BillingHistory extends React.Component {
     this.getBillingDates = this.getBillingDates.bind(this);
     this.getCurrentBill = this.getCurrentBill.bind(this);
     this.getCurrentSubBill = this.getCurrentSubBill.bind(this);
+    this.getHelperText = this.getHelperText.bind(this);
+    this.handleClose = this.handleClose.bind(this);
     this.generateBillingDateTable();
   }
 
@@ -130,6 +139,11 @@ class BillingHistory extends React.Component {
     }
     this.generateMeterTable();
     this.generateSubmeterTable();
+    var text = "Viewing bill of " + this.state.from_date + " to " + this.state.to_date;
+    this.setState({
+      button_flag: true,
+      helper_text: text
+    })
     console.log("bill list length:", this.state.bill_list.length);
     console.log(this.state.from_date, this.state.to_date, this.state.bill_list, this.state.submeter_bill_list);
   }
@@ -149,6 +163,19 @@ class BillingHistory extends React.Component {
       // current_res: cur_res,
     });
   }
+
+  getHelperText(help) {
+    console.log("helper: ", help)
+    this.setState({
+      helper_text: help,
+    })
+  }
+
+  handleClose() {
+    this.setState({
+      button_flag: false
+    })
+  };
 
   generateMeterTable() {
     var resm = [];
@@ -182,6 +209,7 @@ class BillingHistory extends React.Component {
 
   generateSubmeterTable() {
     var res = [];
+    console.log("where are you", this.state.submeter_bill_list)
     this.getSubmeterBillList().then(() => {
       var tableData = this.state.submeter_bill_list;
 
@@ -211,14 +239,25 @@ class BillingHistory extends React.Component {
     var resb = [];
     this.getBillingDates().then(() => {
       var tableData = this.state.billing_dates;
-      console.log(this.state.billing_dates)
+      console.log("bill date::", this.state.billing_dates)
+      if (tableData[0].from_date === null) {
+        return;
+      }
       for (var i = 0; i < tableData.length; i++) {
-        var temp_from = tableData[i].from_date.split("T")[0];
-        var temp_to = tableData[i].to_date.split("T")[0];
+        // var temp_from = tableData[i].from_date.split("T")[0];
+        // var temp_to = tableData[i].to_date.split("T")[0];
         resb.push(
           <TableRow key={i} id={i}>
             <TableCell>{tableData[i].from_date.split("T")[0]}</TableCell>
             <TableCell>{tableData[i].to_date.split("T")[0]}</TableCell>
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
+            <TableCell />
             <TableCell />
             <TableCell />
             <TableCell />
@@ -234,6 +273,7 @@ class BillingHistory extends React.Component {
                 to_date={tableData[i].to_date.split("T")[0]}
                 methodfromparent={this.getCurrentBill}
                 methodfromparenttwo={this.getCurrentSubBill}
+                methodfromparentthree={this.getHelperText}
               />
             </TableCell>
             <TableCell />
@@ -242,7 +282,9 @@ class BillingHistory extends React.Component {
       }
       this.resb = resb;
       this.forceUpdate();
+
     });
+
   }
 
   render() {
@@ -251,48 +293,72 @@ class BillingHistory extends React.Component {
         <Typography component="h2" variant="h6" color="primary" gutterBottom>
           Billing History
         </Typography>
-        <form noValidate>
-          <TextField
-            id="from_date"
-            label="From"
-            type="date"
-            defaultValue={this.state.from_date}
-            InputLabelProps={{
-              shrink: true,
+        <TableContainer style={{ maxHeight: 600 }}>
+          <form noValidate>
+            <TextField
+              id="from_date"
+              label="From"
+              type="date"
+              defaultValue={this.state.from_date}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={this.handleFromDateChange}
+            />
+            <TextField
+              id="to_date"
+              label="To"
+              type="date"
+              defaultValue={this.state.to_date}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={this.handleToDateChange}
+            />
+          </form>
+          <DialogContentText />
+          <Button onClick={this.onSubmit} color="primary">
+            Show
+          </Button>
+          <Snackbar
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
             }}
-            onChange={this.handleFromDateChange}
+            open={this.state.button_flag}
+            autoHideDuration={6000}
+            onClose={this.handleClose}
+            message={this.state.helper_text}
           />
-          <TextField
-            id="to_date"
-            label="To"
-            type="date"
-            defaultValue={this.state.to_date}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            onChange={this.handleToDateChange}
-          />
-        </form>
-        <DialogContentText />
-        <Button onClick={this.onSubmit} color="primary">
-          Show
-        </Button>
-        <TableHead>
-          <TableRow>
-            <TableCell>Billing Start Date</TableCell>
-            <TableCell>Billing End Date</TableCell>
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-          </TableRow>
-        </TableHead>
-        <TableBody>{this.resb}</TableBody>
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow>
+                <TableCell>Billing Start Date</TableCell>
+                <TableCell>Billing End Date</TableCell>
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {this.resb}
+            </TableBody>
+          </Table>
+        </TableContainer>
         <Divider />
         <Divider />
         <Divider />
@@ -301,20 +367,23 @@ class BillingHistory extends React.Component {
         <Divider />
         <Divider />
         <Divider />
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Meter Bill ID</TableCell>
-              <TableCell>Meter</TableCell>
-              <TableCell>Billing Start Date</TableCell>
-              <TableCell>Billing End Date</TableCell>
-              <TableCell>Total KWH Usage</TableCell>
-              {/* <TableCell>Unit Charge</TableCell> */}
-              <TableCell>Total Charge</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>{this.state.current_resm}</TableBody>
-        </Table>
+        <TableContainer style={{ maxHeight: 400 }} component={Paper}>
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow>
+                <TableCell>Meter Bill ID</TableCell>
+                <TableCell>Meter</TableCell>
+                <TableCell>Billing Start Date</TableCell>
+                <TableCell>Billing End Date</TableCell>
+                <TableCell>Total KWH Usage</TableCell>
+                {/* <TableCell>Unit Charge</TableCell> */}
+                <TableCell>Total Charge</TableCell>
+                <TableCell />
+              </TableRow>
+            </TableHead>
+            <TableBody>{this.state.current_resm}</TableBody>
+          </Table>
+        </TableContainer>
         <Divider />
         <Divider />
         <Divider />
@@ -323,20 +392,23 @@ class BillingHistory extends React.Component {
         <Divider />
         <Divider />
         <Divider />
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Submeter Bill ID</TableCell>
-              <TableCell>Associate with Bill ID:</TableCell>
-              <TableCell>Submeter</TableCell>
-              <TableCell>Prior Read</TableCell>
-              <TableCell>Current Read</TableCell>
-              <TableCell>Unit Charge</TableCell>
-              <TableCell>Amount Due</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>{this.state.current_res}</TableBody>
-        </Table>
+        <TableContainer style={{ maxHeight: 400 }} component={Paper}>
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow>
+                <TableCell>Submeter Bill ID</TableCell>
+                <TableCell>Associate with Bill ID:</TableCell>
+                <TableCell>Submeter</TableCell>
+                <TableCell>Prior Read</TableCell>
+                <TableCell>Current Read</TableCell>
+                <TableCell>Unit Charge</TableCell>
+                <TableCell>Amount Due</TableCell>
+                <TableCell />
+              </TableRow>
+            </TableHead>
+            <TableBody>{this.state.current_res}</TableBody>
+          </Table>
+        </TableContainer>
       </React.Fragment>
     );
   }
@@ -354,10 +426,13 @@ class ShowDate extends React.Component {
       current_res: [],
       bill_list: [],
       submeter_bill_list: [],
+      button_flag: false,
+      helper_text: "",
     }
     this.onSubmit = this.onSubmit.bind(this);
     this.getMeterBillList = this.getMeterBillList.bind(this);
     this.getSubmeterBillList = this.getSubmeterBillList.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   getMeterBillList() {
@@ -410,17 +485,21 @@ class ShowDate extends React.Component {
             <TableCell>{tableData[i].total_kwh_usage}</TableCell>
             {/* <TableCell>{tableData[i].unit_charge}</TableCell> */}
             <TableCell>{tableData[i].total_charge}</TableCell>
+            <TableCell>
+              <DeleteMetersBill bill_id={tableData[i].bill_id} generateTableData={this.onSubmit} />
+            </TableCell>
           </TableRow>
+
         );
       }
       this.resm = resm;
       // this.setState({
       //   current_resm: resm
       // })
-      this.setState({current_resm: resm}, () => {
+      this.setState({ current_resm: resm }, () => {
         this.props.methodfromparent(resm);
       });
-      console.log("tryone"+this.state.current_resm)
+      console.log("tryone" + this.state.current_resm)
       // this.forceUpdate();
     });
     // this.setState({
@@ -446,11 +525,14 @@ class ShowDate extends React.Component {
             <TableCell>{tableData[i].cur_read}</TableCell>
             <TableCell>{tableData[i].unit_charge}</TableCell>
             <TableCell>{tableData[i].amt_due}</TableCell>
+            <TableCell>
+              <DeleteSubMeterBill bill_id={tableData[i].submeter_bill_id} generateTableData={this.onSubmit} />
+            </TableCell>
           </TableRow>
         );
       }
       this.res = res;
-      this.setState({current_res: res}, () => {
+      this.setState({ current_res: res }, () => {
         this.props.methodfromparenttwo(res);
       });
       this.forceUpdate();
@@ -464,6 +546,13 @@ class ShowDate extends React.Component {
     console.log(this.state.property_id, this.state.from_date, this.state.to_date)
     this.generateMeterTable();
     this.generateSubmeterTable();
+    var text = "Viewing bill of " + this.state.from_date + " to " + this.state.to_date;
+    this.setState({
+      button_flag: true,
+      helper_text: text
+    }, () => {
+      this.props.methodfromparentthree(text)
+    })
     this.forceUpdate();
     // this.setState({
 
@@ -475,14 +564,28 @@ class ShowDate extends React.Component {
     // this.props.methodfromparent(this.state.current_resm, this.res);
   }
 
+  handleClose() {
+    this.setState({
+      button_flag: false
+    })
+  };
+
   render() {
     return (
       <React.Fragment>
         <Button color="primary" onClick={this.onSubmit}>
           Show
         </Button>
-        {/* {this.resm} */}
-        {/* {this.state.current_resm} */}
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          open={this.state.button_flag}
+          autoHideDuration={6000}
+          onClose={this.handleClose}
+          message={this.state.helper_text}
+        />
       </React.Fragment>
     );
   }

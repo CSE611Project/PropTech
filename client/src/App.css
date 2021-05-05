@@ -263,10 +263,13 @@ table.underline {
   border-spacing: 2px;
   font-size: 13px;
   table-layout: fixed ;
-  width: 30% ;
+  width: 44% ;
 }
 .s {
   border: 0px solid black;
+}
+.sbbb {
+  width: 70%;
 }
 
 

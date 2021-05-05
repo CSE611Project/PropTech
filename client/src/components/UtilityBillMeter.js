@@ -8,6 +8,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
+import { TableContainer } from "@material-ui/core";
 
 class UtilityBillMeter extends React.Component {
   constructor(props) {
@@ -61,7 +62,8 @@ class UtilityBillMeter extends React.Component {
         <Typography component="h2" variant="h6" color="primary" gutterBottom>
           Meters
         </Typography>
-        <Table size="small">
+        <TableContainer style={{ maxHeight: 400 }}>
+        <Table size="small" stickyHeader>
           <TableHead>
             <TableRow>
               <TableCell>Meter numbers</TableCell>
@@ -73,6 +75,7 @@ class UtilityBillMeter extends React.Component {
           </TableHead>
           <TableBody>{this.res}</TableBody>
         </Table>
+        </TableContainer>
       </React.Fragment>
     );
   }

@@ -86,8 +86,8 @@ class PropertyInfo extends Component {
           </TableCell>
         </TableHead>
         <DialogContent />
-        <TableContainer component={Paper}>
-          <Table>
+        <TableContainer style={{ maxHeight: 700 }} component={Paper}>
+          <Table stickyHeader>
             <TableHead>
               <TableRow>
                 <TableCell>Property Name</TableCell>

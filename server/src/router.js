@@ -754,7 +754,7 @@ router.get("/history_submeterbill_list/:property_id?/:from_date?/:to_date?/:sub?
   });
 });
 //use this function to get all time_period for invoices , input: teant_id list
-router.post("/select_timePeriod_invoice", (req, res) => {
+router.post("/select_timePeriod_invoice/:tenant_id?", (req, res) => {
   verifyClient(req, res, (accessData, idData) => {
     var sub;
     if (accessData["cognito:groups"][0] == "Admin") {
@@ -764,13 +764,13 @@ router.post("/select_timePeriod_invoice", (req, res) => {
     } else {
       res.json({
         error: {
-          message: "Improper permissions: not Admin",
+          message: "Improper permissions: not Admin",
         },
       });
       return;
     }
     var filter = {
-      tenant_id: req.body.final_invoice_list[0].tenant_id,
+      tenant_id: Number(req.params.tenant_id),
     };
     db.TimePeriod_Invoice(filter, (results) => {
       res.json(JSON.parse(JSON.stringify(results)));
@@ -994,4 +994,46 @@ router.post("/sendPDFToTenant", (req, res) => {
   });
 });
 
+router.delete("/deletebill", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.body.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+    console.log("router bill id", req.body.bill_in);
+    db.deleteBill(req.body.bill_id, (results) => {
+      res.json(results);
+    });
+  });
+});
+router.delete("/deletesub_bill", (req, res) => {
+  verifyClient(req, res, (accessData, idData) => {
+    var sub;
+    if (accessData["cognito:groups"][0] == "Admin") {
+      sub = req.body.sub;
+    } else if (accessData["cognito:groups"][0] == "PropertyManager") {
+      sub = accessData.sub;
+    } else {
+      res.json({
+        error: {
+          message: "Improper permissions: not Admin",
+        },
+      });
+      return;
+    }
+    console.log("router bill id", req.body.bill_in);
+    db.deleteSubmeterBill(req.body.bill_id, (results) => {
+      res.json(results);
+    });
+  });
+});
 module.exports = router;
