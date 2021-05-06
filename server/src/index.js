@@ -5,7 +5,7 @@ const database = require("./database");
 const databaseRouter = require("./database_router");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const config = require("./../../config.json");
+const config = require("./config.json");
 
 // For local testing and development
 // app.use(cors({ credentials: true, origin: "http://localhost:3001" }));

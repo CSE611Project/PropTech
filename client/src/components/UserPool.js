@@ -1,9 +1,9 @@
 const cognito = require("amazon-cognito-identity-js");
-
+const data = require("./../config.json");
 const poolData = {
-  UserPoolId: "us-east-2_9sP4CUJwB",
-  ClientId: "4lopeqiaq0bmrmvkccb09u6lq8",
+  UserPoolId: data.cognito.userPoolId,
+  ClientId: data.cognito.clientId,
 };
 const userPool = new cognito.CognitoUserPool(poolData);
-const region = "us-east-2";
+const region = data.aws_region;
 export { cognito, userPool, region, poolData };
